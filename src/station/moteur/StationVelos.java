@@ -1,4 +1,4 @@
-package station;
+package station.moteur;
 
 public class StationVelos {
 
