@@ -1,6 +1,6 @@
 package gestionnaire.moteur;
 
-import gestionnaire.GestionnaireStationProxy;
+import gestionnaire.GestionnaireProxy;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -9,11 +9,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Random;
 
-	public class GestionnaireVelos extends UnicastRemoteObject implements GestionnaireStationProxy {
+	public class Gestionnaire extends UnicastRemoteObject implements GestionnaireProxy {
 	//HashMap<String, Station> listeStation;
 	//HashMap<String, Abonne> listeAbonne;
 	
-	public GestionnaireVelos() throws RemoteException {
+	public Gestionnaire() throws RemoteException {
 		super();
 		//listeStation = new HashMap<String, Station>();
 		//listeAbonne = new HashMap<String, Abonne>();
@@ -37,7 +37,7 @@ import java.util.Random;
 		// creation du proxy sur le port 1099 (choisi=)
 		LocateRegistry.createRegistry(1099);
 		// Choix du nom du proxy
-		Naming.rebind("GestionStat", new GestionnaireVelos());
+		Naming.rebind("GestionStat", new Gestionnaire());
 		System.out.println("Gestionnaire est enregistrée");
 		}
 }

@@ -3,13 +3,13 @@ package station.moteur;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 
-import gestionnaire.GestionnaireStationProxy;
+import gestionnaire.GestionnaireProxy;
 
-public class StationVelos {
+public class Station {
 	
-	private GestionnaireStationProxy proxy;
-	public StationVelos() throws Exception{
-		proxy = (GestionnaireStationProxy)Naming.lookup("rmi://localhost:1099/GestionStat");
+	private GestionnaireProxy proxy;
+	public Station() throws Exception{
+		proxy = (GestionnaireProxy)Naming.lookup("rmi://localhost:1099/GestionStat");
 	
 	}
 	
