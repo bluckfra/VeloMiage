@@ -9,6 +9,8 @@ public class mainTest {
 		// TODO Auto-generated method stub
 		Station station = new Station();
 		station.demanderAbo();
+		station.bikeLocation("test");
+		station.bikePayBack("test");
 	}
 
 }
