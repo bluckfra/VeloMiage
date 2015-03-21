@@ -10,6 +10,7 @@ import javax.security.sasl.SaslException;
 import bdd.DAO;
 import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
+import bdd.objetsbdd.Velo;
 
 
 public class StationDAO extends DAO<StationBD> {
@@ -53,7 +54,31 @@ public class StationDAO extends DAO<StationBD> {
 			// récupération des valeurs de l'insert
 			ResultSet rs = prepare.getGeneratedKeys();
 			rs.next();
-			return find(rs.getInt(1));			
+			return find(rs.getInt(1));
+			
+			/*//Maintenant, nous devons créer les liens vers les vélos
+			//Si le vélo n'existe pas en base, on le créé
+			for (Velo v : obj.getVelosStation()) {
+				if (v.getId() == 0) {
+					DAO<Velo> veloDAO = new VeloDAO();
+					v = veloDAO.create(v);
+				}
+				
+					
+					long id2 = result2.getLong("id");
+					PreparedStatement prepare2 = this .connect
+                                                        .prepareStatement(
+                                                			"INSERT INTO j_soc_dev (jsd_id, jsd_soc_k, jsd_dev_k)"+
+                                                			" VALUES(?, ?, ?)"
+                                                		);
+					prepare2.setLong(1, id2);
+					prepare2.setLong(2, id);
+					prepare2.setLong(3, dev.getId());
+					prepare2.executeUpdate();
+			
+
+			}*/
+
 		}
 		catch (SQLException e) {
 				e.printStackTrace();

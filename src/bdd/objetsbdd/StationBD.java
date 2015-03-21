@@ -1,20 +1,30 @@
 package bdd.objetsbdd;
 
+import java.util.ArrayList;
+
 public class StationBD {
 	
 	private int id;
 	private double lat,lon;
+	//private ArrayList<Velo> velosStation;
 	
 	public StationBD() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public StationBD(int id, double lat, double lon) {
-		super();
 		this.id = id;
 		this.lat = lat;
 		this.lon = lon;
+		//this.velosStation = velos;
 	}
+	
+	/*public ArrayList<Velo> getVelosStation() {
+		return velosStation;
+	}
+	
+	public void setVelosStation(ArrayList<Velo> velosStation) {
+		this.velosStation = velosStation;
+	}*/
 		
 	public int getId() {
 		return id;
