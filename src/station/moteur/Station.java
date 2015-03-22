@@ -29,11 +29,11 @@ public class Station {
 
 	/**
 	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1
-	 * 
+	 * @params bool technicien
 	 * @throws RemoteException
 	 */
-	public void demanderAbo() throws RemoteException {
-		String reponse[] = proxy.creerAbonnement();
+	public void demanderAbo(boolean isTech) throws RemoteException {
+		int reponse[] = proxy.creerAbonnement(isTech);
 		afficherInformationCreationAbonnement(reponse);
 	}
 
@@ -42,7 +42,7 @@ public class Station {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void bikeLocation(String idClient) throws RemoteException {
+	public void bikeLocation(int idClient) throws RemoteException {
 		if (proxy.idValidation(idClient)) {
 			if (!veloList.isEmpty()) {
 				String idVelo = veloList.get(0);
@@ -101,10 +101,10 @@ public class Station {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void afficherInformationCreationAbonnement(String reponse[]) {
-		System.out.println("Votre identifiant est : " + reponse[0].toString());
+	public void afficherInformationCreationAbonnement(int reponse[]) {
+		System.out.println("Votre identifiant est : " + reponse[0]);
 		System.out.println("Votre code confidentiel est : "
-				+ reponse[1].toString());
+				+ reponse[1]);
 		System.out.println("Veuillez ne pas communiquer vos identifiants");
 	}
 }

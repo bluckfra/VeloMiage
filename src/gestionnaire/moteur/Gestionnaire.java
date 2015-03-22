@@ -6,14 +6,22 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Random;
+
+import bdd.DAO;
+import bdd.objetsbdd.Abonne;
+import bdd.objetsbdd.StationBD;
+import bdd.objetsdao.AbonneDAO;
+import bdd.objetsdao.StationDAO;
 	
 	
 	public class Gestionnaire extends UnicastRemoteObject implements GestionnaireProxy {
 	//HashMap<String, Station> listeStation;
-	HashMap<String, String> listeAbonne;
+	HashMap<Integer, Abonne> listeAbonne;
 	HashMap<String, String> bikeList;
 	
 	/**
@@ -23,7 +31,7 @@ import java.util.Random;
 	public Gestionnaire() throws RemoteException {
 		super();
 		//listeStation = new HashMap<String, Station>();
-		listeAbonne = new HashMap<String, String>();
+		listeAbonne = new HashMap<Integer, Abonne>();
 		bikeList = new HashMap<String, String>();
 	}
 
@@ -32,14 +40,36 @@ import java.util.Random;
 	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1
 	 * @throws RemoteException
 	 */
-	public synchronized String[] creerAbonnement() throws RemoteException {
-		String abo[] = new String[2];
+	public synchronized int[] creerAbonnement(boolean isTech) throws RemoteException {
+		int abo[] = new int[2];
 		Random rand = new Random();
-		//
+		// creation mdp
 		int codeConf = rand.nextInt(9999) + 1000;
+		
+		// récupération date du jour
+		Calendar cal = Calendar.getInstance();
+		Date sqlDate = new Date(cal.getTimeInMillis());
+		// +1 jour
+		Date sqlDateFin = new Date(cal.getTimeInMillis() + 86400000);
+		
+		System.out.println("test de la date: " + sqlDate.toString() + "date fin = " + sqlDateFin.toString());
+		// creation de l'abonne
+		DAO<Abonne> daoAbonne = new AbonneDAO();
+		Abonne abonne = new Abonne();
+		abonne.setCode(codeConf);
+		abonne.setDateAboDebut(sqlDate);
+		abonne.setTechnicien(isTech);		
+		abonne.setDateAboFin(sqlDateFin);
+		
+		abonne = daoAbonne.create(abonne);
+
+		// ajout dans la liste
+		listeAbonne.put(abonne.getId(), abonne);
+		
+		System.out.println("info abonné créé : id = " + abonne.getId() + " code = " + abonne.getCode() + " dateDebt = " + abonne.getDateAboDebut().toString() + " date fin = " + abonne.getDateAboFin() + " is tech = " + abonne.isTechnicien());
 		//Abonne abo = new Abonne(codeConf);	
-		abo[0] = "testId1";
-		abo[1] =  String.valueOf(codeConf);
+		abo[0] =	abonne.getId();
+		abo[1] =	abonne.getCode();
 		return abo;
 	}
 	
@@ -58,12 +88,22 @@ import java.util.Random;
 	 * <Stéfan> - 21/03/2015 - Step 2
 	 * @throws RemoteException
 	 */
-	public boolean idValidation(String id) throws RemoteException {
-		boolean res;
-		if(listeAbonne.containsKey(id)){
-			//return res = (LocalDateTime.now() < listeAbonne.get(id).getDateEndRegister()) ? true : false;	
+	public boolean idValidation(int id) throws RemoteException {
+		
+		boolean res = false;
+		DAO<Abonne> daoAbonne = new AbonneDAO();
+		Abonne abonne = new Abonne();
+		abonne = daoAbonne.find(id);
+
+		if(abonne.getId() == id){
+			// récupération date du jour
+			java.util.Calendar cal = java.util.Calendar.getInstance();
+			java.util.Date utilDate = cal.getTime();
+			Date dateNow = new Date(utilDate.getTime());
+			
+			res = (dateNow.before(listeAbonne.get(id).getDateAboFin())) ? true : false;
 		}
-		return true;
+		return res;
 	}
 
 	/**
