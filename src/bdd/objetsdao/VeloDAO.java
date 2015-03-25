@@ -4,9 +4,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import bdd.DAO;
+import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
 import bdd.objetsbdd.Velo;
 
@@ -33,6 +35,25 @@ public class VeloDAO extends DAO<Velo> {
 		}
 		
 		return velo;
+	}
+	
+	public Velo removeVelo(Velo obj, Timestamp dateFinLocation) {
+		try {				
+			this.connect	
+            .createStatement(
+            	ResultSet.TYPE_SCROLL_INSENSITIVE, 
+                ResultSet.CONCUR_UPDATABLE
+             ).executeUpdate(
+            	"UPDATE louer SET dateFin = '" + dateFinLocation + "'"+
+            	" WHERE idVelo = " + obj.getId() + " AND dateFin is null "
+             );
+
+			obj = this.find(obj.getId());
+	    } catch (SQLException e) {
+	            e.printStackTrace();
+	    }
+	    
+		return obj;
 	}
 
 	@Override

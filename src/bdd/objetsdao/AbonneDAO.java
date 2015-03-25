@@ -125,25 +125,6 @@ public class AbonneDAO extends DAO<Abonne>{
 		return obj;
 	}
 
-	public Abonne removeVelo(Abonne obj, Velo v, Timestamp dateFinLocation) {
-		try {				
-			this.connect	
-            .createStatement(
-            	ResultSet.TYPE_SCROLL_INSENSITIVE, 
-                ResultSet.CONCUR_UPDATABLE
-             ).executeUpdate(
-            	"UPDATE louer SET dateFin = '" + dateFinLocation + "'"+
-            	" WHERE idAbonne = " + obj.getId() + " AND idVelo = " + v.getId()
-             );
-
-			obj = this.find(obj.getId());
-	    } catch (SQLException e) {
-	            e.printStackTrace();
-	    }
-	    
-		return obj;
-	}
-
 
 	@Override
 	public void delete(Abonne obj) {

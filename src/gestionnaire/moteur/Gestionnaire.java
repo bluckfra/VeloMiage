@@ -21,7 +21,6 @@ import bdd.objetsdao.StationDAO;
 import bdd.objetsdao.VeloDAO;
 
 public class Gestionnaire extends UnicastRemoteObject implements GestionnaireProxy {
-	
 
 	private StationDAO daoStationBD;
 	private AbonneDAO daoAbonne;
@@ -181,7 +180,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 			throws RemoteException {
 		// récupération des lattitudes et longi de la station courante
 		StationBD station = daoStationBD.find(idStation);
-
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
 
 		// création variable résultat
