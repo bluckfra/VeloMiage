@@ -74,7 +74,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		System.out.println("test de la date: " + sqlDate.toString()
 				+ "date fin = " + sqlDateFin.toString());
 		// creation de l'abonne
-		DAO<Abonne> daoAbonne = new AbonneDAO();
 		Abonne abonne = new Abonne();
 		abonne.setCode(codeConf);
 		abonne.setDateAboDebut(sqlDate);
@@ -86,12 +85,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		// ajout dans la liste
 		listeAbonne.put(abonne.getId(), abonne);
 
-		System.out.println("info abonné créé : id = " + abonne.getId()
-				+ " code = " + abonne.getCode() + " dateDebt = "
-				+ abonne.getDateAboDebut().toString() + " date fin = "
-				+ abonne.getDateAboFin() + " is tech = "
-				+ abonne.isTechnicien());
-		// Abonne abo = new Abonne(codeConf);
+		System.out.println("info abonné créé : id = " + abonne.toString());
 		abo[0] = abonne.getId();
 		abo[1] = abonne.getCode();
 		return abo;
@@ -117,21 +111,13 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 */
 	public boolean idValidation(int id) throws RemoteException {
 
-		boolean res = false;
-		DAO<Abonne> daoAbonne = new AbonneDAO();
-		Abonne abonne = new Abonne();
-		abonne = daoAbonne.find(id);
+		Abonne abonne = daoAbonne.find(id);
 
-		if (abonne.getId() == id) {
-			// récupération date du jour
-			java.util.Calendar cal = java.util.Calendar.getInstance();
-			java.util.Date utilDate = cal.getTime();
-			Date dateNow = new Date(utilDate.getTime());
+		// récupération date du jour
+		Timestamp now = new Timestamp(System.currentTimeMillis());
 
-			res = (dateNow.before(listeAbonne.get(id).getDateAboFin())) ? true
-					: false;
-		}
-		return res;
+		return (now.before(abonne.getDateAboFin()) ? true : false);
+
 	}
 
 	/**
@@ -176,9 +162,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	public String[] demandeStationProche(int idStation, boolean demandeLocation)
 			throws RemoteException {
 		// récupération des lattitudes et longi de la station
-		DAO<StationBD> stationDAO = new StationDAO();
 		StationBD station = new StationBD();
-		station = stationDAO.find(idStation);
+		station = daoStationBD.find(idStation);
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
 
 		// création variable résultat
