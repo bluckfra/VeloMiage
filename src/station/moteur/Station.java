@@ -5,12 +5,13 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import bdd.objetsbdd.Velo;
 import gestionnaire.GestionnaireProxy;
 
 public class Station {
 	
 	private GestionnaireProxy proxy;
-	private ArrayList<String> listeVelos;
+	private ArrayList<Velo> listeVelos;
 	private int taille;
 	private int idStation;
 
@@ -19,14 +20,13 @@ public class Station {
 	 * 
 	 * @throws Exception
 	 */
-	public Station() throws Exception {
+	public Station(int id, int taille) throws Exception {
 		proxy = (GestionnaireProxy) Naming
 				.lookup("rmi://localhost:1099/GestionStat");
 		// on doit récupérer la liste via le gestionnaire
-		listeVelos = new ArrayList<String>();
-		listeVelos.add("test");
-		listeVelos.add("test2");
-		taille = 15;
+		this.idStation = id;
+		this.taille = taille;
+		listeVelos = proxy.listeVelo(id);
 	}
 
 	/**
@@ -47,11 +47,11 @@ public class Station {
 	public void locationVelo(int idClient) throws RemoteException {
 		if (proxy.idValidation(idClient)) {
 			if (!listeVelos.isEmpty()) {
-				String idVelo = listeVelos.get(0);
+				int idVelo = listeVelos.get(0).getId();
 				listeVelos.remove(idVelo);
-				proxy.location(idVelo);
+				proxy.location(idStation,idClient, idVelo);
 				afficherInformationsDeLocation(idVelo);
-				System.out.println("vélo retiré");
+				System.out.println("Vous pouvez retirer le vélo : " + idVelo);
 			} else {
 				// etape 4: indication de la station la plus proche
 				String reponse[] = proxy.demandeStationProche(idStation,true);
@@ -70,12 +70,13 @@ public class Station {
 	 * @param string idVelo
 	 * @throws RemoteException
 	 */
-	public void retourVelo(String idVelo) throws RemoteException {
+	public void retourVelo(int idV) throws RemoteException {
 		if (listeVelos.size() != this.taille) {
-			listeVelos.add(idVelo);
-			proxy.retour(idVelo);
+			Velo v = new Velo(idV);
+			listeVelos.add(v);
+			proxy.retour(idStation,idV);
 
-			afficherInformationsDeRetour(idVelo);
+			afficherInformationsDeRetour(v);
 			System.out.println("Retour vélo accepté");
 		} else {
 			String reponse[] = proxy.demandeStationProche(idStation,false);
@@ -91,7 +92,7 @@ public class Station {
 	 * @param string idVelo
 	 * @throws RemoteException
 	 */
-	public void afficherInformationsDeLocation(String idVelo) {
+	public void afficherInformationsDeLocation(int idVelo) {
 		System.out.println("Vous pouvez retirer le vélo " + idVelo);
 	}
 
@@ -100,8 +101,8 @@ public class Station {
 	 * 
 	 * @throws RemoteException
 	 */
-	public void afficherInformationsDeRetour(String idVelo) {
-		System.out.println("Vélo " + idVelo);
+	public void afficherInformationsDeRetour(Velo velo) {
+		System.out.println(velo.toString());
 	}
 
 	/**

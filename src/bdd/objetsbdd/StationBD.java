@@ -7,7 +7,7 @@ public class StationBD {
 	private int id;
 	private double lat,lon;
 	private ArrayList<Velo> velosStation;
-	//  
+	private int nbPlaceMax;
 	
 	public StationBD() {
 		velosStation = new ArrayList<Velo>();
@@ -54,6 +54,14 @@ public class StationBD {
 	
 	public void setLon(double lon) {
 		this.lon = lon;
+	}
+	
+	public int getNbPlace(){
+		return nbPlaceMax;
+	}
+	
+	public void setNbPlace(int place){
+		this.nbPlaceMax = place;
 	}
 	
 	@Override

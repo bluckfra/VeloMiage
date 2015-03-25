@@ -1,7 +1,10 @@
 package gestionnaire;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.jar.JarException;
+
+import bdd.objetsbdd.Velo;
 
 public interface GestionnaireProxy extends java.rmi.Remote{
 	/**
@@ -15,9 +18,9 @@ public interface GestionnaireProxy extends java.rmi.Remote{
 	 * @throws RemoteException
 	 */
 	public boolean idValidation(int id)throws java.rmi.RemoteException;
-
-	public void location(String idVelo) throws java.rmi.RemoteException;
-	public void retour(String idVelo) throws java.rmi.RemoteException;
+	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException;
+	public void location(int idStation,int idClient, int idVelo) throws java.rmi.RemoteException;
+	public void retour(int idStation,int idVelo) throws java.rmi.RemoteException;
 	
 	public String[] demandeStationProche(int idStation, boolean demandeLocation) throws java.rmi.RemoteException;
 }

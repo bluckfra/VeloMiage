@@ -14,6 +14,10 @@ public class Velo {
 		this.id = id;
 		this.etat = etat;
 	}
+	
+	public Velo(int id) {
+		this.id = id;
+	}
 
 	public int getId() {
 		return id;

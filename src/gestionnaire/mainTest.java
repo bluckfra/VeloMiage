@@ -7,10 +7,10 @@ public class mainTest {
 
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
-		Station station = new Station();
+		Station station = new Station(15,30);
 		//station.demanderAbo(false);
-		station.bikeLocation(4);
-		station.bikePayBack("test");
+		//station.locationVelo(3);
+		//station.retourVelo(4);
 	}
 
 }

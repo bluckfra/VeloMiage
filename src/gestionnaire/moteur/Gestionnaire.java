@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -14,15 +15,14 @@ import java.util.TreeMap;
 
 import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
+import bdd.objetsbdd.Velo;
 import bdd.objetsdao.AbonneDAO;
 import bdd.objetsdao.StationDAO;
 import bdd.objetsdao.VeloDAO;
 
 public class Gestionnaire extends UnicastRemoteObject implements GestionnaireProxy {
 	
-	private HashMap<String, StationBD> listeStation;
-	private HashMap<Integer, Abonne> listeAbonne;
-	private HashMap<String, String> listeVelos;
+
 	private StationDAO daoStationBD;
 	private AbonneDAO daoAbonne;
 	private VeloDAO daoVelo;
@@ -34,9 +34,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 */
 	public Gestionnaire() throws RemoteException {
 		super();
-		// listeStation = new HashMap<String, Station>();
-		listeAbonne = new HashMap<Integer, Abonne>();
-		listeVelos = new HashMap<String, String>();
 		// récupération de la liste de station
 		daoAbonne = new AbonneDAO();
 		daoStationBD = new StationDAO();
@@ -76,9 +73,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		abonne.setDateAboFin(sqlDateFin);
 
 		abonne = daoAbonne.create(abonne);
-
-		// ajout dans la liste
-		listeAbonne.put(abonne.getId(), abonne);
 
 		System.out.println("info abonné créé : id = " + abonne.toString());
 		abo[0] = abonne.getId();
@@ -121,9 +115,30 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * 
 	 * @throws RemoteException
 	 */
-	public void location(String idVelo) throws RemoteException {
+	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException {
 		// add location
 		// change value in bd --> MAJ CACHE
+		System.out.println("Vélo retiré");
+		StationBD st = daoStationBD.find(idStation);
+		return st.getVelosStation();
+	}
+	
+	/**
+	 * WIP <Stéfan> - 21/03/2015 - Etape 2
+	 * 
+	 * @throws RemoteException
+	 */
+	public void location(int idStation,int idClient, int idVelo) throws RemoteException {
+		StationBD st = daoStationBD.find(idStation);
+		Abonne ab = daoAbonne.find(idClient);
+		Velo v = daoVelo.find(idVelo);
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		
+		// enlever vélo de table posseder
+		daoStationBD.removeVelo(st, v, now);
+		// ajouter vélo table louer
+		daoAbonne.addVelo(ab, v, now);
+		
 		System.out.println("Vélo retiré");
 	}
 
@@ -132,8 +147,19 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * 
 	 * @throws RemoteException
 	 */
-	public void retour(String idVelo) throws RemoteException {
-		// change value in bd of the velo --> MAJ CACHE
+	public void retour(int idStation,int idVelo) throws RemoteException {
+		StationBD st = daoStationBD.find(idStation);
+		Velo v = daoVelo.find(idVelo);
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		
+		// ajouter vélo de table posseder
+		daoStationBD.addVelo(st, v, now);
+		
+		//trouver le client
+
+		// retirer vélo table louer
+		//daoAbonne.removeVelo(ab, v, now);
+		
 		System.out.println("Vélo rendu");
 	}
 
@@ -146,10 +172,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		// System.out.println("Vélo " + bikeList.get(idVelo).getEtat());
 	}
 
-	public HashMap<String, StationBD> getStations() {
-		return listeStation;
-	}
-
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 5
 	 * 
@@ -157,9 +179,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 */
 	public String[] demandeStationProche(int idStation, boolean demandeLocation)
 			throws RemoteException {
-		// récupération des lattitudes et longi de la station
-		StationBD station = new StationBD();
-		station = daoStationBD.find(idStation);
+		// récupération des lattitudes et longi de la station courante
+		StationBD station = daoStationBD.find(idStation);
+
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
 
 		// création variable résultat
@@ -170,7 +192,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		double longStation1 = station.getLon();
 
 		// récupération des stations et de la distance avec la station 1
-		Iterator<StationBD> it = listeStation.values().iterator();
+		Iterator<StationBD> it = daoStationBD.getInstances().iterator();
 		while (it.hasNext()) {
 			StationBD s = it.next();
 			double distStation = utils.Distance.distanceInKilometers(
@@ -183,13 +205,19 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		while (itDist.hasNext()) {
 			double dist = itDist.next();
 			StationBD sDist = listDistStation.get(dist);
-			/*
-			 * int placeDispo = sDist.getPlaceDispo(); if(placeDispo> 0 &&
-			 * !demandeLocation){ if(placeDispo != sDist.getPlaceMax()){ res[0]
-			 * = "" + sDist.getId(); res[1] = "" + sDist.getLat(); res[2] = "" +
-			 * sDist.getLon(); break; } }else if(placeDispo>0){ res[0] = "" +
-			 * sDist.getId(); res[1] = "" + sDist.getLat(); res[2] = "" +
-			 * sDist.getLon(); break; }
+			/*int placeDispo = sDist.getPlaceDispo(); 
+			if(placeDispo> 0 && demandeLocation){ 
+				if(placeDispo != sDist.getPlaceMax()){ 
+					res[0] = "" + sDist.getId();
+					res[1] = "" + sDist.getLat();
+					res[2] = "" + sDist.getLon();
+					break; 
+				}
+			}else if(placeDispo>0){
+					res[0] = "" + sDist.getId();
+					res[1] = "" + sDist.getLat();
+					res[2] = "" + sDist.getLon(); 
+			break; }
 			 */
 		}
 		return res;
