@@ -6,17 +6,12 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.TreeMap;
 
-import bdd.DAO;
 import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
 import bdd.objetsdao.AbonneDAO;
@@ -104,6 +99,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		System.out.println("Gestionnaire est enregistrée");
 	}
 
+	
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 2
 	 * 
