@@ -167,8 +167,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * 
 	 * @throws RemoteException
 	 */
-	public void getInfoEtatVelo(String idVelo) {
-		// System.out.println("Vélo " + bikeList.get(idVelo).getEtat());
+	public void getInfoEtatVelo(int idVelo) {
+		Velo v = daoVelo.find(idVelo);
+		System.out.println(v.toString());
 	}
 
 	/**
