@@ -8,10 +8,12 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
-
+import java.util.TreeMap;
 import bdd.DAO;
 import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
@@ -20,12 +22,12 @@ import bdd.objetsdao.StationDAO;
 	
 	
 	public class Gestionnaire extends UnicastRemoteObject implements GestionnaireProxy {
-	//HashMap<String, Station> listeStation;
+	HashMap<String, StationBD> listeStation;
 	HashMap<Integer, Abonne> listeAbonne;
 	HashMap<String, String> bikeList;
 	
 	/**
-	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1
+	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * @throws RemoteException
 	 */
 	public Gestionnaire() throws RemoteException {
@@ -33,11 +35,16 @@ import bdd.objetsdao.StationDAO;
 		//listeStation = new HashMap<String, Station>();
 		listeAbonne = new HashMap<Integer, Abonne>();
 		bikeList = new HashMap<String, String>();
+		// récupération de la liste de station
+		
 	}
 
 
 	/**
-	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1
+	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
+	 * @param isTech 
+	 * 			technicien ou non
+	 * @return abonne créé 
 	 * @throws RemoteException
 	 */
 	public synchronized int[] creerAbonnement(boolean isTech) throws RemoteException {
@@ -61,7 +68,7 @@ import bdd.objetsdao.StationDAO;
 		abonne.setTechnicien(isTech);		
 		abonne.setDateAboFin(sqlDateFin);
 		
-		abonne = daoAbonne.create(abonne);
+		abonne = daoAbonne.creation(abonne);
 
 		// ajout dans la liste
 		listeAbonne.put(abonne.getId(), abonne);
@@ -74,7 +81,7 @@ import bdd.objetsdao.StationDAO;
 	}
 	
 	/**
-	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1
+	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
@@ -85,7 +92,7 @@ import bdd.objetsdao.StationDAO;
 	
 	/**
 	 * WIP
-	 * <Stéfan> - 21/03/2015 - Step 2
+	 * <Stéfan> - 21/03/2015 - Etape 2
 	 * @throws RemoteException
 	 */
 	public boolean idValidation(int id) throws RemoteException {
@@ -93,7 +100,7 @@ import bdd.objetsdao.StationDAO;
 		boolean res = false;
 		DAO<Abonne> daoAbonne = new AbonneDAO();
 		Abonne abonne = new Abonne();
-		abonne = daoAbonne.find(id);
+		abonne = daoAbonne.trouver(id);
 
 		if(abonne.getId() == id){
 			// récupération date du jour
@@ -108,7 +115,7 @@ import bdd.objetsdao.StationDAO;
 
 	/**
 	 * WIP
-	 * <Stéfan> - 21/03/2015 - Step 2
+	 * <Stéfan> - 21/03/2015 - Etape 2
 	 * @throws RemoteException
 	 */
 	public void location(String idVelo) throws RemoteException {
@@ -117,14 +124,76 @@ import bdd.objetsdao.StationDAO;
 		System.out.println("Vélo retiré");
 	}
 
-
-	public void payBack(String idVelo) throws RemoteException {
+	/**
+	 * WIP
+	 * <Stéfan> - 21/03/2015 - Etape 2
+	 * @throws RemoteException
+	 */
+	public void retour(String idVelo) throws RemoteException {
 		// change value in bd of the velo --> MAJ CACHE
 		System.out.println("Vélo rendu");
 	}
 	
-	public void getBikeCondition(String idVelo){
-		
+	/**
+	 * WIP
+	 * <Stéfan> - 21/03/2015 - Etape 4
+	 * @throws RemoteException
+	 */
+	public void getInfoEtatVelo(String idVelo){
 		//System.out.println("Vélo " + bikeList.get(idVelo).getEtat());
+	}
+
+	public HashMap<String, StationBD> getStations(){
+		return listeStation;
+	}
+	
+	/**
+	 * WIP
+	 * <Stéfan> - 21/03/2015 - Etape 5
+	 * @throws RemoteException
+	 */
+	public String[] demandeStationProche(int idStation, boolean demandeLocation) throws RemoteException {
+		// récupération des lattitudes et longi de la station
+		DAO<StationBD> stationDAO = new StationDAO();
+		StationBD station = new StationBD();
+		station = stationDAO.trouver(idStation);
+		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
+		
+		// création variable résultat
+		String res[] = new String[3];
+		
+		// récupération de la longitude et latitude de la station 1
+		double latStation1 = station.getLat();
+		double longStation1 = station.getLon();
+		
+		// récupération des stations et de la distance avec la station 1
+		Iterator<StationBD> it = listeStation.values().iterator();
+		while(it.hasNext()){
+			StationBD s = it.next();
+			double distStation = utils.Distance.distanceInKilometers(latStation1, longStation1, s.getLat(), s.getLon());
+			listDistStation.put(distStation,s);		
+		}
+		
+		// choix de la station ayant des places
+		Iterator<Double> itDist = listDistStation.keySet().iterator();
+		while(itDist.hasNext()){
+			double dist = itDist.next();
+			StationBD sDist = listDistStation.get(dist);
+			/*int placeDispo = sDist.getPlaceDispo();
+			if(placeDispo> 0 && !demandeLocation){
+				if(placeDispo != sDist.getPlaceMax()){
+					res[0] = "" + sDist.getId();
+					res[1] = "" + sDist.getLat();
+					res[2] = "" + sDist.getLon();
+					break;
+				}
+			}else if(placeDispo>0){
+				res[0] = "" + sDist.getId();
+				res[1] = "" + sDist.getLat();
+				res[2] = "" + sDist.getLon();
+				break;
+			}*/
+		}
+		return res;
 	}
 }

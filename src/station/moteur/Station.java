@@ -10,25 +10,27 @@ import gestionnaire.GestionnaireProxy;
 public class Station {
 	
 	private GestionnaireProxy proxy;
-	private ArrayList<String> veloList;
-	private int size;
+	private ArrayList<String> listeVelos;
+	private int taille;
+	private int idStation;
 
 	/**
-	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1
+	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * 
 	 * @throws Exception
 	 */
 	public Station() throws Exception {
 		proxy = (GestionnaireProxy) Naming
 				.lookup("rmi://localhost:1099/GestionStat");
-		veloList = new ArrayList<String>();
-		veloList.add("test");
-		veloList.add("test2");
-		size = 15;
+		// on doit récupérer la liste via le gestionnaire
+		listeVelos = new ArrayList<String>();
+		listeVelos.add("test");
+		listeVelos.add("test2");
+		taille = 15;
 	}
 
 	/**
-	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1
+	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * @params bool technicien
 	 * @throws RemoteException
 	 */
@@ -38,20 +40,24 @@ public class Station {
 	}
 
 	/**
-	 * <Stéfan> - 21/03/2015 - Step 2 & 3 Arg String
-	 * 
+	 * <Stéfan> - 21/03/2015 - Etape 2 & 3
+	 * @param int idClient
 	 * @throws RemoteException
 	 */
-	public void bikeLocation(int idClient) throws RemoteException {
+	public void locationVelo(int idClient) throws RemoteException {
 		if (proxy.idValidation(idClient)) {
-			if (!veloList.isEmpty()) {
-				String idVelo = veloList.get(0);
-				veloList.remove(idVelo);
+			if (!listeVelos.isEmpty()) {
+				String idVelo = listeVelos.get(0);
+				listeVelos.remove(idVelo);
 				proxy.location(idVelo);
-				DisplayLocationinformation(idVelo);
+				afficherInformationsDeLocation(idVelo);
 				System.out.println("vélo retiré");
 			} else {
-				System.out.println("Il n'y a pas de vélo de disponible");
+				// etape 4: indication de la station la plus proche
+				String reponse[] = proxy.demandeStationProche(idStation,true);
+				System.out.println("Il n'y a pas de vélo de disponible dans cette station");
+				System.out.println("Veuillez-vous diriger dans la station: ");
+				System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
 			}
 
 		} else {
@@ -60,45 +66,47 @@ public class Station {
 	}
 
 	/**
-	 * <Stéfan> - 21/03/2015 - Step 2 & 3 Arg String
-	 * 
+	 * <Stéfan> - 21/03/2015 - Etape 2 & 3 
+	 * @param string idVelo
 	 * @throws RemoteException
 	 */
-	public void bikePayBack(String idVelo) throws RemoteException {
-		if (veloList.size() != this.size) {
-			veloList.add(idVelo);
-			proxy.payBack(idVelo);
+	public void retourVelo(String idVelo) throws RemoteException {
+		if (listeVelos.size() != this.taille) {
+			listeVelos.add(idVelo);
+			proxy.retour(idVelo);
 
-			DisplayPayBackinformation(idVelo);
+			afficherInformationsDeRetour(idVelo);
 			System.out.println("Retour vélo accepté");
 		} else {
-			System.out
-					.println("Il n'y a pas de place pour votre vélo de disponible -- Station saturée");
+			String reponse[] = proxy.demandeStationProche(idStation,false);
+			System.out.println("Il n'y a pas de place pour votre vélo de disponible -- Station saturée");
+			System.out.println("Veuillez-vous diriger dans la station: ");
+			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
 		}
 	}
 
 	/* Display Management */
 	/**
-	 * <Stéfan> - 21/03/2015 - Step 2 Arg String
-	 * 
+	 * <Stéfan> - 21/03/2015 - Etape 2 
+	 * @param string idVelo
 	 * @throws RemoteException
 	 */
-	public void DisplayLocationinformation(String idVelo) {
+	public void afficherInformationsDeLocation(String idVelo) {
 		System.out.println("Vous pouvez retirer le vélo " + idVelo);
 	}
 
 	/**
-	 * <Stéfan> - 21/03/2015 - Step 2 Arg String
+	 * <Stéfan> - 21/03/2015 - Etape 2 Arg String
 	 * 
 	 * @throws RemoteException
 	 */
-	public void DisplayPayBackinformation(String idVelo) {
+	public void afficherInformationsDeRetour(String idVelo) {
 		System.out.println("Vélo " + idVelo);
 	}
 
 	/**
-	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1 Arg String
-	 * 
+	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1 
+	 * @param int reponse[]
 	 * @throws RemoteException
 	 */
 	public void afficherInformationCreationAbonnement(int reponse[]) {
