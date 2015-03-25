@@ -20,9 +20,6 @@ import bdd.objetsdao.VeloDAO;
 
 public class Gestionnaire extends UnicastRemoteObject implements GestionnaireProxy {
 	
-	private HashMap<String, StationBD> listeStation;
-	private HashMap<Integer, Abonne> listeAbonne;
-	private HashMap<String, String> listeVelos;
 	private StationDAO daoStationBD;
 	private AbonneDAO daoAbonne;
 	private VeloDAO daoVelo;
@@ -34,9 +31,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 */
 	public Gestionnaire() throws RemoteException {
 		super();
-		// listeStation = new HashMap<String, Station>();
-		listeAbonne = new HashMap<Integer, Abonne>();
-		listeVelos = new HashMap<String, String>();
 		// récupération de la liste de station
 		daoAbonne = new AbonneDAO();
 		daoStationBD = new StationDAO();
@@ -76,9 +70,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		abonne.setDateAboFin(sqlDateFin);
 
 		abonne = daoAbonne.create(abonne);
-
-		// ajout dans la liste
-		listeAbonne.put(abonne.getId(), abonne);
 
 		System.out.println("info abonné créé : id = " + abonne.toString());
 		abo[0] = abonne.getId();
@@ -146,10 +137,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		// System.out.println("Vélo " + bikeList.get(idVelo).getEtat());
 	}
 
-	public HashMap<String, StationBD> getStations() {
-		return listeStation;
-	}
-
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 5
 	 * 
@@ -158,8 +145,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	public String[] demandeStationProche(int idStation, boolean demandeLocation)
 			throws RemoteException {
 		// récupération des lattitudes et longi de la station
-		StationBD station = new StationBD();
-		station = daoStationBD.find(idStation);
+		StationBD station = daoStationBD.find(idStation);
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
 
 		// création variable résultat
@@ -170,7 +156,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		double longStation1 = station.getLon();
 
 		// récupération des stations et de la distance avec la station 1
-		Iterator<StationBD> it = listeStation.values().iterator();
+		Iterator<StationBD> it = daoStationBD.getInstances().iterator();
 		while (it.hasNext()) {
 			StationBD s = it.next();
 			double distStation = utils.Distance.distanceInKilometers(
