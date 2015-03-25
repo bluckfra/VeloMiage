@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import javax.security.sasl.SaslException;
 
@@ -30,7 +32,23 @@ public class StationDAO extends DAO<StationBD> {
 				station = new StationBD(
 						id, 
 						result.getDouble(2),
-						result.getDouble(3));		
+						result.getDouble(3));	
+				
+				// récupération des vélos liés à la station
+				ResultSet resultVelo = this.connect.createStatement(
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE).executeQuery(
+						"SELECT * FROM posseder WHERE idstation = " + id + "AND dateRetrait is null");
+
+				if (resultVelo.first()) {
+					// ajout de chaque vélo dans la station
+					DAO<Velo> daoVelo = new VeloDAO();
+					station.putVelo(daoVelo.find(resultVelo.getInt(3)));
+					while (resultVelo.next()) {
+						station.putVelo(daoVelo.find(resultVelo.getInt(3)));						
+					}
+				}
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -40,6 +58,10 @@ public class StationDAO extends DAO<StationBD> {
 	}
 
 	@Override
+	/**
+	 * Crée une station 
+	 * Attention : aucun vélo dans la station au départ, il faut les rajouter
+	 */
 	public StationBD create(StationBD obj) {
 		try {
 			// insertion de l'objet
@@ -55,29 +77,6 @@ public class StationDAO extends DAO<StationBD> {
 			ResultSet rs = prepare.getGeneratedKeys();
 			rs.next();
 			return find(rs.getInt(1));
-			
-			/*//Maintenant, nous devons créer les liens vers les vélos
-			//Si le vélo n'existe pas en base, on le créé
-			for (Velo v : obj.getVelosStation()) {
-				if (v.getId() == 0) {
-					DAO<Velo> veloDAO = new VeloDAO();
-					v = veloDAO.create(v);
-				}
-				
-					
-					long id2 = result2.getLong("id");
-					PreparedStatement prepare2 = this .connect
-                                                        .prepareStatement(
-                                                			"INSERT INTO j_soc_dev (jsd_id, jsd_soc_k, jsd_dev_k)"+
-                                                			" VALUES(?, ?, ?)"
-                                                		);
-					prepare2.setLong(1, id2);
-					prepare2.setLong(2, id);
-					prepare2.setLong(3, dev.getId());
-					prepare2.executeUpdate();
-			
-
-			}*/
 
 		}
 		catch (SQLException e) {
@@ -88,14 +87,89 @@ public class StationDAO extends DAO<StationBD> {
 
 	@Override
 	public StationBD update(StationBD obj) {
-		// TODO Auto-generated method stub
+		try {
+			this.connect	
+			.createStatement(
+				ResultSet.TYPE_SCROLL_INSENSITIVE, 
+			    ResultSet.CONCUR_UPDATABLE
+			 ).executeUpdate(
+				"UPDATE Station SET lat = '" + obj.getLat() + "',"+
+				" lon = '" + obj.getLon() + "'" +
+				" WHERE idStation = " + obj.getId()
+			 );
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
+	public StationBD removeVelo(StationBD obj, Velo v, Timestamp dateRetraitVelo) {
+		try {
+			this.connect	
+			.createStatement(
+				ResultSet.TYPE_SCROLL_INSENSITIVE, 
+			    ResultSet.CONCUR_UPDATABLE
+			 ).executeUpdate(
+				"UPDATE posseder SET idStation = '" + obj.getId() + "',"+
+				" idVelo = '" + v.getId() +  "',"+
+				" dateRetrait = '" + dateRetraitVelo +"'" +
+				" WHERE idStation = " + obj.getId()
+			 );
+			
+			obj = this.find(obj.getId());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	
+	public StationBD addVelo(StationBD obj, Velo v, Timestamp dateDepotVelo) {
+		try {				
+			// insertion de l'objet
+			PreparedStatement prepare = 
+				this.connect.prepareStatement(
+						"INSERT INTO posseder (idStation, idVelo, dateDepot) VALUES(?, ?, ?)",
+						Statement.RETURN_GENERATED_KEYS
+						);
+			System.out.println("id :" + obj.getId());
+			prepare.setInt(1, obj.getId());
+			prepare.setInt(2, v.getId());
+			prepare.setTimestamp(3, dateDepotVelo);
+			prepare.executeUpdate();
+
+			obj = this.find(obj.getId());
+	    } catch (SQLException e) {
+	            e.printStackTrace();
+	    }
+	    
+		return obj;
+	}
+	
 	@Override
 	public void delete(StationBD obj) {
-		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ArrayList<StationBD> getInstances() {
+		ArrayList<StationBD> stations = new ArrayList<StationBD>();
+		try {
+	
+			// récupération de la station
+			ResultSet result = this.connect.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_UPDATABLE).executeQuery(
+					"SELECT * FROM station");
+			while (result.next()) {
+				StationBD s = this.find(result.getInt(1));
+				stations.add(s);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return stations;
 	}
 
 }

@@ -7,6 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.TreeMap;
+
 import bdd.DAO;
 import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
@@ -54,10 +56,9 @@ import bdd.objetsdao.StationDAO;
 		int codeConf = rand.nextInt(9999) + 1000;
 		
 		// récupération date du jour
-		Calendar cal = Calendar.getInstance();
-		Date sqlDate = new Date(cal.getTimeInMillis());
+		Timestamp sqlDate = new Timestamp(System.currentTimeMillis());
 		// +1 jour
-		Date sqlDateFin = new Date(cal.getTimeInMillis() + 86400000);
+		Timestamp sqlDateFin = new Timestamp(System.currentTimeMillis() + 86400000);
 		
 		System.out.println("test de la date: " + sqlDate.toString() + "date fin = " + sqlDateFin.toString());
 		// creation de l'abonne
@@ -68,7 +69,7 @@ import bdd.objetsdao.StationDAO;
 		abonne.setTechnicien(isTech);		
 		abonne.setDateAboFin(sqlDateFin);
 		
-		abonne = daoAbonne.creation(abonne);
+		abonne = daoAbonne.create(abonne);
 
 		// ajout dans la liste
 		listeAbonne.put(abonne.getId(), abonne);
@@ -100,7 +101,7 @@ import bdd.objetsdao.StationDAO;
 		boolean res = false;
 		DAO<Abonne> daoAbonne = new AbonneDAO();
 		Abonne abonne = new Abonne();
-		abonne = daoAbonne.trouver(id);
+		abonne = daoAbonne.find(id);
 
 		if(abonne.getId() == id){
 			// récupération date du jour
@@ -156,7 +157,7 @@ import bdd.objetsdao.StationDAO;
 		// récupération des lattitudes et longi de la station
 		DAO<StationBD> stationDAO = new StationDAO();
 		StationBD station = new StationBD();
-		station = stationDAO.trouver(idStation);
+		station = stationDAO.find(idStation);
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
 		
 		// création variable résultat

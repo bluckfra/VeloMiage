@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import bdd.DAO;
 import bdd.objetsbdd.StationBD;
@@ -66,6 +67,26 @@ public class VeloDAO extends DAO<Velo> {
 	public void delete(Velo obj) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public ArrayList<Velo> getInstances() {
+		ArrayList<Velo> velos = new ArrayList<Velo>();
+		try {
+	
+			// récupération de la station
+			ResultSet result = this.connect.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_UPDATABLE).executeQuery(
+					"SELECT * FROM velo");
+			while (result.next()) {
+				Velo v = this.find(result.getInt(1));
+				velos.add(v);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return velos;
 	}
 
 }

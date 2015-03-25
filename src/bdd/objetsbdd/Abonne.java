@@ -1,18 +1,20 @@
 package bdd.objetsbdd;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class Abonne {
 
 	private int id,code;
-	private Date dateAboDebut,dateAboFin;
+	private Timestamp dateAboDebut,dateAboFin;
 	private boolean isTechnicien;
+	private Velo veloCourant;
 	
 	public Abonne() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Abonne(int id, int code, Date dateAboDebut, Date dateAboFin,
+	public Abonne(int id, int code, Timestamp dateAboDebut, Timestamp dateAboFin,
 			boolean isTechnicien) {
 		this.id = id;
 		this.code = code;
@@ -23,6 +25,14 @@ public class Abonne {
 	
 	public int getId() {
 		return id;
+	}
+	
+	public Velo getVeloCourant() {
+		return veloCourant;
+	}
+
+	public void setVeloCourant(Velo veloCourant) {
+		this.veloCourant = veloCourant;
 	}
 
 
@@ -41,26 +51,6 @@ public class Abonne {
 	}
 
 
-	public Date getDateAboDebut() {
-		return dateAboDebut;
-	}
-
-
-	public void setDateAboDebut(Date dateAboDebut) {
-		this.dateAboDebut = dateAboDebut;
-	}
-
-
-	public Date getDateAboFin() {
-		return dateAboFin;
-	}
-
-
-	public void setDateAboFin(Date dateAboFin) {
-		this.dateAboFin = dateAboFin;
-	}
-
-
 	public boolean isTechnicien() {
 		return isTechnicien;
 	}
@@ -70,5 +60,29 @@ public class Abonne {
 		this.isTechnicien = isTechnicien;
 	}
 	
+	public Timestamp getDateAboDebut() {
+		return dateAboDebut;
+	}
 
+	public void setDateAboDebut(Timestamp dateAboDebut) {
+		this.dateAboDebut = dateAboDebut;
+	}
+
+	public Timestamp getDateAboFin() {
+		return dateAboFin;
+	}
+
+	public void setDateAboFin(Timestamp dateAboFin) {
+		this.dateAboFin = dateAboFin;
+	}
+
+	@Override
+	public String toString() {
+		String s = "Abonne n°" + id + " , code : " + code;
+		if (veloCourant != null) {
+			s+= "\n - vélo : " + veloCourant.toString();
+		}
+		return s;
+	}
+	
 }

@@ -3,6 +3,8 @@ package bdd.objetsbdd;
 public class Velo {
 
 	private int id,etat;
+	private Abonne abonneCourant;
+	private StationBD stationCourante;
 	
 	public Velo() {
 		// TODO Auto-generated constructor stub
@@ -29,5 +31,8 @@ public class Velo {
 		this.etat = etat;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "Vélo n°" + id + ", état : " + etat;
+	}
 }

@@ -6,25 +6,31 @@ public class StationBD {
 	
 	private int id;
 	private double lat,lon;
-	//private ArrayList<Velo> velosStation;
+	private ArrayList<Velo> velosStation;
+	//  
 	
 	public StationBD() {
+		velosStation = new ArrayList<Velo>();
 	}
 	
 	public StationBD(int id, double lat, double lon) {
 		this.id = id;
 		this.lat = lat;
 		this.lon = lon;
-		//this.velosStation = velos;
+		this.velosStation = new ArrayList<Velo>();
 	}
 	
-	/*public ArrayList<Velo> getVelosStation() {
+	public ArrayList<Velo> getVelosStation() {
 		return velosStation;
 	}
 	
 	public void setVelosStation(ArrayList<Velo> velosStation) {
 		this.velosStation = velosStation;
-	}*/
+	}
+	
+	public boolean putVelo(Velo v) {
+		return velosStation.add(v);
+	}
 		
 	public int getId() {
 		return id;
@@ -50,5 +56,15 @@ public class StationBD {
 		this.lon = lon;
 	}
 	
+	@Override
+	public String toString() {
+		String s = "Station n°" + id + " , latitude : " + lat + ", longitude : " + lon;
+		
+		for (Velo velo : velosStation) {
+			s+="\n - " + velo.toString();
+		}
+		
+		return s;
+	}
 	
 }

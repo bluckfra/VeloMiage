@@ -1,8 +1,12 @@
 package bdd;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import bdd.connexionJDBC.ConnectionBDD;
+import bdd.objetsbdd.StationBD;
+import bdd.objetsbdd.Velo;
 
 public abstract class DAO<T> {
 
@@ -10,6 +14,8 @@ public abstract class DAO<T> {
 	 * Link to the database connection
 	 */
 	public Connection connect = ConnectionBDD.getInstance();
+	
+	public abstract ArrayList<T> getInstances();
 	
 	/**
 	 * gets object via ID
@@ -35,5 +41,4 @@ public abstract class DAO<T> {
 	 * @param obj
 	 */
 	public abstract void delete(T obj);
-
 }
