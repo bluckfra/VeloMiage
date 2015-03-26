@@ -13,10 +13,11 @@ public class StationBD {
 		velosStation = new ArrayList<Velo>();
 	}
 	
-	public StationBD(int id, double lat, double lon) {
+	public StationBD(int id, double lat, double lon, int nbplaces) {
 		this.id = id;
 		this.lat = lat;
 		this.lon = lon;
+		this.nbPlaceMax = nbplaces;
 		this.velosStation = new ArrayList<Velo>();
 	}
 	

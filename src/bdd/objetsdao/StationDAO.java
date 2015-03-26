@@ -32,7 +32,8 @@ public class StationDAO extends DAO<StationBD> {
 				station = new StationBD(
 						id, 
 						result.getDouble(2),
-						result.getDouble(3));	
+						result.getDouble(3),
+						result.getInt(4));	
 				
 				// récupération des vélos liés à la station
 				ResultSet resultVelo = this.connect.createStatement(

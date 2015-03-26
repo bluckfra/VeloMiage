@@ -15,7 +15,7 @@ import java.awt.event.ActionEvent;
 
 public class StationJFrame extends JFrame {
 
-	private JPanel contentPane;
+	private JPanel panelAccueil;
 	private JFrame frameCourante = this;
 
 	/**
@@ -40,33 +40,34 @@ public class StationJFrame extends JFrame {
 	public StationJFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 379, 304);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		panelAccueil = new JPanel();
+		panelAccueil.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(panelAccueil);
+		panelAccueil.setLayout(null);
 		
 		JLabel lblBienvenue = new JLabel("Bienvenue ! Choisissez une action :");
 		lblBienvenue.setBounds(10, 11, 343, 14);
-		contentPane.add(lblBienvenue);
+		panelAccueil.add(lblBienvenue);
 		
 		JButton btnRendreVelo = new JButton("Rendre un v\u00E9lo");
 		btnRendreVelo.setBounds(10, 36, 343, 23);
-		contentPane.add(btnRendreVelo);
+		panelAccueil.add(btnRendreVelo);
 		
 		JButton btnQuitter = new JButton("Quitter");
 		btnQuitter.setBounds(10, 231, 89, 23);
-		contentPane.add(btnQuitter);
+		panelAccueil.add(btnQuitter);
 		
 		JButton btnDemanderUnAbonnement = new JButton("Demander un abonnement");
 		btnDemanderUnAbonnement.setBounds(10, 70, 343, 23);
-		contentPane.add(btnDemanderUnAbonnement);
+		panelAccueil.add(btnDemanderUnAbonnement);
 		
 		JButton btnLouerVelo = new JButton("Louer un v\u00E9lo");
 		btnLouerVelo.setBounds(10, 104, 343, 23);
-		contentPane.add(btnLouerVelo);
+		panelAccueil.add(btnLouerVelo);
 		
 		btnDemanderUnAbonnement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frameCourante.setVisible(false);
 			}
 		});
 		
