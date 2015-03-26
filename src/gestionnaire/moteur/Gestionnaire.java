@@ -115,9 +115,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 */
 	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException {
-		// add location
-		// change value in bd --> MAJ CACHE
-		System.out.println("Vélo retiré");
 		StationBD st = daoStationBD.find(idStation);
 		return st.getVelosStation();
 	}
@@ -127,16 +124,15 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * 
 	 * @throws RemoteException
 	 */
-	public void location(int idStation,int idClient, int idVelo) throws RemoteException {
+	public void location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException {
 		StationBD st = daoStationBD.find(idStation);
 		Abonne ab = daoAbonne.find(idClient);
 		Velo v = daoVelo.find(idVelo);
-		Timestamp now = new Timestamp(System.currentTimeMillis());
 		
 		// enlever vélo de table posseder
-		daoStationBD.removeVelo(st, v, now);
+		daoStationBD.removeVelo(st, v, dateLoc);
 		// ajouter vélo table louer
-		daoAbonne.addVelo(ab, v, now);
+		daoAbonne.addVelo(ab, v, dateLoc);
 		
 		System.out.println("Vélo retiré");
 	}
@@ -146,18 +142,15 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * 
 	 * @throws RemoteException
 	 */
-	public void retour(int idStation,int idVelo) throws RemoteException {
+	public void retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException {
 		StationBD st = daoStationBD.find(idStation);
 		Velo v = daoVelo.find(idVelo);
-		Timestamp now = new Timestamp(System.currentTimeMillis());
 		
 		// ajouter vélo de table posseder
-		daoStationBD.addVelo(st, v, now);
+		daoStationBD.addVelo(st, v, dateRetour);
 		
-		//trouver le client
-
 		// retirer vélo table louer
-		//daoAbonne.removeVelo(ab, v, now);
+		v = daoVelo.depositVelo(v, dateRetour);
 		
 		System.out.println("Vélo rendu");
 	}

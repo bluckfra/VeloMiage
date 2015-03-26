@@ -37,8 +37,17 @@ public class VeloDAO extends DAO<Velo> {
 		return velo;
 	}
 	
-	public Velo removeVelo(Velo obj, Timestamp dateFinLocation) {
-		try {				
+	public Velo depositVelo(Velo obj, Timestamp dateFinLocation) {
+		try {	
+			/*ResultSet result = this.connect.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_UPDATABLE).executeQuery(
+					"SELECT idAbonne FROM louer WHERE idvelo = " + obj.getId());
+			if (result.first()) {
+				Abonne a = new AbonneDAO().find(result.getInt(1));
+				//a.setVe
+			}*/
+
 			this.connect	
             .createStatement(
             	ResultSet.TYPE_SCROLL_INSENSITIVE, 

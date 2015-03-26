@@ -14,14 +14,24 @@ import bdd.objetsdao.VeloDAO;
 public class testBDD {
 	
 	public static void main(String[] args) {
-		VeloDAO daoVelos = new VeloDAO();
-		StationDAO daoStation = new StationDAO();
+		StationDAO daoS = new StationDAO();
+		VeloDAO daoV = new VeloDAO();
 		
-		Velo v = daoVelos.find(1);
-		StationBD s = daoStation.find(1);
-		s = daoStation.addVelo(s, v, new Timestamp(System.currentTimeMillis()));
-		System.out.println(s.toString());
-		s = daoStation.removeVelo(s, v, new Timestamp(System.currentTimeMillis()));
-		System.out.println(s.toString());		
+		StationBD s = daoS.find(1);
+		s = daoS.addVelo(s,daoV.find(1) , new Timestamp(System.currentTimeMillis()));
+		s = daoS.addVelo(s,daoV.find(2) , new Timestamp(System.currentTimeMillis()));
+		s = daoS.addVelo(s,daoV.find(3) , new Timestamp(System.currentTimeMillis()));
+		s = daoS.addVelo(s,daoV.find(4) , new Timestamp(System.currentTimeMillis()));
+		s = daoS.addVelo(s,daoV.find(5) , new Timestamp(System.currentTimeMillis()));
+		
+		s = daoS.find(2);
+		s = daoS.addVelo(s,daoV.find(6) , new Timestamp(System.currentTimeMillis()));
+		s = daoS.addVelo(s,daoV.find(7) , new Timestamp(System.currentTimeMillis()));
+		s = daoS.addVelo(s,daoV.find(8) , new Timestamp(System.currentTimeMillis()));
+
+		s = daoS.find(3);
+		s = daoS.addVelo(s,daoV.find(9) , new Timestamp(System.currentTimeMillis()));
+		s = daoS.addVelo(s,daoV.find(10) , new Timestamp(System.currentTimeMillis()));
+
 	}
 }

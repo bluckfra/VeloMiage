@@ -2,6 +2,8 @@ package station.moteur;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -45,14 +47,21 @@ public class Station {
 	 * @throws RemoteException
 	 */
 	public void locationVelo(int idClient) throws RemoteException {
+		// vérification ID client
 		if (proxy.idValidation(idClient)) {
+			// vérification qu'il y a au moins un vélo de dispo
 			if (!listeVelos.isEmpty()) {
+				// récupération d'un vélo
 				int idVelo = listeVelos.get(0).getId();
+				
+				Timestamp now = new Timestamp(System.currentTimeMillis());
+				// retrait du vélo, et mise à jour du cache
+				proxy.location(idStation,idClient, idVelo,now);
 				listeVelos.remove(idVelo);
-				proxy.location(idStation,idClient, idVelo);
 				afficherInformationsDeLocation(idVelo);
 				System.out.println("Vous pouvez retirer le vélo : " + idVelo);
 			} else {
+				// pas de vélo disponible
 				// etape 4: indication de la station la plus proche
 				String reponse[] = proxy.demandeStationProche(idStation,true);
 				System.out.println("Il n'y a pas de vélo de disponible dans cette station");
@@ -72,9 +81,12 @@ public class Station {
 	 */
 	public void retourVelo(int idV) throws RemoteException {
 		if (listeVelos.size() != this.taille) {
+			// mise à jour du cache
 			Velo v = new Velo(idV);
 			listeVelos.add(v);
-			proxy.retour(idStation,idV);
+			Timestamp now = new Timestamp(System.currentTimeMillis());
+			// retour du vélo
+			proxy.retour(idStation,idV,now);
 
 			afficherInformationsDeRetour(v);
 			System.out.println("Retour vélo accepté");
