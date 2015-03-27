@@ -116,7 +116,7 @@ public class AbonneDAO extends DAO<Abonne>{
 			prepare.setInt(2, v.getId());
 			prepare.setTimestamp(3, dateDebutLocation);
 			prepare.executeUpdate();
-
+			
 			obj = this.find(obj.getId());
 	    } catch (SQLException e) {
 	            e.printStackTrace();

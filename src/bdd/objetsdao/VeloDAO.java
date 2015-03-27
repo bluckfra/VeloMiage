@@ -30,6 +30,18 @@ public class VeloDAO extends DAO<Velo> {
 						id, 
 						result.getInt(1));		
 			}
+			
+			// recherche de locations précédentes
+			result = this.connect.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_UPDATABLE).executeQuery(
+					"SELECT * FROM louer WHERE idvelo = " + id);
+			if (result.first()) {
+				// création de la station avec les données de la base
+				velo = new Velo(
+						id, 
+						result.getInt(1));		
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -56,6 +68,8 @@ public class VeloDAO extends DAO<Velo> {
             	"UPDATE louer SET dateFin = '" + dateFinLocation + "'"+
             	" WHERE idVelo = " + obj.getId() + " AND dateFin is null "
              );
+			
+			obj.setDateDerniereLocation(dateFinLocation);
 
 			obj = this.find(obj.getId());
 	    } catch (SQLException e) {

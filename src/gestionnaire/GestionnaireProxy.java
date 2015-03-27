@@ -21,7 +21,7 @@ public interface GestionnaireProxy extends java.rmi.Remote{
 	public boolean idValidation(int id)throws java.rmi.RemoteException;
 	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException;
 	public void location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws java.rmi.RemoteException;
-	public void retour(int idStation,int idVelo, Timestamp dateRetour) throws java.rmi.RemoteException;
+	public double[] retour(int idStation,int idVelo, Timestamp dateRetour) throws java.rmi.RemoteException;
 	
 	public String[] demandeStationProche(int idStation, boolean demandeLocation) throws java.rmi.RemoteException;
 }
