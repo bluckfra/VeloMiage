@@ -13,6 +13,12 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import utils.*;
+import utils.exceptions.IdVeloException;
+import utils.exceptions.demandeAboException;
+import utils.exceptions.demandeStationException;
+import utils.exceptions.listeVeloException;
+import utils.exceptions.locationException;
+import utils.exceptions.retourVeloException;
 import bdd.objetsbdd.*;
 import bdd.objetsdao.*;
 
@@ -100,7 +106,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * 
 	 * @throws RemoteException
 	 */
-	public int idValidation(int id) throws RemoteException {
+	public int validationIdClient(int id) throws RemoteException {
 
 		Abonne abonne = daoAbonne.find(id);
 
@@ -119,8 +125,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 */
 	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException, listeVeloException {
 		try{
-		StationBD st = daoStationBD.find(idStation);
-		return st.getVelosStation();
+			StationBD st = daoStationBD.find(idStation);
+			ArrayList<Velo> velos = st.getVelosStation();
+			return velos;
 		}catch (Exception e){
 			throw new listeVeloException();
 		}

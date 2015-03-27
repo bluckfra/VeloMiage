@@ -1,8 +1,9 @@
 package bdd.objetsbdd;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Velo {
+public class Velo implements Serializable {
 
 	private int id,etat;
 	private Abonne abonneCourant;

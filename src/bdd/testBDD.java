@@ -18,20 +18,8 @@ public class testBDD {
 		VeloDAO daoV = new VeloDAO();
 		
 		StationBD s = daoS.find(1);
-		s = daoS.addVelo(s,daoV.find(1) , new Timestamp(System.currentTimeMillis()));
-		s = daoS.addVelo(s,daoV.find(2) , new Timestamp(System.currentTimeMillis()));
-		s = daoS.addVelo(s,daoV.find(3) , new Timestamp(System.currentTimeMillis()));
-		s = daoS.addVelo(s,daoV.find(4) , new Timestamp(System.currentTimeMillis()));
-		s = daoS.addVelo(s,daoV.find(5) , new Timestamp(System.currentTimeMillis()));
-		
-		s = daoS.find(2);
-		s = daoS.addVelo(s,daoV.find(6) , new Timestamp(System.currentTimeMillis()));
-		s = daoS.addVelo(s,daoV.find(7) , new Timestamp(System.currentTimeMillis()));
-		s = daoS.addVelo(s,daoV.find(8) , new Timestamp(System.currentTimeMillis()));
-
-		s = daoS.find(3);
-		s = daoS.addVelo(s,daoV.find(9) , new Timestamp(System.currentTimeMillis()));
-		s = daoS.addVelo(s,daoV.find(10) , new Timestamp(System.currentTimeMillis()));
-
+		for (Velo v : s.getVelosStation()) {
+			System.out.println(v.toString());
+		}
 	}
 }

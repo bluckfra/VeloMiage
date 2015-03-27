@@ -1,9 +1,10 @@
 package bdd.objetsbdd;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-public class Abonne {
+public class Abonne implements Serializable{
 
 	private int id,code;
 	private Timestamp dateAboDebut,dateAboFin;

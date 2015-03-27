@@ -1,8 +1,9 @@
 package bdd.objetsbdd;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class StationBD {
+public class StationBD implements Serializable {
 	
 	private int id;
 	private double lat,lon;

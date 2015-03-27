@@ -5,23 +5,29 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.jar.JarException;
 
+import utils.exceptions.demandeAboException;
+import utils.exceptions.demandeStationException;
+import utils.exceptions.listeVeloException;
+import utils.exceptions.locationException;
+import utils.exceptions.retourVeloException;
 import bdd.objetsbdd.Velo;
 
 public interface GestionnaireProxy extends java.rmi.Remote{
-	/**
-	 * <Mélanie&Stéfan> - 19/03/2015 - Step 1
-	 * @throws RemoteException
-	 */
-	public int[] creerAbonnement(boolean isTech)throws java.rmi.RemoteException;
+
+	public int[] creerAbonnement(boolean isTech)throws java.rmi.RemoteException, demandeAboException;
 	
 	/**
-	 * <Stéfan> - 21/03/2015 - Step 2
+	 * <Stéfan> - 21/03/2015 - Step 2 - 3 
 	 * @throws RemoteException
 	 */
-	public boolean idValidation(int id)throws java.rmi.RemoteException;
-	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException;
-	public void location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws java.rmi.RemoteException;
-	public double[] retour(int idStation,int idVelo, Timestamp dateRetour) throws java.rmi.RemoteException;
+	public int validationIdClient(int id)throws java.rmi.RemoteException;
+	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException, listeVeloException;
+	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws java.rmi.RemoteException , locationException;
+	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws java.rmi.RemoteException , retourVeloException;
 	
-	public String[] demandeStationProche(int idStation, boolean demandeLocation) throws java.rmi.RemoteException;
+	/**
+	 * <Stéfan> - 21/03/2015 - Step 5
+	 * @throws RemoteException
+	 */
+	public String[] demandeStationProche(int idStation, boolean demandeLocation) throws java.rmi.RemoteException, demandeStationException;
 }
