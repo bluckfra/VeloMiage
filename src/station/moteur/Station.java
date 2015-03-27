@@ -7,6 +7,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import utils.IdClientException;
+import utils.demandeAboException;
+import utils.demandeStationException;
+import utils.locationException;
+import utils.retourVeloException;
 import bdd.objetsbdd.Velo;
 import gestionnaire.GestionnaireProxy;
 
@@ -16,6 +21,7 @@ public class Station {
 	private ArrayList<Velo> listeVelos;
 	private int taille;
 	private int idStation;
+	private int codeClient=0;
 
 	/**
 	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
@@ -35,20 +41,55 @@ public class Station {
 	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * @params bool technicien
 	 * @throws RemoteException
+	 * @throws demandeAboException 
+	 * @throws abonnementException 
 	 */
-	public void demanderAbo(boolean isTech) throws RemoteException {
+	public void demanderAbo(boolean isTech) throws RemoteException, demandeAboException{
 		int reponse[] = proxy.creerAbonnement(isTech);
-		afficherInformationCreationAbonnement(reponse);
+		if(reponse.length == 2){
+			afficherInformationCreationAbonnement(reponse);
+		}else{
+			throw new demandeAboException();
+		}
+		
 	}
 
+	/**
+	 * <Stéfan> - 27/03/2015 - Etape 2 & 3
+	 * @param int idClient
+	 * @throws RemoteException
+	 * @throws IdClientException 
+	 */
+	public void identification(int idClient, int codeCli) throws RemoteException, IdClientException{
+		int i = 0;
+		boolean valid = false;
+		codeClient = proxy.idValidation(idClient);
+		if( codeClient != 0){
+			if(codeClient == codeCli){
+				
+			}else{
+				while(i < 3 || !valid ){
+					validationCodeClient(codeCli);
+				}
+			}
+		}else{
+			throw new IdClientException(idClient);
+		}
+	}
+	
+	public boolean validationCodeClient (int code){
+		return (codeClient == code) ? true : false;
+	}
+	
 	/**
 	 * <Stéfan> - 21/03/2015 - Etape 2 & 3
 	 * @param int idClient
 	 * @throws RemoteException
+	 * @throws locationException 
+	 * @throws demandeStationException 
 	 */
-	public void locationVelo(int idClient) throws RemoteException {
+	public void locationVelo(int idClient) throws RemoteException, locationException, demandeStationException {
 		// vérification ID client
-		if (proxy.idValidation(idClient)) {
 			// vérification qu'il y a au moins un vélo de dispo
 			if (!listeVelos.isEmpty()) {
 				// récupération d'un vélo
@@ -56,45 +97,60 @@ public class Station {
 				
 				Timestamp now = new Timestamp(System.currentTimeMillis());
 				// retrait du vélo, et mise à jour du cache
-				proxy.location(idStation,idClient, idVelo,now);
-				listeVelos.remove(idVelo);
-				afficherInformationsDeLocation(idVelo);
-				System.out.println("Vous pouvez retirer le vélo : " + idVelo);
+				if(proxy.location(idStation,idClient, idVelo,now)){
+					listeVelos.remove(idVelo);
+					afficherInformationsDeLocation(idVelo);
+					System.out.println("Vous pouvez retirer le vélo : " + idVelo);
+				}
+				else{
+					throw new locationException();
+				}
 			} else {
 				// pas de vélo disponible
 				// etape 4: indication de la station la plus proche
 				String reponse[] = proxy.demandeStationProche(idStation,true);
-				System.out.println("Il n'y a pas de vélo de disponible dans cette station");
-				System.out.println("Veuillez-vous diriger dans la station: ");
-				System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
+				if(reponse.length == 3){
+					System.out.println("Il n'y a pas de vélo de disponible dans cette station");
+					System.out.println("Veuillez-vous diriger dans la station: ");
+					System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
+				}else{
+					throw new demandeStationException();
+				}
+				
 			}
-
-		} else {
-			System.out.println("Attention ID ou mdp incorrect");
-		}
 	}
 
 	/**
 	 * <Stéfan> - 21/03/2015 - Etape 2 & 3 
 	 * @param string idVelo
 	 * @throws RemoteException
+	 * @throws demandeStationException 
+	 * @throws retourVeloException 
 	 */
-	public void retourVelo(int idV) throws RemoteException {
+	public void retourVelo(int idV) throws RemoteException, demandeStationException, retourVeloException {
 		if (listeVelos.size() != this.taille) {
 			// mise à jour du cache
 			Velo v = new Velo(idV);
 			listeVelos.add(v);
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			// retour du vélo
-			proxy.retour(idStation,idV,now);
-
-			afficherInformationsDeRetour(v);
-			System.out.println("Retour vélo accepté");
+			if(proxy.retour(idStation,idV,now)){
+				afficherInformationsDeRetour(v);
+				System.out.println("Retour vélo accepté");
+			}
+			else{
+				throw new retourVeloException();
+			}
+			
 		} else {
 			String reponse[] = proxy.demandeStationProche(idStation,false);
+			if(reponse.length == 3){
 			System.out.println("Il n'y a pas de place pour votre vélo de disponible -- Station saturée");
 			System.out.println("Veuillez-vous diriger dans la station: ");
 			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
+			}else{
+				throw new demandeStationException();
+			}
 		}
 	}
 

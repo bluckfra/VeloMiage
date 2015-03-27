@@ -8,17 +8,13 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.TreeMap;
 
-import bdd.objetsbdd.Abonne;
-import bdd.objetsbdd.StationBD;
-import bdd.objetsbdd.Velo;
-import bdd.objetsdao.AbonneDAO;
-import bdd.objetsdao.StationDAO;
-import bdd.objetsdao.VeloDAO;
+import utils.*;
+import bdd.objetsbdd.*;
+import bdd.objetsdao.*;
 
 public class Gestionnaire extends UnicastRemoteObject implements GestionnaireProxy {
 
@@ -47,9 +43,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 *            technicien ou non
 	 * @return abonne créé
 	 * @throws RemoteException
+	 * @throws abonnementException 
 	 */
-	public synchronized int[] creerAbonnement(boolean isTech)
-			throws RemoteException {
+	public synchronized int[] creerAbonnement(boolean isTech) throws RemoteException, demandeAboException {
 		
 		int abo[] = new int[2];
 		Random rand = new Random();
@@ -76,7 +72,12 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		System.out.println("info abonné créé : id = " + abonne.toString());
 		abo[0] = abonne.getId();
 		abo[1] = abonne.getCode();
-		return abo;
+		if(abo.length == 2){
+			return abo;
+		}
+		else{
+			throw new demandeAboException();
+		}
 	}
 
 	/**
@@ -98,14 +99,14 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * 
 	 * @throws RemoteException
 	 */
-	public boolean idValidation(int id) throws RemoteException {
+	public int idValidation(int id) throws RemoteException {
 
 		Abonne abonne = daoAbonne.find(id);
 
 		// récupération date du jour
 		Timestamp now = new Timestamp(System.currentTimeMillis());
-
-		return (now.before(abonne.getDateAboFin()) ? true : false);
+		
+		return (now.before(abonne.getDateAboFin()) ? abonne.getCode() : 0);
 
 	}
 
@@ -113,18 +114,26 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * WIP <Stéfan> - 21/03/2015 - Etape 2
 	 * 
 	 * @throws RemoteException
+	 * @throws listeVeloException 
 	 */
-	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException {
+	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException, listeVeloException {
+		try{
 		StationBD st = daoStationBD.find(idStation);
 		return st.getVelosStation();
+		}catch (Exception e){
+			throw new listeVeloException();
+		}
+		
 	}
 	
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 2
 	 * 
 	 * @throws RemoteException
+	 * @throws locationException 
 	 */
-	public void location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException {
+	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException, locationException {
+		try{
 		StationBD st = daoStationBD.find(idStation);
 		Abonne ab = daoAbonne.find(idClient);
 		Velo v = daoVelo.find(idVelo);
@@ -133,45 +142,58 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		daoStationBD.removeVelo(st, v, dateLoc);
 		// ajouter vélo table louer
 		daoAbonne.addVelo(ab, v, dateLoc);
-		
 		System.out.println("Vélo retiré");
+		return true;
+		}catch (Exception e){
+			throw new locationException();
+		}
 	}
 
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 2
 	 * 
 	 * @throws RemoteException
+	 * @throws retourVeloException 
 	 */
-	public void retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException {
-		StationBD st = daoStationBD.find(idStation);
-		Velo v = daoVelo.find(idVelo);
-		
-		// ajouter vélo de table posseder
-		daoStationBD.addVelo(st, v, dateRetour);
-		
-		// retirer vélo table louer
-		v = daoVelo.depositVelo(v, dateRetour);
-		
-		System.out.println("Vélo rendu");
+	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException, retourVeloException {
+		try{
+			StationBD st = daoStationBD.find(idStation);
+			Velo v = daoVelo.find(idVelo);
+			// ajouter vélo de table posseder
+			daoStationBD.addVelo(st, v, dateRetour);
+			// retirer vélo table louer
+			v = daoVelo.depositVelo(v, dateRetour);
+			System.out.println("Vélo rendu");
+			return true;
+		}catch (Exception e){
+			throw new retourVeloException();
+		}
 	}
 
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 4
+	 * @throws IdVeloException 
 	 * 
 	 * @throws RemoteException
 	 */
-	public void getInfoEtatVelo(int idVelo) {
-		Velo v = daoVelo.find(idVelo);
-		System.out.println(v.toString());
+	public void getInfoEtatVelo(int idVelo) throws IdVeloException {
+		try{
+			Velo v = daoVelo.find(idVelo);
+			System.out.println(v.toString());
+		}catch (Exception e){
+			throw new IdVeloException();
+		}
+		
 	}
 
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 5
 	 * 
 	 * @throws RemoteException
+	 * @throws demandeStationException 
 	 */
-	public String[] demandeStationProche(int idStation, boolean demandeLocation)
-			throws RemoteException {
+	public String[] demandeStationProche(int idStation, boolean demandeLocation)throws RemoteException, demandeStationException {
+		
 		// récupération des lattitudes et longi de la station courante
 		StationBD station = daoStationBD.find(idStation);
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
@@ -212,6 +234,11 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 			break; }
 			 */
 		}
-		return res;
+		if(res.length == 3){
+			return res;
+		}else{
+			throw new demandeStationException();
+		}
+		
 	}
 }
