@@ -86,13 +86,7 @@ public class Station {
 		}
 	}
 	
-	
-	
-	
-	public boolean validationCodeClient (int code){
-		return (codeClient == code) ? true : false;
-	}
-	
+		
 	/**
 	 * <Stéfan> - 21/03/2015 - Etape 2 & 3
 	 * @param int idClient
