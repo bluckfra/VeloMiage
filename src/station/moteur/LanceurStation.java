@@ -8,7 +8,7 @@ public class LanceurStation {
 			for (String id : args) {	
 				try {
 					int idStation = Integer.parseInt(id);
-					Station s = new Station(idStation, 5);
+					Station s = new Station(idStation);
 					StationIHM ihm = new StationIHM(s);
 				} catch (Exception e) {
 					System.err.println("Erreur : pas d'entier en entrée");

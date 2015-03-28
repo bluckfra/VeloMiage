@@ -11,7 +11,7 @@ public class Appli_Test {
 		/*
 		 * Remplace l'IHM en attendant
 		 */
-		Station station = new Station(1,30);
+		Station station = new Station(1);
 		StationIHM ihm = new StationIHM(station);
 		ihm.setVisible(true);
 

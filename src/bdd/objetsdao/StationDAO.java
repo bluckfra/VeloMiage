@@ -112,10 +112,10 @@ public class StationDAO extends DAO<StationBD> {
 				ResultSet.TYPE_SCROLL_INSENSITIVE, 
 			    ResultSet.CONCUR_UPDATABLE
 			 ).executeUpdate(
-				"UPDATE posseder SET idStation = '" + obj.getId() + "',"+
-				" idVelo = '" + v.getId() +  "',"+
-				" dateRetrait = '" + dateRetraitVelo +"'" +
-				" WHERE idStation = " + obj.getId()
+				" UPDATE posseder SET dateRetrait = '" + dateRetraitVelo + "'"+
+				" WHERE idStation = " + obj.getId() + 
+				" AND idVelo = " + v.getId() + 
+				" AND dateRetrait is null"
 			 );
 			
 			obj = this.find(obj.getId());

@@ -128,6 +128,19 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 			return velos;	
 	}
 	
+	public Object[] caracteristiquesStation(int idStation) throws RemoteException{
+		Object[] resultat = new Object[2];
+		// ajout de la liste de vélo
+		StationBD st = daoStationBD.find(idStation);
+		ArrayList<Velo> velos = st.getVelosStation();
+		resultat[0] = velos;
+		
+		// ajout de la taille de la station
+		resultat[1] = st.getNbPlace();
+		// retour du resultat
+		return resultat;
+	}
+	
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 2
 	 * 
