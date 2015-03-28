@@ -1,6 +1,7 @@
 package gestionnaire.moteur;
 
 import gestionnaire.GestionnaireProxy;
+import gestionnaire.moteur.ihm.GestionnaireIHM;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -28,7 +29,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	private AbonneDAO daoAbonne;
 	private VeloDAO daoVelo;
 	private static double prixHeure = 2;
-
+	private static GestionnaireIHM ihm;
+	
 	/**
 	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * 
@@ -90,9 +92,11 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	public static void main(String[] args) throws Exception {
 		LocateRegistry.createRegistry(1099); // creation du proxy sur le port
 												// 1099
-		Naming.rebind("GestionStat", new Gestionnaire()); // Choix du nom du
+		Gestionnaire gestionnaire = new Gestionnaire();
+		Naming.rebind("GestionStat", gestionnaire ); // Choix du nom du
 															// proxy
 		System.out.println("Gestionnaire est enregistrée");
+		ihm = new GestionnaireIHM(gestionnaire);
 	}
 
 	
@@ -139,7 +143,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		daoStationBD.removeVelo(st, v, dateLoc);
 		// ajouter vélo table louer
 		daoAbonne.addVelo(ab, v, dateLoc);
-		System.out.println("Vélo retiré");
+		System.out.println("Station " + idStation + " : Vélo " + idVelo + " retiré à " + dateLoc.toString());
 		return true;
 	}
 
@@ -224,4 +228,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		}
 			return res;	
 	}
+	
+	public ArrayList<StationBD> getInstancesStations() {
+		return daoStationBD.getInstances();
+	}
+	
 }
