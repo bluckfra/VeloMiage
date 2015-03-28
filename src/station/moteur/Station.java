@@ -132,27 +132,30 @@ public class Station {
 	 * @throws demandeStationException 
 	 * @throws retourVeloException 
 	 */
-	public void retourVelo(int idV) throws RemoteException, demandeStationException {
+	public boolean retourVelo(int idV) throws RemoteException, demandeStationException {
 		if (listeVelos.size() != this.taille) {
 			// mise à jour du cache
 			Velo v = new Velo(idV);
 			listeVelos.add(v);
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			// retour du vélo
-			proxy.retour(idStation,idV,now);
+			if(proxy.retour(idStation,idV,now)){
 				afficherInformationsDeRetour(v);
 				System.out.println("Retour vélo accepté");
-
+				return true;
+			}else{
+				return false;
+			}
+				
 			
 		} else {
+			// REVOIR ENVOYER POUR EXCEPTION
+			
 			String reponse[] = proxy.demandeStationProche(idStation,false);
-			if(reponse.length == 3){
 			System.out.println("Il n'y a pas de place pour votre vélo de disponible -- Station saturée");
 			System.out.println("Veuillez-vous diriger dans la station: ");
 			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
-			}else{
-				throw new demandeStationException();
-			}
+			return false ;
 		}
 	}
 

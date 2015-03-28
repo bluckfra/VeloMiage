@@ -60,7 +60,7 @@ public class PanelAccueil extends JPanel {
 
 		btnRendreVelo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				modele.changerPanel(Etat.Restitution);
 			}
 		});
 		

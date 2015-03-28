@@ -8,10 +8,13 @@ import station.moteur.Station;
 import station.moteur.ihm.panels.PanelAccueil;
 import station.moteur.ihm.panels.PanelDemandeAbo;
 import station.moteur.ihm.panels.PanelIdentification;
+import station.moteur.ihm.panels.PanelRetourVelo;
 import station.moteur.ihm.popups.PopupLocationVelo;
+import station.moteur.ihm.popups.PopupRestitutionVelo;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.demandeAboException;
+import utils.exceptions.demandeStationException;
 import utils.exceptions.locationException;
 
 import java.awt.GridLayout;
@@ -25,6 +28,7 @@ public class StationIHM extends JFrame {
 	private PanelIdentification panelIdentification;
 	private PanelAccueil panelMenu;
 	private PanelDemandeAbo panelDemandeAbo;
+	private PanelRetourVelo panelRetourVelo;
 	public StationIHM(Station st) {
 		try {
 			// Permet de prendre l'apparence du système hôte
@@ -45,6 +49,7 @@ public class StationIHM extends JFrame {
 		panelIdentification = new PanelIdentification(this);
 		panelMenu = new PanelAccueil(this);
 		panelDemandeAbo = new PanelDemandeAbo(this);
+		panelRetourVelo = new PanelRetourVelo(this);
 		s = st;
 		this.setContentPane(contentPane);
 		panelCourant = panelMenu;
@@ -74,6 +79,8 @@ public class StationIHM extends JFrame {
 		}
 	}
 	
+	// PANEL LOCATION
+	
 	public void actionLocation(int idCli) {
 		try {
 			// location et affichage popup
@@ -90,6 +97,26 @@ public class StationIHM extends JFrame {
 			// TODO Auto-generated catch block
 			panelIdentification.afficherErreurDejaLoc();
 		}
+	}
+	
+	// PANEL RESTITUTION
+	public void actionRestitution(int idVelo) {
+		boolean restitutionOK = false ;
+			try {
+				restitutionOK = s.retourVelo(idVelo);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (demandeStationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (restitutionOK) {
+				// affichage popup retour validé
+				new PopupRestitutionVelo(idVelo).setVisible(true);
+			} else {
+				// affichage message erreur
+					panelRetourVelo.afficherError();			}
 	}
 	
 	public void actionStationsPlacesDispos() {
@@ -119,6 +146,9 @@ public class StationIHM extends JFrame {
 			break;
 		case DemandeAbonnement:
 			p = panelDemandeAbo;
+			break;
+		case Restitution:
+			p = panelRetourVelo;
 			break;
 		default:
 			p = panelMenu;
