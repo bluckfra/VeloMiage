@@ -93,18 +93,20 @@ public class Station {
 	public int locationVelo(int idClient) throws RemoteException, locationException {
 		int idVelo = -1;
 		// vérification qu'il y a au moins un vélo de dispo
-		if (!listeVelos.isEmpty()) {
-			// récupération d'un vélo
-			idVelo = listeVelos.get(0).getId();
-			listeVelos.remove(idVelo);
-			afficherInformationsDeLocation(idVelo);
-			System.out.println("Vous pouvez retirer le vélo : " + idVelo);
-			
-			Timestamp now = new Timestamp(System.currentTimeMillis());
-			// retrait du vélo, et mise à jour du cache
-			while(!proxy.location(idStation,idClient, idVelo,now)){	
-			} 
+		if (listeVelos.isEmpty()) {
+			throw new locationException();
+		}
+		// récupération d'un vélo
+		idVelo = listeVelos.get(0).getId();
+		listeVelos.remove(idVelo);
+		afficherInformationsDeLocation(idVelo);
+		System.out.println("Vous pouvez retirer le vélo : " + idVelo);
+		
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		// retrait du vélo, et mise à jour du cache
+		while(!proxy.location(idStation,idClient, idVelo,now)){	
 		} 
+		
 		return idVelo;
 	}
 	

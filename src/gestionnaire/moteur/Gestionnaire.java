@@ -52,7 +52,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws abonnementException 
 	 */
-	public synchronized int[] creerAbonnement(boolean isTech) throws RemoteException, demandeAboException {
+	public synchronized int[] creerAbonnement(boolean isTech) throws RemoteException {
 		
 		int abo[] = new int[2];
 		Random rand = new Random();
@@ -79,12 +79,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		System.out.println("info abonné créé : id = " + abonne.toString());
 		abo[0] = abonne.getId();
 		abo[1] = abonne.getCode();
-		if(abo.length == 2){
 			return abo;
-		}
-		else{
-			throw new demandeAboException();
-		}
 	}
 
 	/**
@@ -123,15 +118,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws listeVeloException 
 	 */
-	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException, listeVeloException {
-		try{
+	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException {
 			StationBD st = daoStationBD.find(idStation);
 			ArrayList<Velo> velos = st.getVelosStation();
-			return velos;
-		}catch (Exception e){
-			throw new listeVeloException();
-		}
-		
+			return velos;	
 	}
 	
 	/**
@@ -140,8 +130,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws locationException 
 	 */
-	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException, locationException {
-		try{
+	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException {
 		StationBD st = daoStationBD.find(idStation);
 		Abonne ab = daoAbonne.find(idClient);
 		Velo v = daoVelo.find(idVelo);
@@ -152,9 +141,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		daoAbonne.addVelo(ab, v, dateLoc);
 		System.out.println("Vélo retiré");
 		return true;
-		}catch (Exception e){
-			throw new locationException();
-		}
 	}
 
 	/**
@@ -163,19 +149,18 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws retourVeloException 
 	 */
-	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException, retourVeloException {
-		try{
+	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException {
+		
 			StationBD st = daoStationBD.find(idStation);
 			Velo v = daoVelo.find(idVelo);
+			
 			// ajouter vélo de table posseder
 			daoStationBD.addVelo(st, v, dateRetour);
 			// retirer vélo table louer
 			v = daoVelo.depositVelo(v, dateRetour);
 			System.out.println("Vélo rendu");
 			return true;
-		}catch (Exception e){
-			throw new retourVeloException();
-		}
+		
 	}
 
 	/**
@@ -184,14 +169,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * 
 	 * @throws RemoteException
 	 */
-	public void getInfoEtatVelo(int idVelo) throws IdVeloException {
-		try{
+	public void getInfoEtatVelo(int idVelo) {
 			Velo v = daoVelo.find(idVelo);
-			System.out.println(v.toString());
-		}catch (Exception e){
-			throw new IdVeloException();
-		}
-		
+			System.out.println(v.toString());	
 	}
 
 	/**
@@ -200,7 +180,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws demandeStationException 
 	 */
-	public String[] demandeStationProche(int idStation, boolean demandeLocation)throws RemoteException, demandeStationException {
+	public String[] demandeStationProche(int idStation, boolean demandeLocation)throws RemoteException {
 		
 		// récupération des lattitudes et longi de la station courante
 		StationBD station = daoStationBD.find(idStation);
@@ -242,11 +222,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 			break; }
 			 */
 		}
-		if(res.length == 3){
-			return res;
-		}else{
-			throw new demandeStationException();
-		}
-		
+			return res;	
 	}
 }

@@ -1,5 +1,5 @@
 package station.moteur.ihm;
 
 public enum Etat {
-	Identification,Menu
+	Identification,Menu,DemandeAbonnement
 }

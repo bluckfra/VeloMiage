@@ -11,6 +11,7 @@ import station.moteur.ihm.panels.PanelIdentification;
 import station.moteur.ihm.popups.PopupLocationVelo;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.demandeAboException;
+import utils.exceptions.locationException;
 
 import java.awt.GridLayout;
 import java.net.IDN;
@@ -22,7 +23,6 @@ public class StationIHM extends JFrame {
 	private JPanel contentPane;
 	private PanelIdentification panelIdentification;
 	private PanelAccueil panelMenu;
-	
 	private PanelDemandeAbo panelDemandeAbo;
 	public StationIHM(Station st) {
 		try {
@@ -50,6 +50,8 @@ public class StationIHM extends JFrame {
 		changerPanel(Etat.Menu);
 	}
 	
+	/// PANEL IDENTIFICATION
+	
 	public void actionLouer(int identifiant, int mdp) {
 		boolean identificationReussie = false ;
 		try {
@@ -64,6 +66,7 @@ public class StationIHM extends JFrame {
 		if (identificationReussie) {
 			// location si c'est possible du vélo
 			// AFAIRE
+			actionLocation(identifiant);
 			new PopupLocationVelo(4).setVisible(true);
 			
 		} else {
@@ -71,6 +74,27 @@ public class StationIHM extends JFrame {
 			panelIdentification.afficherErreurEssai();
 		}
 	}
+	
+	public void actionLocation(int idCli) {
+		try {
+			// location et affichage popup
+			int idVelo = s.locationVelo(idCli);
+			new PopupLocationVelo(idVelo).setVisible(true);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (locationException e) {
+			// gérer le cas de pas de vélo dispos
+			// affiche les places dispos
+			actionStationsPlacesDispos();
+		}
+	}
+	
+	public void actionStationsPlacesDispos() {
+		
+	}
+	
+	// PANEL ABONNEMENT
 	
 	public void actionDemanderAbo(){
 		try {
