@@ -10,6 +10,8 @@ import java.util.HashMap;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.IdClientException;
 import utils.exceptions.LocationEnCoursException;
+import utils.exceptions.StationPleineException;
+import utils.exceptions.VeloPasLoueException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.locationException;
@@ -102,9 +104,10 @@ public class Station {
 		if (listeVelos.isEmpty()) {
 			throw new locationException();
 		}
+
 		Timestamp now = new Timestamp(System.currentTimeMillis());
+		idVelo = listeVelos.get(0).getId();
 		if (proxy.location(idStation,idClient, idVelo,now)) {	
-			idVelo = listeVelos.get(0).getId();
 			listeVelos.remove(0);
 			afficherInformationsDeLocation(idVelo);
 			System.out.println("Vous pouvez retirer le vélo : " + idVelo);			
@@ -129,33 +132,37 @@ public class Station {
 	 * <Stéfan> - 21/03/2015 - Etape 2 & 3 
 	 * @param string idVelo
 	 * @throws RemoteException
+	 * @throws StationPleineException 
 	 * @throws demandeStationException 
 	 * @throws retourVeloException 
 	 */
-	public boolean retourVelo(int idV) throws RemoteException, demandeStationException {
-		if (listeVelos.size() != this.taille) {
-			// mise à jour du cache
-			Velo v = new Velo(idV);
-			listeVelos.add(v);
+	public boolean retourVelo(int idV) throws RemoteException, VeloPasLoueException, StationPleineException {
+		if (listeVelos.size() == this.taille) throw new StationPleineException();
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			// retour du vélo
 			if(proxy.retour(idStation,idV,now)){
+				// mise à jour du cache
+				Velo v = new Velo(idV);
+				listeVelos.add(v);
 				afficherInformationsDeRetour(v);
 				System.out.println("Retour vélo accepté");
 				return true;
-			}else{
-				return false;
-			}
-				
-			
-		} else {
-			// REVOIR ENVOYER POUR EXCEPTION
-			
-			String reponse[] = proxy.demandeStationProche(idStation,false);
+			}				
+			return false;
+	}
+	
+	// méthode de demande d'une station proche si manque de place
+	public void stationsProches() throws demandeStationException {
+		String reponse[];
+		
+		try {
+			reponse = proxy.demandeStationProche(idStation,false);
 			System.out.println("Il n'y a pas de place pour votre vélo de disponible -- Station saturée");
 			System.out.println("Veuillez-vous diriger dans la station: ");
 			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
-			return false ;
+
+		} catch (RemoteException e) {
+			throw new demandeStationException();
 		}
 	}
 
@@ -188,5 +195,9 @@ public class Station {
 		System.out.println("Votre code confidentiel est : "
 				+ reponse[1]);
 		System.out.println("Veuillez ne pas communiquer vos identifiants");
+	}
+	
+	public int getIdStation() {
+		return idStation;
 	}
 }

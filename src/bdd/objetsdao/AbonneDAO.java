@@ -43,7 +43,7 @@ public class AbonneDAO extends DAO<Abonne>{
 				if (resultVelo.first()) {
 					// ajout du vélo chez l'abonné
 						DAO<Velo> daoVelo = new VeloDAO();
-						abonne.setVeloCourant(daoVelo.find(resultVelo.getInt(3)));
+						abonne.setVeloCourant(resultVelo.getInt(3));
 				}
 
 			}

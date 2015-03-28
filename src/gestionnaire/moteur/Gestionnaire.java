@@ -16,6 +16,7 @@ import java.util.TreeMap;
 import utils.*;
 import utils.exceptions.IdVeloException;
 import utils.exceptions.LocationEnCoursException;
+import utils.exceptions.VeloPasLoueException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.listeVeloException;
@@ -43,6 +44,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		daoAbonne = new AbonneDAO();
 		daoStationBD = new StationDAO();
 		daoVelo = new VeloDAO();
+		ihm = new GestionnaireIHM(this);
+
 
 	}
 
@@ -97,7 +100,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		Naming.rebind("GestionStat", gestionnaire ); // Choix du nom du
 															// proxy
 		System.out.println("Gestionnaire est enregistrée");
-		ihm = new GestionnaireIHM(gestionnaire);
 	}
 
 	
@@ -153,6 +155,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		if (ab.hasVelo()) throw new LocationEnCoursException();
 		StationBD st = daoStationBD.find(idStation);
 		Velo v = daoVelo.find(idVelo);
+		System.out.println("ID velo : " + v.getId() + " / " + idVelo);
 		
 		// enlever vélo de table posseder
 		daoStationBD.removeVelo(st, v, dateLoc);
@@ -169,16 +172,21 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws retourVeloException 
 	 */
-	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException {
+	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException,VeloPasLoueException {
 		
 			StationBD st = daoStationBD.find(idStation);
 			Velo v = daoVelo.find(idVelo);
+			
+			if (!v.isInLocation()) {
+				throw new VeloPasLoueException();
+			}
 			
 			// ajouter vélo de table posseder
 			daoStationBD.addVelo(st, v, dateRetour);
 			// retirer vélo table louer
 			v = daoVelo.depositVelo(v, dateRetour);
 			System.out.println("Vélo rendu");
+			ihm.notifierLocationVelo(st);
 			return true;
 		
 	}
@@ -251,5 +259,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		
 	public ArrayList<Velo> getInstancesVelos(int s) {
 		return daoStationBD.find(s).getVelosStation();
+	}
+
+	public ArrayList<Velo> getInstancesAllVelos() {
+		return daoVelo.getInstances();
 	}
 }

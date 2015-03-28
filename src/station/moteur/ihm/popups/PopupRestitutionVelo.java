@@ -21,7 +21,7 @@ public class PopupRestitutionVelo extends JDialog{
 		
 		getContentPane().setLayout(null);
 		
-		JLabel lbl_titre = new JLabel("F\u00E9licitation ! Vous avez bien rendu le V\u00E9lo n\u00B0" + +idVelo+ " ! \n Merci et à bientôt !");
+		JLabel lbl_titre = new JLabel("F\u00E9licitations ! Vous avez bien rendu le V\u00E9lo n\u00B0" + +idVelo+ " ! \n Merci et à bientôt !");
 		lbl_titre.setBounds(65, 11, 336, 33);
 		getContentPane().add(lbl_titre);
 		

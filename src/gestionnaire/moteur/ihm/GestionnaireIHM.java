@@ -2,6 +2,7 @@ package gestionnaire.moteur.ihm;
 
 import gestionnaire.moteur.Gestionnaire;
 import gestionnaire.moteur.ihm.panels.PanelStations;
+import gestionnaire.moteur.ihm.panels.PanelVelos;
 import gestionnaire.moteur.ihm.popups.PopupVelos;
 
 import java.awt.GridLayout;
@@ -32,9 +33,10 @@ public class GestionnaireIHM extends JFrame {
 	// Déclaration des objets graphiques
 	private JMenuBar menu;
 	protected JMenu menuFichier,menuStations,menuStats;
-	protected JMenuItem quitter,stats,stations; 
+	protected JMenuItem quitter,stats,stations,velos; 
 	protected JPanel contentPane,panelCourant;
 	private PanelStations panelStations;
+	private PanelVelos panelVelos;
 	private PopupVelos popupDetailsStation;
 	private Gestionnaire gestionnaire;
 	private boolean isDetails;
@@ -65,7 +67,7 @@ public class GestionnaireIHM extends JFrame {
 
 		// Déclaration des JMenu
 		menuFichier = new JMenu("Fichier");
-		menuStations = new JMenu("Stations");
+		menuStations = new JMenu("Information équipements");
 		menuStats = new JMenu("Statistiques");
 		
 		// Ajout au menu principal
@@ -76,6 +78,7 @@ public class GestionnaireIHM extends JFrame {
 		// Création des items
 		stats = new JMenuItem("Statistisques usage");
 		stations = new JMenuItem("Stations courantes");
+		velos = new JMenuItem("Vélos en circulation");
 		quitter = new JMenuItem("Quitter");
 		
 		// Création de l'écoute sur le bouton quitter
@@ -87,6 +90,13 @@ public class GestionnaireIHM extends JFrame {
 
 		stations.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				changerPanel(EtatGest.Stations);
+			}
+		});
+		
+		velos.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				changerPanel(EtatGest.Velos);
 			}
 		});
 
@@ -97,12 +107,14 @@ public class GestionnaireIHM extends JFrame {
 		
 		// Ajout des composants à la JMenuBar
 		menuStations.add(stations);
+		menuStations.add(velos);
 		menuStats.add(stats);
 		menuFichier.add(quitter);
 		
 		// Modification du panel courant
 		this.setContentPane(contentPane);
 		panelStations = new PanelStations(gestionnaire.getInstancesStations(),this);
+		panelVelos = new PanelVelos(gestionnaire.getInstancesAllVelos(), this);
 		contentPane.add(panelStations);
 		panelCourant = panelStations;
 		
@@ -115,6 +127,9 @@ public class GestionnaireIHM extends JFrame {
 		switch (e) {
 			case Stations:
 				p = panelStations;
+				break;
+			case Velos:
+				p = panelVelos;
 				break;
 			default:
 				p = panelStations;
@@ -129,7 +144,9 @@ public class GestionnaireIHM extends JFrame {
 	
 	public void notifierLocationVelo(StationBD s) {
 		ArrayList<StationBD> stations = gestionnaire.getInstancesStations();
+		ArrayList<Velo> velos = gestionnaire.getInstancesAllVelos();
 		panelStations.rechargerTableau(stations);
+		panelVelos.rechargerTableau(velos);
 		
 		if (popupDetailsStation != null) {
 			System.out.println("modif popup");

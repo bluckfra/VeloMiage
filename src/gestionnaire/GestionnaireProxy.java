@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.jar.JarException;
 
 import utils.exceptions.LocationEnCoursException;
+import utils.exceptions.VeloPasLoueException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.listeVeloException;
@@ -25,7 +26,7 @@ public interface GestionnaireProxy extends java.rmi.Remote{
 	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException;
 	public Object[] caracteristiquesStation(int idStation) throws RemoteException;
 	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws java.rmi.RemoteException, LocationEnCoursException;
-	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws java.rmi.RemoteException;
+	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws java.rmi.RemoteException, VeloPasLoueException;
 	
 	/**
 	 * <Stéfan> - 21/03/2015 - Step 5

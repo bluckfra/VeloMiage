@@ -1,5 +1,6 @@
 package station.moteur.ihm;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -13,6 +14,8 @@ import station.moteur.ihm.popups.PopupLocationVelo;
 import station.moteur.ihm.popups.PopupRestitutionVelo;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.LocationEnCoursException;
+import utils.exceptions.StationPleineException;
+import utils.exceptions.VeloPasLoueException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.locationException;
@@ -36,7 +39,7 @@ public class StationIHM extends JFrame {
 		}
 		catch (Exception e){}
 		
-		setTitle("Station Vélômiage"); 
+		setTitle("Station Vélômiage n°" + st.getIdStation()); 
 		setSize(470, 220); 
 		setLocationRelativeTo(null); 
 		setResizable(false); 
@@ -83,7 +86,6 @@ public class StationIHM extends JFrame {
 	
 	public void actionLocation(int idCli) {
 		try {
-			// location et affichage popup
 			int idVelo = s.locationVelo(idCli);
 			new PopupLocationVelo(idVelo).setVisible(true);
 		} catch (RemoteException e) {
@@ -102,25 +104,37 @@ public class StationIHM extends JFrame {
 	// PANEL RESTITUTION
 	public void actionRestitution(int idVelo) {
 		boolean restitutionOK = false ;
-			try {
-				restitutionOK = s.retourVelo(idVelo);
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (demandeStationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (restitutionOK) {
-				// affichage popup retour validé
-				new PopupRestitutionVelo(idVelo).setVisible(true);
-			} else {
-				// affichage message erreur
-					panelRetourVelo.afficherError();			}
+		try {
+			restitutionOK = s.retourVelo(idVelo);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (VeloPasLoueException e) {
+			panelRetourVelo.afficherVeloInvalideError();			
+			e.printStackTrace();
+		} catch (StationPleineException e) {
+			actionStationsPlacesDispos();
+		}
+		if (restitutionOK) {
+			// affichage popup retour validé
+			new PopupRestitutionVelo(idVelo).setVisible(true);
+		} else {
+			// affichage message erreur
+			panelRetourVelo.afficherError();			
+		}
+
 	}
 	
 	public void actionStationsPlacesDispos() {
-		
+		try {
+			s.demandeStations();
+			JDialog temp = new JDialog();
+			temp.setTitle("Temp : plus de place");
+			temp.setVisible(true);
+			temp.setModal(true);
+		} catch (RemoteException e) {
+			
+		}
 	}
 	
 	// PANEL ABONNEMENT

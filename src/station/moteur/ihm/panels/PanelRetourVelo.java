@@ -63,7 +63,12 @@ public class PanelRetourVelo extends JPanel{
 	}
 	
 	public void afficherError(){
-		lbl_error.setText("Erreur ID du vélo à restituer incorrect !");
+		lbl_error.setText("Erreur : ID du vélo à restituer incorrect");
+		lbl_error.setEnabled(true);
+	}
+	
+	public void afficherVeloInvalideError(){
+		lbl_error.setText("Erreur : Le vélo que vous voulez rendre n'est pas en location");
 		lbl_error.setEnabled(true);
 	}
 }

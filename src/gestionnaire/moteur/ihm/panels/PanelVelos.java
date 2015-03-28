@@ -22,7 +22,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import bdd.objetsbdd.EtatVelo;
 import bdd.objetsbdd.StationBD;
+import bdd.objetsbdd.Velo;
 
 import javax.swing.JButton;
 
@@ -30,22 +32,21 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class PanelStations extends JPanel {
+public class PanelVelos extends JPanel {
 	private JPanel courant = this;
 	private JPanel panelBox, panelCenter; 
 	private BorderLayout layout ;
 	private JTable tableauStations ;
-	private ArrayList<StationBD> lStations;
-	private final JLabel lblListeDesStations = new JLabel("Liste des stations :\r\n");
+	private ArrayList<Velo> lVelos;
+	private final JLabel lblListeDesVelos = new JLabel("Liste des velos :\r\n");
 	private JPanel panelNorth;
-	private JButton btnVoirStation;
 	private GestionnaireIHM ihm;
-	private StationBD stationCourante;
-	private TableStations donneesTable;
+	private Velo veloCourant;
+	private TableVelo donneesTable;
 
 
-	public PanelStations(ArrayList<StationBD> lA, GestionnaireIHM g) {
-		lStations = lA ;
+	public PanelVelos(ArrayList<Velo> lV, GestionnaireIHM g) {
+		lVelos = lV ;
 		ihm = g;
 		panelBox= new JPanel();
 		panelCenter = new JPanel();
@@ -55,21 +56,21 @@ public class PanelStations extends JPanel {
 		this.setLayout(layout);
 				
 		this.add(panelBox,BorderLayout.NORTH);
-		lblListeDesStations.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblListeDesStations.setHorizontalAlignment(SwingConstants.LEFT);
+		lblListeDesVelos.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblListeDesVelos.setHorizontalAlignment(SwingConstants.LEFT);
 		GroupLayout gl_panelBox = new GroupLayout(panelBox);
 		gl_panelBox.setHorizontalGroup(
 			gl_panelBox.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelBox.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblListeDesStations)
+					.addComponent(lblListeDesVelos)
 					.addContainerGap(344, Short.MAX_VALUE))
 		);
 		gl_panelBox.setVerticalGroup(
 			gl_panelBox.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelBox.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblListeDesStations)
+					.addComponent(lblListeDesVelos)
 					.addContainerGap(19, Short.MAX_VALUE))
 		);
 		panelBox.setLayout(gl_panelBox);
@@ -79,14 +80,10 @@ public class PanelStations extends JPanel {
 		add(panelNorth, BorderLayout.SOUTH);
 		panelNorth.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		btnVoirStation = new JButton("D\u00E9tails station");
-		btnVoirStation.setEnabled(false);
-		panelNorth.add(btnVoirStation);
-		
 		/* cr?ation du tableau  */
 		panelCenter.setLayout(new GridLayout(0, 1, 20, 10));
 		this.add(panelCenter,BorderLayout.CENTER);
-		donneesTable = new TableStations(lA);
+		donneesTable = new TableVelo(lV);
 		tableauStations = new JTable(donneesTable);
 		tableauStations.setAutoCreateRowSorter(true);
 		
@@ -95,23 +92,17 @@ public class PanelStations extends JPanel {
 		JScrollPane scrollPane = new JScrollPane(tableauStations);
 		add(scrollPane, BorderLayout.CENTER);
 		listSelectionModel.addListSelectionListener(new ControleurTable());
-
-		btnVoirStation.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				ihm.actionAfficherDetailsStation(stationCourante);
-			}
-		});
 	}
 	
 	
 	// Modèle pour la JTable
-	private class TableStations extends AbstractTableModel {
-		private ArrayList<StationBD> stations ;
-		private String index[] =  {"Id Station","Nombre de places","Places occupées"};
+	private class TableVelo extends AbstractTableModel {
+		private ArrayList<Velo> velos ;
+		private String index[] =  {"Id Vélo","Etat","Station actuelle","Loueur actuel"};
 		
-		public TableStations(ArrayList<StationBD> lStations) {
+		public TableVelo(ArrayList<Velo> lVelos) {
 			super();
-			stations = lStations ;
+			velos = lVelos ;
 		}
 		
 		
@@ -120,22 +111,44 @@ public class PanelStations extends JPanel {
 		}
 
 		public int getRowCount() {
-			return stations.size();
+			return velos.size();
 		}
 		
-		public StationBD getStation(int ligne) {
-			return stations.get(ligne);
+		public Velo getStation(int ligne) {
+			return velos.get(ligne);
 		}
 		
 		public Object getValueAt(int ligne, int colonne) {
-			StationBD a = stations.get(ligne);
+			Velo a = velos.get(ligne);
 			switch (colonne) {
 			case 0:
 				return a.getId();
 			case 1:
-				return a.getNbPlace();
+				String ret = "";
+				switch (a.getEtat()) {
+				case 1:
+					ret = "En location";
+					break;
+				case 2 :
+					ret = "En station";
+					break;
+				case 3 : 
+					ret = "Défectueux";
+					break;
+				case 4 : 
+					ret = "En réparation";
+					break;
+				}
+				return ret;
 			case 2:
-				return a.getVelosStation().size();
+				if (a.getEtat() == 2) {
+					return a.getStationCourante();
+				} else return "Aucune";
+			case 3:
+				if (a.getEtat() == 1) {
+					return a.getAbonneCourant();
+				} else return "Aucun";
+				
 			default:
 				return null;
 			}
@@ -145,8 +158,8 @@ public class PanelStations extends JPanel {
 	        return index[colonne];
 	    }
 		
-		public void majTable(ArrayList<StationBD> st) {
-			stations = st;
+		public void majTable(ArrayList<Velo> vs) {
+			velos = vs;
 			fireTableDataChanged();
 		}
 	}
@@ -158,8 +171,7 @@ public class PanelStations extends JPanel {
 	            return;
 	        ListSelectionModel lsm = (ListSelectionModel)listSelectionEvent.getSource();
 	        if (!lsm.isSelectionEmpty()) {
-	        	stationCourante = lStations.get(tableauStations.convertRowIndexToModel(tableauStations.getSelectedRow()));
-	        	btnVoirStation.setEnabled(true);
+	        	//veloCourant = lVelos.get(tableauStations.convertRowIndexToModel(tableauStations.getSelectedRow()));
 	        }			
 		}
 	}	
@@ -188,7 +200,7 @@ public class PanelStations extends JPanel {
 	}*/
 	
 	
-	public void rechargerTableau(ArrayList<StationBD> nouvellesStations) {
-		donneesTable.majTable(nouvellesStations);
+	public void rechargerTableau(ArrayList<Velo> nvVelos) {
+		donneesTable.majTable(nvVelos);
 	}
 }

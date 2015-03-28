@@ -31,16 +31,26 @@ public class VeloDAO extends DAO<Velo> {
 						result.getInt(1));		
 			}
 			
-			// recherche de locations précédentes
+			// recherche de locations en cours
 			result = this.connect.createStatement(
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_UPDATABLE).executeQuery(
-					"SELECT * FROM louer WHERE idvelo = " + id);
+					"SELECT * FROM louer WHERE idvelo = " + id 
+					+ " AND dateFin is null ");
 			if (result.first()) {
-				// création de la station avec les données de la base
-				velo = new Velo(
-						id, 
-						result.getInt(1));		
+				// le vélo courant est en location, il possède un abonné
+				velo.setAbonneCourant(result.getInt(2));
+			}
+			
+			// recherche de stations liées
+			result = this.connect.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_UPDATABLE).executeQuery(
+					"SELECT * FROM posseder WHERE idvelo = " + id 
+					+ " AND dateRetrait is null ");
+			if (result.first()) {
+				// le vélo courant est dans une station
+				velo.setStationCourante(result.getInt(2));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -69,9 +79,8 @@ public class VeloDAO extends DAO<Velo> {
             	" WHERE idVelo = " + obj.getId() + " AND dateFin is null "
              );
 			
-			obj.setDateDerniereLocation(dateFinLocation);
-
-			obj = this.find(obj.getId());
+			obj.setEtat(2);
+			obj = this.update(obj);
 	    } catch (SQLException e) {
 	            e.printStackTrace();
 	    }
@@ -103,8 +112,22 @@ public class VeloDAO extends DAO<Velo> {
 
 	@Override
 	public Velo update(Velo obj) {
-		// TODO Auto-generated method stub
-		return null;
+		try {				
+			this.connect	
+                .createStatement(
+                	ResultSet.TYPE_SCROLL_INSENSITIVE, 
+                    ResultSet.CONCUR_UPDATABLE
+                 ).executeUpdate(
+                	"UPDATE Velo SET etat = " + obj.getId() +
+                	" WHERE idVelo = " + obj.getId()
+                 );
+
+			obj = this.find(obj.getId());
+	    } catch (SQLException e) {
+	            e.printStackTrace();
+	    }
+	    
+		return obj;
 	}
 
 	@Override

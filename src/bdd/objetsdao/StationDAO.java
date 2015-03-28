@@ -118,6 +118,10 @@ public class StationDAO extends DAO<StationBD> {
 				" AND dateRetrait is null"
 			 );
 			
+			// vélo est maintenant en location
+			v.setEtat(1);
+			v = new VeloDAO().update(v);
+			
 			obj = this.find(obj.getId());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -128,7 +132,7 @@ public class StationDAO extends DAO<StationBD> {
 	
 	public StationBD addVelo(StationBD obj, Velo v, Timestamp dateDepotVelo) {
 		try {				
-			// insertion de l'objet
+			// maj table posseder
 			PreparedStatement prepare = 
 				this.connect.prepareStatement(
 						"INSERT INTO posseder (idStation, idVelo, dateDepot) VALUES(?, ?, ?)",

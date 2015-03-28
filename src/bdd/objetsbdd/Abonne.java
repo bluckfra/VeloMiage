@@ -9,7 +9,7 @@ public class Abonne implements Serializable{
 	private int id,code;
 	private Timestamp dateAboDebut,dateAboFin;
 	private boolean isTechnicien,hasVelo;
-	private Velo veloCourant;
+	private int veloCourant;
 	
 	public Abonne() {
 		// TODO Auto-generated constructor stub
@@ -29,11 +29,11 @@ public class Abonne implements Serializable{
 		return id;
 	}
 	
-	public Velo getVeloCourant() {
+	public int getVeloCourant() {
 		return veloCourant;
 	}
 
-	public void setVeloCourant(Velo veloCourant) {
+	public void setVeloCourant(int veloCourant) {
 		this.veloCourant = veloCourant;
 		this.hasVelo = true ;
 	}
@@ -86,9 +86,6 @@ public class Abonne implements Serializable{
 	@Override
 	public String toString() {
 		String s = "Abonne n°" + id + " , code : " + code;
-		if (veloCourant != null) {
-			s+= "\n - vélo : " + veloCourant.toString();
-		}
 		return s;
 	}
 	
