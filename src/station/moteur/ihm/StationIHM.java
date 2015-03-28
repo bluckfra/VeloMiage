@@ -6,6 +6,7 @@ import javax.swing.UIManager;
 
 import station.moteur.Station;
 import station.moteur.ihm.panels.PanelAccueil;
+import station.moteur.ihm.panels.PanelDemandeAbo;
 import station.moteur.ihm.panels.PanelIdentification;
 import station.moteur.ihm.popups.PopupLocationVelo;
 import utils.exceptions.EssaisEcoulesException;
@@ -21,6 +22,8 @@ public class StationIHM extends JFrame {
 	private JPanel contentPane;
 	private PanelIdentification panelIdentification;
 	private PanelAccueil panelMenu;
+	
+	private PanelDemandeAbo panelDemandeAbo;
 	public StationIHM(Station st) {
 		try {
 			// Permet de prendre l'apparence du système hôte
@@ -40,6 +43,7 @@ public class StationIHM extends JFrame {
 		contentPane.setLayout(new GridLayout());
 		panelIdentification = new PanelIdentification(this);
 		panelMenu = new PanelAccueil(this);
+		panelDemandeAbo = new PanelDemandeAbo(this);
 		s = st;
 		this.setContentPane(contentPane);
 		panelCourant = panelMenu;
@@ -68,6 +72,16 @@ public class StationIHM extends JFrame {
 		}
 	}
 	
+	public void actionDemanderAbo(){
+		try {
+			int reponse[] = s.demanderAbo(false);
+			panelDemandeAbo.afficherAboGenere(reponse[0], reponse[1]);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void changerPanel(Etat e) {
 		JPanel p;
 		switch (e) {
@@ -77,7 +91,9 @@ public class StationIHM extends JFrame {
 		case Menu:
 			p = panelMenu;
 			break;
-
+		case DemandeAbonnement:
+			p = panelDemandeAbo;
+			break;
 		default:
 			p = panelMenu;
 			break;

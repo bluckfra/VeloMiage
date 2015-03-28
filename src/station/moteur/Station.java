@@ -50,14 +50,10 @@ public class Station {
 	 * @throws demandeAboException 
 	 * @throws abonnementException 
 	 */
-	public void demanderAbo(boolean isTech) throws RemoteException, demandeAboException{
+	public int[] demanderAbo(boolean isTech) throws RemoteException{
 		int reponse[] = proxy.creerAbonnement(isTech);
-		if(reponse.length == 2){
 			afficherInformationCreationAbonnement(reponse);
-		}else{
-			throw new demandeAboException();
-		}
-		
+		return reponse;
 	}
 
 	/**
@@ -94,41 +90,32 @@ public class Station {
 	 * @throws locationException 
 	 * @throws demandeStationException 
 	 */
-	public int locationVelo(int idClient) throws RemoteException, locationException, demandeStationException {
+	public int locationVelo(int idClient) throws RemoteException, locationException {
 		int idVelo = -1;
 		// vérification qu'il y a au moins un vélo de dispo
 		if (!listeVelos.isEmpty()) {
 			// récupération d'un vélo
 			idVelo = listeVelos.get(0).getId();
-
+			listeVelos.remove(idVelo);
+			afficherInformationsDeLocation(idVelo);
+			System.out.println("Vous pouvez retirer le vélo : " + idVelo);
+			
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			// retrait du vélo, et mise à jour du cache
-			if(!proxy.location(idStation,idClient, idVelo,now)){
-				
-				listeVelos.remove(idVelo);
-				afficherInformationsDeLocation(idVelo);
-				System.out.println("Vous pouvez retirer le vélo : " + idVelo);
+			while(!proxy.location(idStation,idClient, idVelo,now)){	
 			} 
 		} 
 		return idVelo;
 	}
 	
-	public String[] demandeStations() {
+	public String[] demandeStations() throws RemoteException {
 		// pas de vélo disponible
 		// etape 4: indication de la station la plus proche
 		String reponse[] = null;
-		try {
 			reponse = proxy.demandeStationProche(idStation,true);
 			System.out.println("Il n'y a pas de vélo de disponible dans cette station");
 			System.out.println("Veuillez-vous diriger dans la station: ");
 			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (demandeStationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		return reponse;
 	}
@@ -140,20 +127,17 @@ public class Station {
 	 * @throws demandeStationException 
 	 * @throws retourVeloException 
 	 */
-	public void retourVelo(int idV) throws RemoteException, demandeStationException, retourVeloException {
+	public void retourVelo(int idV) throws RemoteException, demandeStationException {
 		if (listeVelos.size() != this.taille) {
 			// mise à jour du cache
 			Velo v = new Velo(idV);
 			listeVelos.add(v);
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			// retour du vélo
-			if(proxy.retour(idStation,idV,now)){
+			proxy.retour(idStation,idV,now);
 				afficherInformationsDeRetour(v);
 				System.out.println("Retour vélo accepté");
-			}
-			else{
-				throw new retourVeloException();
-			}
+
 			
 		} else {
 			String reponse[] = proxy.demandeStationProche(idStation,false);
