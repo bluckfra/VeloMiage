@@ -46,6 +46,8 @@ public class PanelAccueil extends JPanel {
 		
 		btnDemanderUnAbonnement.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				modele.changerPanel(Etat.DemandeAbonnement);
+				modele.actionDemanderAbo();
 				
 			}
 		});
