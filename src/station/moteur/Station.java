@@ -32,13 +32,17 @@ public class Station {
 	 * 
 	 * @throws Exception
 	 */
-	public Station(int id, int taille) throws Exception {
+	public Station(int id) throws Exception {
 		proxy = (GestionnaireProxy) Naming
 				.lookup("rmi://localhost:1099/GestionStat");
 		// on doit récupérer la liste via le gestionnaire
 		this.idStation = id;
-		this.taille = taille;
-		listeVelos = proxy.listeVelo(id);
+		//this.taille = taille;
+		Object[] caracteristiques = proxy.caracteristiquesStation(id);
+		//listeVelos = proxy.listeVelo(id);
+		listeVelos = (ArrayList)caracteristiques[0];
+		this.taille = (Integer)caracteristiques[1];
+		
 		codeClient = 0;
 		nbEssais = 0;
 	}
@@ -97,8 +101,16 @@ public class Station {
 			throw new locationException();
 		}
 		// récupération d'un vélo
+		for(int i = 0; i < listeVelos.size(); i++){
+			System.out.println("velo avant loca " + listeVelos.get(i).toString());
+		}
 		idVelo = listeVelos.get(0).getId();
-		listeVelos.remove(idVelo);
+		listeVelos.remove(0);
+		
+		// test retour 
+		for(int i = 0; i < listeVelos.size(); i++){
+			System.out.println("velo apres loca " + listeVelos.get(i).toString());
+		}
 		afficherInformationsDeLocation(idVelo);
 		System.out.println("Vous pouvez retirer le vélo : " + idVelo);
 		
