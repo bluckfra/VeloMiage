@@ -3,6 +3,8 @@ package gestionnaire.moteur.ihm.panels;
 import gestionnaire.moteur.ihm.GestionnaireIHM;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import bdd.objetsbdd.StationBD;
 
@@ -38,6 +41,7 @@ public class PanelStations extends JPanel {
 	private JButton btnVoirStation;
 	private GestionnaireIHM ihm;
 	private StationBD stationCourante;
+	private TableStations donneesTable;
 
 
 	public PanelStations(ArrayList<StationBD> lA, GestionnaireIHM g) {
@@ -82,7 +86,8 @@ public class PanelStations extends JPanel {
 		/* cr?ation du tableau  */
 		panelCenter.setLayout(new GridLayout(0, 1, 20, 10));
 		this.add(panelCenter,BorderLayout.CENTER);
-		tableauStations = new JTable(new TableStations(lA));
+		donneesTable = new TableStations(lA);
+		tableauStations = new JTable(donneesTable);
 		tableauStations.setAutoCreateRowSorter(true);
 		
 		tableauStations.setToolTipText("");
@@ -93,7 +98,7 @@ public class PanelStations extends JPanel {
 
 		btnVoirStation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ihm.actionAfficherDetaisStation(stationCourante);
+				ihm.actionAfficherDetailsStation(stationCourante);
 			}
 		});
 	}
@@ -139,6 +144,11 @@ public class PanelStations extends JPanel {
 		public String getColumnName(int colonne) {
 	        return index[colonne];
 	    }
+		
+		public void majTable(ArrayList<StationBD> st) {
+			stations = st;
+			fireTableDataChanged();
+		}
 	}
 	
 	// Controleur qui récupère la ligne sélectionnée
@@ -154,4 +164,31 @@ public class PanelStations extends JPanel {
 		}
 	}	
 	
+	/* test
+	private class StationsRenderer extends DefaultTableCellRenderer {
+		public Component getTableCellRendererComponent(JTable table,
+				Object value, boolean isSelected, boolean hasFocus, int row,
+				int column) {
+			Component cell = super.getTableCellRendererComponent(table, value,
+					isSelected, hasFocus, row, column);
+
+			StationBD stCast = (StationBD) value ;
+			if ((StationBD) value.) {
+				cell.setBackground(Color.red);
+			} else {
+				if (tableauStations.getSelectedRow() == row) {
+					cell.setBackground(new Color(51,151,255));
+				} else cell.setBackground(Color.white);
+			}
+			
+			
+			return cell;
+		}
+
+	}*/
+	
+	
+	public void rechargerTableau(ArrayList<StationBD> nouvellesStations) {
+		donneesTable.majTable(nouvellesStations);
+	}
 }

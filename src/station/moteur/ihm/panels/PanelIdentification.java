@@ -84,5 +84,10 @@ public class PanelIdentification extends JPanel {
 	public void afficherErreurEssai() {
 		labelErreur.setText("Erreur : mot de passe incorrect");
 	}
+	
+	public void afficherErreurDejaLoc() {
+		labelErreur.setText("Erreur : vous êtes déjà en cours de location");
+	}
+
 
 }

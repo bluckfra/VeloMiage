@@ -15,6 +15,7 @@ import java.util.TreeMap;
 
 import utils.*;
 import utils.exceptions.IdVeloException;
+import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.listeVeloException;
@@ -147,9 +148,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws locationException 
 	 */
-	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException {
-		StationBD st = daoStationBD.find(idStation);
+	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException,LocationEnCoursException {
 		Abonne ab = daoAbonne.find(idClient);
+		if (ab.hasVelo()) throw new LocationEnCoursException();
+		StationBD st = daoStationBD.find(idStation);
 		Velo v = daoVelo.find(idVelo);
 		
 		// enlever vélo de table posseder
@@ -157,6 +159,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		// ajouter vélo table louer
 		daoAbonne.addVelo(ab, v, dateLoc);
 		System.out.println("Station " + idStation + " : Vélo " + idVelo + " retiré à " + dateLoc.toString());
+		ihm.notifierLocationVelo(st);
 		return true;
 	}
 
@@ -245,5 +248,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	public ArrayList<StationBD> getInstancesStations() {
 		return daoStationBD.getInstances();
 	}
-	
+		
+	public ArrayList<Velo> getInstancesVelos(int s) {
+		return daoStationBD.find(s).getVelosStation();
+	}
 }

@@ -10,6 +10,7 @@ import station.moteur.ihm.panels.PanelDemandeAbo;
 import station.moteur.ihm.panels.PanelIdentification;
 import station.moteur.ihm.popups.PopupLocationVelo;
 import utils.exceptions.EssaisEcoulesException;
+import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.locationException;
 
@@ -66,9 +67,7 @@ public class StationIHM extends JFrame {
 		if (identificationReussie) {
 			// location si c'est possible du vélo
 			// AFAIRE
-			actionLocation(identifiant);
-			new PopupLocationVelo(4).setVisible(true);
-			
+			actionLocation(identifiant);			
 		} else {
 			// affichage de l'erreur d'un essai
 			panelIdentification.afficherErreurEssai();
@@ -87,6 +86,9 @@ public class StationIHM extends JFrame {
 			// gérer le cas de pas de vélo dispos
 			// affiche les places dispos
 			actionStationsPlacesDispos();
+		} catch (LocationEnCoursException e) {
+			// TODO Auto-generated catch block
+			panelIdentification.afficherErreurDejaLoc();
 		}
 	}
 	

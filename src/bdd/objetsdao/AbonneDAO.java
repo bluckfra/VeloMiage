@@ -41,7 +41,6 @@ public class AbonneDAO extends DAO<Abonne>{
 						"SELECT * FROM louer WHERE idAbonne = " + id + "AND dateFin is null");
 
 				if (resultVelo.first()) {
-					System.out.println("ok");
 					// ajout du vélo chez l'abonné
 						DAO<Velo> daoVelo = new VeloDAO();
 						abonne.setVeloCourant(daoVelo.find(resultVelo.getInt(3)));

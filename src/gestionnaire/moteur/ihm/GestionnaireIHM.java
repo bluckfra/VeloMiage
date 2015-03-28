@@ -35,6 +35,7 @@ public class GestionnaireIHM extends JFrame {
 	protected JMenuItem quitter,stats,stations; 
 	protected JPanel contentPane,panelCourant;
 	private PanelStations panelStations;
+	private PopupVelos popupDetailsStation;
 	private Gestionnaire gestionnaire;
 	private boolean isDetails;
 	
@@ -126,12 +127,23 @@ public class GestionnaireIHM extends JFrame {
 		panelCourant.setVisible(true);
 	}
 	
-	public void notifierArriveeVelo(Velo v, Timestamp dateArrivee) {
+	public void notifierLocationVelo(StationBD s) {
+		ArrayList<StationBD> stations = gestionnaire.getInstancesStations();
+		panelStations.rechargerTableau(stations);
+		
+		if (popupDetailsStation != null) {
+			System.out.println("modif popup");
+			if (popupDetailsStation.getIdStation() == s.getId()) {
+				popupDetailsStation.rechargerTableau(gestionnaire.getInstancesVelos(s.getId()));
+			}
+		}
 		
 	}
 	
-	public void actionAfficherDetaisStation(StationBD s) {
-		PopupVelos popupDetailsStation = new PopupVelos(s);
+	public void actionAfficherDetailsStation(StationBD s) {
+		System.out.println("init");
+		popupDetailsStation = new PopupVelos(s);
+		popupDetailsStation.setVisible(true);
 		isDetails = true;
 	}
 

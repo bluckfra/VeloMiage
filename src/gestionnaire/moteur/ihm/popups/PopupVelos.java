@@ -31,6 +31,8 @@ public class PopupVelos extends JDialog {
 	private BorderLayout layout ;
 	private FlowLayout layoutSud ;
 	private JScrollPane planning ;
+	private TableVelos donneesVelos;
+	private JLabel lblPlacesPrises;
 	
 	public PopupVelos(StationBD s) {
 		station = s ;
@@ -66,7 +68,8 @@ public class PopupVelos extends JDialog {
 		layoutSud = new FlowLayout();
 		panelSud.setLayout(layoutSud);
 		panelCentre.setLayout(new GridLayout(0, 1, 0, 0));
-		planning = new JScrollPane(new JTable(new TableVelos(s)));
+		donneesVelos = new TableVelos(s);
+		planning = new JScrollPane(new JTable(donneesVelos));
 		
 		panelCentre.add(planning);	
 		contentPane.add(panelNord,BorderLayout.NORTH);
@@ -84,16 +87,18 @@ public class PopupVelos extends JDialog {
 			}
 		});
 		
-		JLabel lblLon = new JLabel("Longitude :" + s.getLon());
+		JLabel lblLon = new JLabel("Longitude : " + s.getLon());
 		
 		JLabel lblNbPlaces = new JLabel("Nombre de places : " + s.getNbPlace());
 		
-		JLabel lblPlacesDispos = new JLabel("Places libres : " + s.getVelosStation().size());
+		lblPlacesPrises = new JLabel("Places prises : " + s.getVelosStation().size());
 		
 		JLabel lblVelos = new JLabel("Velos :");
 		
 		
 		lblVelos.setFont(new Font("Tahoma", Font.BOLD, 11));
+		
+		JButton btnDemanderRotationVlo = new JButton("Demander rotation v\u00E9lo");
 		GroupLayout gl_panelNord = new GroupLayout(panelNord);
 		gl_panelNord.setHorizontalGroup(
 			gl_panelNord.createParallelGroup(Alignment.LEADING)
@@ -107,11 +112,14 @@ public class PopupVelos extends JDialog {
 								.addComponent(lblNbPlaces))
 							.addGap(57)
 							.addGroup(gl_panelNord.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblPlacesDispos)
+								.addComponent(lblPlacesPrises)
 								.addComponent(lblLon)))
 						.addComponent(lblVelos)
-						.addComponent(boutonAbsence))
-					.addContainerGap(172, Short.MAX_VALUE))
+						.addGroup(gl_panelNord.createSequentialGroup()
+							.addComponent(boutonAbsence)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnDemanderRotationVlo)))
+					.addContainerGap(186, Short.MAX_VALUE))
 		);
 		gl_panelNord.setVerticalGroup(
 			gl_panelNord.createParallelGroup(Alignment.TRAILING)
@@ -125,9 +133,11 @@ public class PopupVelos extends JDialog {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panelNord.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNbPlaces)
-						.addComponent(lblPlacesDispos))
+						.addComponent(lblPlacesPrises))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(boutonAbsence)
+					.addGroup(gl_panelNord.createParallelGroup(Alignment.BASELINE)
+						.addComponent(boutonAbsence)
+						.addComponent(btnDemanderRotationVlo))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblVelos)
 					.addGap(4))
@@ -135,8 +145,6 @@ public class PopupVelos extends JDialog {
 		panelNord.setLayout(gl_panelNord);
 		contentPane.add(panelCentre,BorderLayout.CENTER);
 		contentPane.add(panelSud,BorderLayout.SOUTH);
-		
-		this.setVisible(true);
 	}
 	
 	// Classe qui définit le modèle pour la JTable
@@ -173,7 +181,22 @@ public class PopupVelos extends JDialog {
 	    public String getColumnName(int columnIndex) {
 	        return index[columnIndex];
 	    }
-		
+	    
+		public void majTable(ArrayList<Velo> vls) {
+			velos = vls;
+			fireTableDataChanged();
+		}
+
 	}
+	
+	public void rechargerTableau(ArrayList<Velo> nvxVelos) {
+		donneesVelos.majTable(nvxVelos);
+		lblPlacesPrises.setText("Places prises : " + nvxVelos.size());
+	}
+	
+	public int getIdStation() {
+		return station.getId();
+	}
+
 }
 

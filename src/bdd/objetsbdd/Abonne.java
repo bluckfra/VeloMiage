@@ -8,7 +8,7 @@ public class Abonne implements Serializable{
 
 	private int id,code;
 	private Timestamp dateAboDebut,dateAboFin;
-	private boolean isTechnicien;
+	private boolean isTechnicien,hasVelo;
 	private Velo veloCourant;
 	
 	public Abonne() {
@@ -22,6 +22,7 @@ public class Abonne implements Serializable{
 		this.dateAboDebut = dateAboDebut;
 		this.dateAboFin = dateAboFin;
 		this.isTechnicien = isTechnicien;
+		this.hasVelo = false;
 	}
 	
 	public int getId() {
@@ -34,8 +35,13 @@ public class Abonne implements Serializable{
 
 	public void setVeloCourant(Velo veloCourant) {
 		this.veloCourant = veloCourant;
+		this.hasVelo = true ;
 	}
 
+
+	public boolean hasVelo() {
+		return hasVelo;
+	}
 
 	public void setId(int id) {
 		this.id = id;

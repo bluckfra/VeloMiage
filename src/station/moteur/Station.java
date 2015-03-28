@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.IdClientException;
+import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.locationException;
@@ -92,31 +93,21 @@ public class Station {
 	 * @param int idClient
 	 * @throws RemoteException
 	 * @throws locationException 
+	 * @throws LocationEnCoursException 
 	 * @throws demandeStationException 
 	 */
-	public int locationVelo(int idClient) throws RemoteException, locationException {
+	public int locationVelo(int idClient) throws RemoteException, locationException, LocationEnCoursException {
 		int idVelo = -1;
 		// vérification qu'il y a au moins un vélo de dispo
 		if (listeVelos.isEmpty()) {
 			throw new locationException();
 		}
-		// récupération d'un vélo
-		for(int i = 0; i < listeVelos.size(); i++){
-			System.out.println("velo avant loca " + listeVelos.get(i).toString());
-		}
-		idVelo = listeVelos.get(0).getId();
-		listeVelos.remove(0);
-		
-		// test retour 
-		for(int i = 0; i < listeVelos.size(); i++){
-			System.out.println("velo apres loca " + listeVelos.get(i).toString());
-		}
-		afficherInformationsDeLocation(idVelo);
-		System.out.println("Vous pouvez retirer le vélo : " + idVelo);
-		
 		Timestamp now = new Timestamp(System.currentTimeMillis());
-		// retrait du vélo, et mise à jour du cache
-		while(!proxy.location(idStation,idClient, idVelo,now)){	
+		if (proxy.location(idStation,idClient, idVelo,now)) {	
+			idVelo = listeVelos.get(0).getId();
+			listeVelos.remove(0);
+			afficherInformationsDeLocation(idVelo);
+			System.out.println("Vous pouvez retirer le vélo : " + idVelo);			
 		} 
 		
 		return idVelo;
