@@ -66,6 +66,10 @@ public class StationBD implements Serializable {
 		this.nbPlaceMax = place;
 	}
 	
+	public int getPlaceDispo(){
+		return (nbPlaceMax - velosStation.size());
+	}
+	
 	@Override
 	public String toString() {
 		String s = "Station n°" + id + " , latitude : " + lat + ", longitude : " + lon;

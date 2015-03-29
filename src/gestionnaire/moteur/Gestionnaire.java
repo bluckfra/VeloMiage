@@ -208,14 +208,14 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws demandeStationException 
 	 */
-	public String[] demandeStationProche(int idStation, boolean demandeLocation)throws RemoteException {
+	public Object[] demandeStationProche(int idStation, boolean demandeLocation)throws RemoteException {
 		
 		// récupération des lattitudes et longi de la station courante
 		StationBD station = daoStationBD.find(idStation);
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
 
 		// création variable résultat
-		String res[] = new String[3];
+		Object res[] = new Object[4];
 
 		// récupération de la longitude et latitude de la station 1
 		double latStation1 = station.getLat();
@@ -235,20 +235,28 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		while (itDist.hasNext()) {
 			double dist = itDist.next();
 			StationBD sDist = listDistStation.get(dist);
-			/*int placeDispo = sDist.getPlaceDispo(); 
+			
+			int placeDispo = sDist.getPlaceDispo();
+			System.out.println("nb place dispo " + placeDispo);
+			
 			if(placeDispo> 0 && demandeLocation){ 
-				if(placeDispo != sDist.getPlaceMax()){ 
+				System.out.println("passage en location");
+				System.out.println("nombre place max station = " + sDist.getNbPlace() );
+				if(placeDispo != sDist.getNbPlace()){ 
 					res[0] = "" + sDist.getId();
 					res[1] = "" + sDist.getLat();
 					res[2] = "" + sDist.getLon();
+					res[3] = "louer";
 					break; 
 				}
 			}else if(placeDispo>0){
+					System.out.println("passage en restitution");
 					res[0] = "" + sDist.getId();
 					res[1] = "" + sDist.getLat();
 					res[2] = "" + sDist.getLon(); 
-			break; }
-			 */
+					res[3] = "restituer";
+			break; 
+			}
 		}
 			return res;	
 	}

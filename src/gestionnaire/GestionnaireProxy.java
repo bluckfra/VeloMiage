@@ -32,5 +32,5 @@ public interface GestionnaireProxy extends java.rmi.Remote{
 	 * <Stéfan> - 21/03/2015 - Step 5
 	 * @throws RemoteException
 	 */
-	public String[] demandeStationProche(int idStation, boolean demandeLocation) throws java.rmi.RemoteException;
+	public Object[] demandeStationProche(int idStation, boolean demandeLocation) throws java.rmi.RemoteException;
 }

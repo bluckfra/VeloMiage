@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.Font;
+import java.rmi.RemoteException;
 
 public class PanelRetourVelo extends JPanel{
 	private JTextField txt_idVelo;
@@ -40,7 +41,15 @@ public class PanelRetourVelo extends JPanel{
 		JButton btn_valider = new JButton("Valider");
 		btn_valider.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				modele.actionRestitution(Integer.parseInt(txt_idVelo.getText()));
+				try {
+					modele.actionRestitution(Integer.parseInt(txt_idVelo.getText()));
+				} catch (NumberFormatException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btn_valider.setBounds(73, 106, 89, 23);

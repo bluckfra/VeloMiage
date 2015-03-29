@@ -2,6 +2,7 @@ package station.moteur.ihm.panels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -68,7 +69,15 @@ public class PanelIdentification extends JPanel {
 
 		btnValider.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				modele.actionLouer(Integer.parseInt(textFieldId.getText()), Integer.parseInt(textFieldMdp.getText()));
+				try {
+					modele.actionLouer(Integer.parseInt(textFieldId.getText()), Integer.parseInt(textFieldMdp.getText()));
+				} catch (NumberFormatException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 

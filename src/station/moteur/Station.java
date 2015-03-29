@@ -116,13 +116,13 @@ public class Station {
 		return idVelo;
 	}
 	
-	public String[] demandeStations() throws RemoteException {
+	public Object[] demandeStations(boolean location) throws RemoteException {
 		// pas de vélo disponible
 		// etape 4: indication de la station la plus proche
-		String reponse[] = null;
-			reponse = proxy.demandeStationProche(idStation,true);
+		Object reponse[] = null;
+			reponse = proxy.demandeStationProche(idStation,location);
 			System.out.println("Il n'y a pas de vélo de disponible dans cette station");
-			System.out.println("Veuillez-vous diriger dans la station: ");
+			System.out.println("Veuillez-vous diriger dans la station: " + reponse[0]);
 			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
 		
 		return reponse;
@@ -152,18 +152,19 @@ public class Station {
 	}
 	
 	// méthode de demande d'une station proche si manque de place
-	public void stationsProches() throws demandeStationException {
-		String reponse[];
+	public Object[] stationsProches() throws demandeStationException {
+		Object reponse[];
 		
 		try {
 			reponse = proxy.demandeStationProche(idStation,false);
 			System.out.println("Il n'y a pas de place pour votre vélo de disponible -- Station saturée");
 			System.out.println("Veuillez-vous diriger dans la station: ");
 			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
-
+			
 		} catch (RemoteException e) {
 			throw new demandeStationException();
 		}
+		return reponse;
 	}
 
 	/* Display Management */

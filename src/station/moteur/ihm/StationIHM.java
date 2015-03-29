@@ -12,6 +12,7 @@ import station.moteur.ihm.panels.PanelIdentification;
 import station.moteur.ihm.panels.PanelRetourVelo;
 import station.moteur.ihm.popups.PopupLocationVelo;
 import station.moteur.ihm.popups.PopupRestitutionVelo;
+import station.moteur.ihm.popups.PopupStationPlacesDispo;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.StationPleineException;
@@ -61,7 +62,7 @@ public class StationIHM extends JFrame {
 	
 	/// PANEL IDENTIFICATION
 	
-	public void actionLouer(int identifiant, int mdp) {
+	public void actionLouer(int identifiant, int mdp) throws RemoteException {
 		boolean identificationReussie = false ;
 		try {
 			 identificationReussie = s.identification(identifiant, mdp);
@@ -84,7 +85,7 @@ public class StationIHM extends JFrame {
 	
 	// PANEL LOCATION
 	
-	public void actionLocation(int idCli) {
+	public void actionLocation(int idCli) throws RemoteException {
 		try {
 			int idVelo = s.locationVelo(idCli);
 			new PopupLocationVelo(idVelo).setVisible(true);
@@ -94,7 +95,11 @@ public class StationIHM extends JFrame {
 		} catch (locationException e) {
 			// gérer le cas de pas de vélo dispos
 			// affiche les places dispos
-			actionStationsPlacesDispos();
+			/*Object[] res = s.demandeStations(true);
+			System.out.println("Infos pour la station la plus proche:");
+			System.out.println("Id = " + res[0]);
+			System.out.println("Coordonnées: lattitude = " + res[1] + " Longitudes = " + res[2]);*/
+			actionStationsPlacesDispos(true);
 		} catch (LocationEnCoursException e) {
 			// TODO Auto-generated catch block
 			panelIdentification.afficherErreurDejaLoc();
@@ -102,7 +107,7 @@ public class StationIHM extends JFrame {
 	}
 	
 	// PANEL RESTITUTION
-	public void actionRestitution(int idVelo) {
+	public void actionRestitution(int idVelo) throws RemoteException {
 		boolean restitutionOK = false ;
 		try {
 			restitutionOK = s.retourVelo(idVelo);
@@ -113,7 +118,11 @@ public class StationIHM extends JFrame {
 			panelRetourVelo.afficherVeloInvalideError();			
 			e.printStackTrace();
 		} catch (StationPleineException e) {
-			actionStationsPlacesDispos();
+			/*Object[] res = s.demandeStations(true);
+			System.out.println("Infos pour la station la plus proche:");
+			System.out.println("Id = " + res[0]);
+			System.out.println("Coordonnées: lattitude = " + res[1] + " Longitudes = " + res[2]);*/
+			actionStationsPlacesDispos(false);
 		}
 		if (restitutionOK) {
 			// affichage popup retour validé
@@ -125,13 +134,15 @@ public class StationIHM extends JFrame {
 
 	}
 	
-	public void actionStationsPlacesDispos() {
+	public void actionStationsPlacesDispos(boolean loc) {
 		try {
-			s.demandeStations();
-			JDialog temp = new JDialog();
+			Object[] res = s.demandeStations(loc);
+			
+			new PopupStationPlacesDispo(res).setVisible(true);
+			/*JDialog temp = new JDialog();
 			temp.setTitle("Temp : plus de place");
 			temp.setVisible(true);
-			temp.setModal(true);
+			temp.setModal(true);*/ 
 		} catch (RemoteException e) {
 			
 		}
