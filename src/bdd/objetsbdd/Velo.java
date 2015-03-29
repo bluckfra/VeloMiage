@@ -8,8 +8,8 @@ public class Velo implements Serializable {
 	private int id, etat;
 	private int abonneCourant;
 	private int stationCourante;
-	private Timestamp dateDerniereLocation;
-	private Timestamp dateDernierRetour;
+	private Timestamp dateDerniereLocDebut;
+	private Timestamp dateDerniereLocFin;
 	private boolean isInLocation;
 	
 	public Velo() {
@@ -52,6 +52,22 @@ public class Velo implements Serializable {
 		this.abonneCourant = abonneCourant;
 	}
 	
+	public Timestamp getDateDerniereLocDebut() {
+		return dateDerniereLocDebut;
+	}
+
+	public void setDateDerniereLocDebut(Timestamp dateDerniereLocDebut) {
+		this.dateDerniereLocDebut = dateDerniereLocDebut;
+	}
+
+	public Timestamp getDateDerniereLocFin() {
+		return dateDerniereLocFin;
+	}
+
+	public void setDateDerniereLocFin(Timestamp dateDerniereLocFin) {
+		this.dateDerniereLocFin = dateDerniereLocFin;
+	}
+	
 	public boolean isInLocation() {
 		return isInLocation;
 	}
@@ -60,23 +76,7 @@ public class Velo implements Serializable {
 	public String toString() {
 		return "Vélo n°" + id + ", état : " + etat;
 	}
-	
-	public Timestamp getDateDerniereLocation() {
-		return dateDerniereLocation;
-	}
-
-	public void setDateDerniereLocation(Timestamp dateDerniereLocation) {
-		this.dateDerniereLocation = dateDerniereLocation;
-	}
-
-	public Timestamp getDateDernierRetour() {
-		return dateDernierRetour;
-	}
-
-	public void setDateDernierRetour(Timestamp dateDernierRetour) {
-		this.dateDernierRetour = dateDernierRetour;
-	}
-	
+		
 	public int getStationCourante() {
 		return stationCourante;
 	}

@@ -28,30 +28,47 @@ public class VeloDAO extends DAO<Velo> {
 				// création de la station avec les données de la base
 				velo = new Velo(
 						id, 
-						result.getInt(1));		
+						result.getInt(2));		
 			}
 			
-			// recherche de locations en cours
-			result = this.connect.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_UPDATABLE).executeQuery(
-					"SELECT * FROM louer WHERE idvelo = " + id 
-					+ " AND dateFin is null ");
-			if (result.first()) {
-				// le vélo courant est en location, il possède un abonné
-				velo.setAbonneCourant(result.getInt(2));
+			if (velo.getEtat() == 1) {
+				// recherche de locations en cours
+				result = this.connect.createStatement(
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE).executeQuery(
+						"SELECT * FROM louer WHERE idvelo = " + id 
+						+ " AND dateFin is null ");
+				if (result.first()) {
+					// le vélo courant est en location, il possède un abonné
+					velo.setAbonneCourant(result.getInt(2));
+				}
 			}
 			
-			// recherche de stations liées
-			result = this.connect.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_UPDATABLE).executeQuery(
-					"SELECT * FROM posseder WHERE idvelo = " + id 
-					+ " AND dateRetrait is null ");
-			if (result.first()) {
-				// le vélo courant est dans une station
-				velo.setStationCourante(result.getInt(2));
+			if (velo.getEtat() == 2) {
+				// recherche de stations liées
+				result = this.connect.createStatement(
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE).executeQuery(
+						"SELECT * FROM posseder WHERE idvelo = " + id 
+						+ " AND dateRetrait is null ");
+				if (result.first()) {
+					// le vélo courant est dans une station
+					velo.setStationCourante(result.getInt(2));
+				}	
+				
+				// recherche de locations précédentes
+				result = this.connect.createStatement(
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_UPDATABLE).executeQuery(
+						"SELECT * FROM louer WHERE idvelo = " + id 
+						+ " ORDER BY idLouer DESC LIMIT 1 ");
+				if (result.first()) {
+					// le vélo courant a eu une location, on initialise les dates
+					velo.setDateDerniereLocDebut(result.getTimestamp(4));
+					velo.setDateDerniereLocFin(result.getTimestamp(5));
+				}
 			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -118,7 +135,7 @@ public class VeloDAO extends DAO<Velo> {
                 	ResultSet.TYPE_SCROLL_INSENSITIVE, 
                     ResultSet.CONCUR_UPDATABLE
                  ).executeUpdate(
-                	"UPDATE Velo SET etat = " + obj.getId() +
+                	"UPDATE Velo SET etat = " + obj.getEtat() +
                 	" WHERE idVelo = " + obj.getId()
                  );
 

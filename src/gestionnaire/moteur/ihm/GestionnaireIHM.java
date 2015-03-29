@@ -148,7 +148,7 @@ public class GestionnaireIHM extends JFrame {
 		panelStations.rechargerTableau(stations);
 		panelVelos.rechargerTableau(velos);
 		
-		if (popupDetailsStation != null) {
+		if (isDetails) {
 			System.out.println("modif popup");
 			if (popupDetailsStation.getIdStation() == s.getId()) {
 				popupDetailsStation.rechargerTableau(gestionnaire.getInstancesVelos(s.getId()));
@@ -158,10 +158,9 @@ public class GestionnaireIHM extends JFrame {
 	}
 	
 	public void actionAfficherDetailsStation(StationBD s) {
-		System.out.println("init");
+		isDetails = true;
 		popupDetailsStation = new PopupVelos(s);
 		popupDetailsStation.setVisible(true);
-		isDetails = true;
 	}
 
 }
