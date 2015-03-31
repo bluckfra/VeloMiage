@@ -33,6 +33,11 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	private static double prixHeure = 2;
 	private static GestionnaireIHM ihm;
 	
+	private static final int NBELEMENT_STATION = 8;
+	private static final int NBSTATION_AFFICHER = 3;
+	private static final double VITESSE_MOY_PIED  = 4.3;
+	private static final double VITESSE_MOY_VELO  = 18.6;
+	
 	/**
 	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * 
@@ -215,7 +220,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
 
 		// création variable résultat
-		Object res[] = new Object[4];
+		Object res[] = new Object[NBELEMENT_STATION * NBSTATION_AFFICHER];
 
 		// récupération de la longitude et latitude de la station 1
 		double latStation1 = station.getLat();
@@ -232,7 +237,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 
 		// choix de la station ayant des places
 		Iterator<Double> itDist = listDistStation.keySet().iterator();
-		while (itDist.hasNext()) {
+		int nbStation = 0;
+		while (itDist.hasNext() && nbStation < NBSTATION_AFFICHER) {
 			double dist = itDist.next();
 			StationBD sDist = listDistStation.get(dist);
 			
@@ -243,20 +249,23 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 				System.out.println("passage en location");
 				System.out.println("nombre place max station = " + sDist.getNbPlace() );
 				if(placeDispo != sDist.getNbPlace()){ 
-					res[0] = "" + sDist.getId();
-					res[1] = "" + sDist.getLat();
-					res[2] = "" + sDist.getLon();
-					res[3] = "louer";
-					break; 
+					res[0 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getId();
+					res[1 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getLat();
+					res[2 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getLon();
+					res[3 + (NBELEMENT_STATION * nbStation)] = ""+ dist;
+					res[4 + (NBELEMENT_STATION * nbStation)] = "" + (VITESSE_MOY_PIED / dist);
+					res[5 + (NBELEMENT_STATION * nbStation)] = "" + (VITESSE_MOY_VELO / dist);
+					res[6 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getPlaceDispo();
+					res[7 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getNbPlace();
 				}
 			}else if(placeDispo>0){
 					System.out.println("passage en restitution");
-					res[0] = "" + sDist.getId();
-					res[1] = "" + sDist.getLat();
-					res[2] = "" + sDist.getLon(); 
+					res[0*nbStation] = "" + sDist.getId();
+					res[1*nbStation] = "" + sDist.getLat();
+					res[2*nbStation] = "" + sDist.getLon(); 
 					res[3] = "restituer";
-			break; 
 			}
+			nbStation++;
 		}
 			return res;	
 	}
