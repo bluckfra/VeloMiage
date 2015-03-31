@@ -133,10 +133,6 @@ public class StationIHM extends JFrame {
 			Object[] res = s.demandeStations(loc);
 			this.changerPanel(Etat.Menu);
 			new PopupStationPlacesDispo(res).setVisible(true);
-			/*JDialog temp = new JDialog();
-			temp.setTitle("Temp : plus de place");
-			temp.setVisible(true);
-			temp.setModal(true);*/ 
 		} catch (RemoteException e) {
 			
 		}
@@ -149,7 +145,6 @@ public class StationIHM extends JFrame {
 			int reponse[] = s.demanderAbo(false);
 			panelDemandeAbo.afficherAboGenere(reponse[0], reponse[1]);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

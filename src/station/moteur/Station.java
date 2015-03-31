@@ -38,14 +38,11 @@ public class Station {
 	public Station(int id) throws Exception {
 		proxy = (GestionnaireProxy) Naming
 				.lookup("rmi://localhost:1099/GestionStat");
-		// on doit récupérer la liste via le gestionnaire
+		// 
 		this.idStation = id;
-		//this.taille = taille;
 		Object[] caracteristiques = proxy.caracteristiquesStation(id);
-		//listeVelos = proxy.listeVelo(id);
 		listeVelos = (ArrayList)caracteristiques[0];
 		this.taille = (Integer)caracteristiques[1];
-		
 		codeClient = 0;
 		nbEssais = 0;
 	}
@@ -59,7 +56,6 @@ public class Station {
 	 */
 	public int[] demanderAbo(boolean isTech) throws RemoteException{
 		int reponse[] = proxy.creerAbonnement(isTech);
-			afficherInformationCreationAbonnement(reponse);
 		return reponse;
 	}
 
@@ -109,22 +105,14 @@ public class Station {
 		idVelo = listeVelos.get(0).getId();
 		if (proxy.location(idStation,idClient, idVelo,now)) {	
 			listeVelos.remove(0);
-			afficherInformationsDeLocation(idVelo);
-			System.out.println("Vous pouvez retirer le vélo : " + idVelo);			
 		} 
 		
 		return idVelo;
 	}
 	
 	public Object[] demandeStations(boolean location) throws RemoteException {
-		// pas de vélo disponible
-		// etape 4: indication de la station la plus proche
 		Object reponse[] = null;
-			reponse = proxy.demandeStationProche(idStation,location);
-			System.out.println("Il n'y a pas de vélo de disponible dans cette station");
-			System.out.println("Veuillez-vous diriger dans la station: " + reponse[0]);
-			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
-		
+		reponse = proxy.demandeStationProche(idStation,location);
 		return reponse;
 	}
 
@@ -144,8 +132,6 @@ public class Station {
 				// mise à jour du cache
 				Velo v = new Velo(idV);
 				listeVelos.add(v);
-				afficherInformationsDeRetour(v);
-				System.out.println("Retour vélo accepté");
 				return true;
 			}				
 			return false;
@@ -157,47 +143,12 @@ public class Station {
 		
 		try {
 			reponse = proxy.demandeStationProche(idStation,false);
-			System.out.println("Il n'y a pas de place pour votre vélo de disponible -- Station saturée");
-			System.out.println("Veuillez-vous diriger dans la station: ");
-			System.out.println("Coordonnées: lattitude = " + reponse[1] + " Longitudes = " + reponse[2]);
-			
 		} catch (RemoteException e) {
 			throw new demandeStationException();
 		}
 		return reponse;
 	}
 
-	/* Display Management */
-	/**
-	 * <Stéfan> - 21/03/2015 - Etape 2 
-	 * @param string idVelo
-	 * @throws RemoteException
-	 */
-	public void afficherInformationsDeLocation(int idVelo) {
-		System.out.println("Vous pouvez retirer le vélo " + idVelo);
-	}
-
-	/**
-	 * <Stéfan> - 21/03/2015 - Etape 2 Arg String
-	 * 
-	 * @throws RemoteException
-	 */
-	public void afficherInformationsDeRetour(Velo velo) {
-		System.out.println(velo.toString());
-	}
-
-	/**
-	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1 
-	 * @param int reponse[]
-	 * @throws RemoteException
-	 */
-	public void afficherInformationCreationAbonnement(int reponse[]) {
-		System.out.println("Votre identifiant est : " + reponse[0]);
-		System.out.println("Votre code confidentiel est : "
-				+ reponse[1]);
-		System.out.println("Veuillez ne pas communiquer vos identifiants");
-	}
-	
 	public int getIdStation() {
 		return idStation;
 	}
