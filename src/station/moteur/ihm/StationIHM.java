@@ -10,6 +10,7 @@ import station.moteur.ihm.panels.PanelAccueil;
 import station.moteur.ihm.panels.PanelDemandeAbo;
 import station.moteur.ihm.panels.PanelIdentification;
 import station.moteur.ihm.panels.PanelRetourVelo;
+import station.moteur.ihm.popups.PopupErreurRemote;
 import station.moteur.ihm.popups.PopupLocationVelo;
 import station.moteur.ihm.popups.PopupRestitutionVelo;
 import station.moteur.ihm.popups.PopupStationPlacesDispo;
@@ -59,26 +60,23 @@ public class StationIHM extends JFrame {
 		panelCourant = panelMenu;
 		changerPanel(Etat.Menu);
 	}
-	
-	/// PANEL IDENTIFICATION
-	
+
 	public void actionLouer(int identifiant, int mdp) throws RemoteException {
 		boolean identificationReussie = false ;
 		try {
 			 identificationReussie = s.identification(identifiant, mdp);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			panelIdentification.remiseAZero();
+			this.changerPanel(Etat.Menu);
+			new PopupErreurRemote().setVisible(true);
 		} catch (EssaisEcoulesException e) {
+			panelIdentification.remiseAZero();
 			panelIdentification.afficherErreur();
 		}
-		
 		if (identificationReussie) {
-			// location si c'est possible du vélo
-			// AFAIRE
 			actionLocation(identifiant);			
 		} else {
-			// affichage de l'erreur d'un essai
+			panelIdentification.remiseAZero();
 			panelIdentification.afficherErreurEssai();
 		}
 	}
@@ -91,14 +89,14 @@ public class StationIHM extends JFrame {
 			this.changerPanel(Etat.Menu);
 			new PopupLocationVelo(idVelo).setVisible(true);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			panelIdentification.remiseAZero();
+			this.changerPanel(Etat.Menu);
+			new PopupErreurRemote().setVisible(true);
 		} catch (locationException e) {
-			// gérer le cas de pas de vélo dispos
-			// affiche les places dispos
+			// gestion cas pas de vélo dispo
 			actionStationsPlacesDispos(true);
 		} catch (LocationEnCoursException e) {
-			// TODO Auto-generated catch block
+			// gestion cas abonne a deja une location 
 			panelIdentification.afficherErreurDejaLoc();
 		}
 	}
@@ -109,20 +107,24 @@ public class StationIHM extends JFrame {
 		try {
 			restitutionOK = s.retourVelo(idVelo);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			panelRetourVelo.remiseAZero();
+			this.changerPanel(Etat.Menu);
+			new PopupErreurRemote().setVisible(true);
 		} catch (VeloPasLoueException e) {
+			panelRetourVelo.remiseAZero();
 			panelRetourVelo.afficherVeloInvalideError();			
-			e.printStackTrace();
 		} catch (StationPleineException e) {
+			panelRetourVelo.remiseAZero();
 			actionStationsPlacesDispos(false);
 		}
 		if (restitutionOK) {
 			// affichage popup retour validé
+			panelRetourVelo.remiseAZero();
 			this.changerPanel(Etat.Menu);
 			new PopupRestitutionVelo(idVelo).setVisible(true);
 		} else {
 			// affichage message erreur
+			panelRetourVelo.remiseAZero();
 			panelRetourVelo.afficherError();			
 		}
 
@@ -133,8 +135,19 @@ public class StationIHM extends JFrame {
 			Object[] res = s.demandeStations(loc);
 			this.changerPanel(Etat.Menu);
 			new PopupStationPlacesDispo(res).setVisible(true);
+			if(loc){
+				panelIdentification.remiseAZero();
+			}else{
+				panelRetourVelo.remiseAZero();				
+			}
 		} catch (RemoteException e) {
-			
+			if(loc){
+				panelIdentification.remiseAZero();
+			}else{
+				panelRetourVelo.remiseAZero();				
+			}
+			this.changerPanel(Etat.Menu);
+			new PopupErreurRemote().setVisible(true);
 		}
 	}
 	
@@ -145,7 +158,8 @@ public class StationIHM extends JFrame {
 			int reponse[] = s.demanderAbo(false);
 			panelDemandeAbo.afficherAboGenere(reponse[0], reponse[1]);
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			this.changerPanel(Etat.Menu);
+			new PopupErreurRemote().setVisible(true);
 		}
 	}
 	

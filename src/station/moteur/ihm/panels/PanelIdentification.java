@@ -16,6 +16,8 @@ import javax.swing.JTextField;
 
 import station.moteur.ihm.Etat;
 import station.moteur.ihm.StationIHM;
+import station.moteur.ihm.popups.PopupErreurRemote;
+import java.awt.Color;
 
 public class PanelIdentification extends JPanel {
 	private JTextField textFieldId;
@@ -59,7 +61,8 @@ public class PanelIdentification extends JPanel {
 		btnValider.setBounds(10, 156, 85, 23);
 		add(btnValider);
 		
-		 labelErreur = new JLabel("");
+		labelErreur = new JLabel("");
+		labelErreur.setForeground(Color.RED);
 		labelErreur.setBounds(30, 36, 399, 14);
 		add(labelErreur);
 		
@@ -76,18 +79,17 @@ public class PanelIdentification extends JPanel {
 					modele.actionLouer(Integer.parseInt(textFieldId.getText()), Integer.parseInt(textFieldMdp.getText()));
 					remiseAZero();
 				} catch (NumberFormatException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					remiseAZero();
+					modele.changerPanel(Etat.Menu);
+					new PopupErreurRemote().setVisible(true);
 				}
 			}
-		});
-
-		
+		});	
 	}
-	
+
+	// gestion erreur nombre essais
 	public void afficherErreur() {
 		labelErreur.setText("Erreur : nombre d'essais écoulés");
 		textFieldId.setEnabled(false);

@@ -9,6 +9,7 @@ import javax.swing.text.JTextComponent;
 
 import station.moteur.ihm.Etat;
 import station.moteur.ihm.StationIHM;
+import station.moteur.ihm.popups.PopupErreurRemote;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -48,10 +49,11 @@ public class PanelRetourVelo extends JPanel{
 					remiseAZero();
 				} catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					afficherError();
 				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					remiseAZero();
+					modele.changerPanel(Etat.Menu);
+					new PopupErreurRemote().setVisible(true);
 				}
 			}
 		});

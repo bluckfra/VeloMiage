@@ -193,11 +193,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 
 	/**
 	 * WIP <Stéfan> - 21/03/2015 - Etape 5
-	 * 
-	 * @throws RemoteException
 	 * @throws demandeStationException 
 	 */
-	public Object[] demandeStationProche(int idStation, boolean demandeLocation)throws RemoteException {
+	public Object[] demandeStationProche(int idStation, boolean demandeLocation) {
 		// récupération des lattitudes et longi de la station courante
 		StationBD station = daoStationBD.find(idStation);
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();

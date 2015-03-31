@@ -54,7 +54,7 @@ public class PanelDemandeAbo extends JPanel {
 		
 		lbl_consigne = new JLabel("");
 		lbl_consigne.setForeground(Color.RED);
-		lbl_consigne.setBounds(72, 108, 46, 14);
+		lbl_consigne.setBounds(72, 108, 303, 14);
 		add(lbl_consigne);
 
 		
