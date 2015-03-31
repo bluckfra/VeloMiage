@@ -1,5 +1,6 @@
 package station.moteur.ihm.panels;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
@@ -10,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.JTextComponent;
 import javax.swing.JTextField;
 
 import station.moteur.ihm.Etat;
@@ -63,6 +65,7 @@ public class PanelIdentification extends JPanel {
 		
 		btnRetour.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				remiseAZero();
 				modele.changerPanel(Etat.Menu);
 			}
 		});
@@ -71,6 +74,7 @@ public class PanelIdentification extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					modele.actionLouer(Integer.parseInt(textFieldId.getText()), Integer.parseInt(textFieldMdp.getText()));
+					remiseAZero();
 				} catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -96,6 +100,14 @@ public class PanelIdentification extends JPanel {
 	
 	public void afficherErreurDejaLoc() {
 		labelErreur.setText("Erreur : vous êtes déjà en cours de location");
+	}
+	
+	public void remiseAZero(){
+		for (Component C : this.getComponents()){
+			if(C instanceof JTextField){
+				((JTextComponent) C ).setText("");
+			}
+		}
 	}
 
 

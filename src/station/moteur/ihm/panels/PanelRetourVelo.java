@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.text.JTextComponent;
 
 import station.moteur.ihm.Etat;
 import station.moteur.ihm.StationIHM;
@@ -12,6 +13,7 @@ import station.moteur.ihm.StationIHM;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.rmi.RemoteException;
 
@@ -43,6 +45,7 @@ public class PanelRetourVelo extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					modele.actionRestitution(Integer.parseInt(txt_idVelo.getText()));
+					remiseAZero();
 				} catch (NumberFormatException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -58,6 +61,7 @@ public class PanelRetourVelo extends JPanel{
 		JButton btn_annuler = new JButton("Annuler");
 		btn_annuler.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				remiseAZero();
 				modele.changerPanel(Etat.Menu);
 			}
 		});
@@ -79,5 +83,13 @@ public class PanelRetourVelo extends JPanel{
 	public void afficherVeloInvalideError(){
 		lbl_error.setText("Erreur : Le vélo que vous voulez rendre n'est pas en location");
 		lbl_error.setEnabled(true);
+	}
+	
+	public void remiseAZero(){
+		for (Component C : this.getComponents()){
+			if(C instanceof JTextField){
+				((JTextComponent) C ).setText("");
+			}
+		}
 	}
 }

@@ -88,6 +88,7 @@ public class StationIHM extends JFrame {
 	public void actionLocation(int idCli) throws RemoteException {
 		try {
 			int idVelo = s.locationVelo(idCli);
+			this.changerPanel(Etat.Menu);
 			new PopupLocationVelo(idVelo).setVisible(true);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -95,10 +96,6 @@ public class StationIHM extends JFrame {
 		} catch (locationException e) {
 			// gérer le cas de pas de vélo dispos
 			// affiche les places dispos
-			/*Object[] res = s.demandeStations(true);
-			System.out.println("Infos pour la station la plus proche:");
-			System.out.println("Id = " + res[0]);
-			System.out.println("Coordonnées: lattitude = " + res[1] + " Longitudes = " + res[2]);*/
 			actionStationsPlacesDispos(true);
 		} catch (LocationEnCoursException e) {
 			// TODO Auto-generated catch block
@@ -118,14 +115,11 @@ public class StationIHM extends JFrame {
 			panelRetourVelo.afficherVeloInvalideError();			
 			e.printStackTrace();
 		} catch (StationPleineException e) {
-			/*Object[] res = s.demandeStations(true);
-			System.out.println("Infos pour la station la plus proche:");
-			System.out.println("Id = " + res[0]);
-			System.out.println("Coordonnées: lattitude = " + res[1] + " Longitudes = " + res[2]);*/
 			actionStationsPlacesDispos(false);
 		}
 		if (restitutionOK) {
 			// affichage popup retour validé
+			this.changerPanel(Etat.Menu);
 			new PopupRestitutionVelo(idVelo).setVisible(true);
 		} else {
 			// affichage message erreur
@@ -137,7 +131,7 @@ public class StationIHM extends JFrame {
 	public void actionStationsPlacesDispos(boolean loc) {
 		try {
 			Object[] res = s.demandeStations(loc);
-			
+			this.changerPanel(Etat.Menu);
 			new PopupStationPlacesDispo(res).setVisible(true);
 			/*JDialog temp = new JDialog();
 			temp.setTitle("Temp : plus de place");

@@ -8,8 +8,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -33,7 +35,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	private static double prixHeure = 2;
 	private static GestionnaireIHM ihm;
 	
-	private static final int NBELEMENT_STATION = 8;
+	private static final int NBELEMENT_STATION = 9;
 	private static final int NBSTATION_AFFICHER = 3;
 	private static final double VITESSE_MOY_PIED  = 4.3;
 	private static final double VITESSE_MOY_VELO  = 18.6;
@@ -234,38 +236,67 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 					latStation1, longStation1, s.getLat(), s.getLon());
 			listDistStation.put(distStation, s);
 		}
-
+		
 		// choix de la station ayant des places
 		Iterator<Double> itDist = listDistStation.keySet().iterator();
+		
+		// affichage treemap test
+		for (Map.Entry<Double,StationBD> entree : listDistStation.entrySet()) {
+			System.out.println("Clé : "+entree.getKey()+" Valeur : "+entree.getValue().toString());
+		}
+		
 		int nbStation = 0;
+		itDist.next();
 		while (itDist.hasNext() && nbStation < NBSTATION_AFFICHER) {
 			double dist = itDist.next();
 			StationBD sDist = listDistStation.get(dist);
-			
 			int placeDispo = sDist.getPlaceDispo();
 			System.out.println("nb place dispo " + placeDispo);
-			
-			if(placeDispo> 0 && demandeLocation){ 
-				System.out.println("passage en location");
+			DecimalFormat df = new DecimalFormat("0.##");
+			double pied = (dist / VITESSE_MOY_PIED) * 60;
+			String valPied;
+			if(pied < 1){
+				valPied = "< 1";
+			}else{
+				valPied = df.format(pied);
+			}
+			double velo = (dist / VITESSE_MOY_VELO) * 60;
+			String valVelo;
+			if(velo  < 1){
+				valVelo = " < 1";
+			}else{
+				valVelo = df.format(velo);
+			}
+			if(placeDispo>= 0 && demandeLocation){ 
+				System.out.println("passage en location + test if : " + (placeDispo != sDist.getNbPlace()) + " nbPlace = " + sDist.getNbPlace() + "placeDispo=" + placeDispo);
 				System.out.println("nombre place max station = " + sDist.getNbPlace() );
 				if(placeDispo != sDist.getNbPlace()){ 
+					System.out.println("nb place != nb dispo");
 					res[0 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getId();
 					res[1 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getLat();
 					res[2 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getLon();
-					res[3 + (NBELEMENT_STATION * nbStation)] = ""+ dist;
-					res[4 + (NBELEMENT_STATION * nbStation)] = "" + (VITESSE_MOY_PIED / dist);
-					res[5 + (NBELEMENT_STATION * nbStation)] = "" + (VITESSE_MOY_VELO / dist);
+					res[3 + (NBELEMENT_STATION * nbStation)] = "" + df.format(dist);
+					res[4 + (NBELEMENT_STATION * nbStation)] = valPied;;
+					res[5 + (NBELEMENT_STATION * nbStation)] = valVelo ;
 					res[6 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getPlaceDispo();
 					res[7 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getNbPlace();
+					res[8 + (NBELEMENT_STATION * nbStation)] = " louer ";
+					nbStation++;
 				}
 			}else if(placeDispo>0){
 					System.out.println("passage en restitution");
-					res[0*nbStation] = "" + sDist.getId();
-					res[1*nbStation] = "" + sDist.getLat();
-					res[2*nbStation] = "" + sDist.getLon(); 
-					res[3] = "restituer";
+					res[0 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getId();
+					res[1 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getLat();
+					res[2 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getLon();
+					res[3 + (NBELEMENT_STATION * nbStation)] = "" + df.format(dist);
+					res[4 + (NBELEMENT_STATION * nbStation)] = valPied;
+					res[5 + (NBELEMENT_STATION * nbStation)] = valVelo;
+					res[6 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getPlaceDispo();
+					res[7 + (NBELEMENT_STATION * nbStation)] = "" + sDist.getNbPlace();
+					res[8 + (NBELEMENT_STATION * nbStation)] = " restituer";
+					nbStation++;
 			}
-			nbStation++;
+			
 		}
 			return res;	
 	}
