@@ -1,26 +1,29 @@
-package station.moteur.ihm;
+package station.ihm;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
-import station.moteur.Station;
-import station.moteur.ihm.panels.PanelAccueil;
-import station.moteur.ihm.panels.PanelDemandeAbo;
-import station.moteur.ihm.panels.PanelIdentification;
-import station.moteur.ihm.panels.PanelRetourVelo;
-import station.moteur.ihm.popups.PopupErreurRemote;
-import station.moteur.ihm.popups.PopupLocationVelo;
-import station.moteur.ihm.popups.PopupRestitutionVelo;
-import station.moteur.ihm.popups.PopupStationPlacesDispo;
+import station.Station;
+import station.ihm.panels.PanelAccueil;
+import station.ihm.panels.PanelDemandeAbo;
+import station.ihm.panels.PanelIdentification;
+import station.ihm.panels.PanelRetourVelo;
+import station.ihm.popups.PopupErreurRemote;
+import station.ihm.popups.PopupLocationVelo;
+import station.ihm.popups.PopupRestitutionVelo;
+import station.ihm.popups.PopupStationPlacesDispo;
+import station.ihm.popups.PopupTicketAbo;
+import utils.exceptions.AbonneInexistantException;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.StationPleineException;
+import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
-import utils.exceptions.locationException;
+import utils.exceptions.LocationException;
 
 import java.awt.GridLayout;
 import java.net.IDN;
@@ -34,6 +37,9 @@ public class StationIHM extends JFrame {
 	private PanelAccueil panelMenu;
 	private PanelDemandeAbo panelDemandeAbo;
 	private PanelRetourVelo panelRetourVelo;
+	private Object[] donneesTicket;
+	
+	
 	public StationIHM(Station st) {
 		try {
 			// Permet de prendre l'apparence du système hôte
@@ -64,19 +70,19 @@ public class StationIHM extends JFrame {
 	public void actionLouer(int identifiant, int mdp) throws RemoteException {
 		boolean identificationReussie = false ;
 		try {
-			 identificationReussie = s.identification(identifiant, mdp);
+			identificationReussie = s.identification(identifiant, mdp);
+			if (identificationReussie) {
+				actionLocation(identifiant);			
+			} else {
+				panelIdentification.afficherErreurEssai();
+			}
 		} catch (RemoteException e) {
-			panelIdentification.remiseAZero();
 			this.changerPanel(Etat.Menu);
 			new PopupErreurRemote().setVisible(true);
 		} catch (EssaisEcoulesException e) {
-			panelIdentification.remiseAZero();
-			panelIdentification.afficherErreur();
-		}
-		if (identificationReussie) {
-			actionLocation(identifiant);			
-		} else {
-			panelIdentification.remiseAZero();
+			panelIdentification.afficherErreurPlusDessais();
+		} catch (AbonneInexistantException e) {
+			// TODO Auto-generated catch block
 			panelIdentification.afficherErreurEssai();
 		}
 	}
@@ -89,10 +95,9 @@ public class StationIHM extends JFrame {
 			this.changerPanel(Etat.Menu);
 			new PopupLocationVelo(idVelo).setVisible(true);
 		} catch (RemoteException e) {
-			panelIdentification.remiseAZero();
 			this.changerPanel(Etat.Menu);
 			new PopupErreurRemote().setVisible(true);
-		} catch (locationException e) {
+		} catch (LocationException e) {
 			// gestion cas pas de vélo dispo
 			actionStationsPlacesDispos(true);
 		} catch (LocationEnCoursException e) {
@@ -103,52 +108,36 @@ public class StationIHM extends JFrame {
 	
 	// PANEL RESTITUTION
 	public void actionRestitution(int idVelo) throws RemoteException {
-		boolean restitutionOK = false ;
 		try {
-			restitutionOK = s.retourVelo(idVelo);
+			donneesTicket = s.retourVelo(idVelo);
+			this.changerPanel(Etat.Menu);
+			new PopupRestitutionVelo(idVelo,this).setVisible(true);
+			panelRetourVelo.afficherIdVeloErreur();			
 		} catch (RemoteException e) {
-			panelRetourVelo.remiseAZero();
 			this.changerPanel(Etat.Menu);
 			new PopupErreurRemote().setVisible(true);
 		} catch (VeloPasLoueException e) {
-			panelRetourVelo.remiseAZero();
 			panelRetourVelo.afficherVeloInvalideError();			
 		} catch (StationPleineException e) {
-			panelRetourVelo.remiseAZero();
 			actionStationsPlacesDispos(false);
+		} catch (VeloInexistantException e) {
+			panelRetourVelo.afficherIdVeloErreur();
 		}
-		if (restitutionOK) {
-			// affichage popup retour validé
-			panelRetourVelo.remiseAZero();
-			this.changerPanel(Etat.Menu);
-			new PopupRestitutionVelo(idVelo).setVisible(true);
-		} else {
-			// affichage message erreur
-			panelRetourVelo.remiseAZero();
-			panelRetourVelo.afficherError();			
-		}
-
 	}
 	
 	public void actionStationsPlacesDispos(boolean loc) {
 		try {
 			Object[] res = s.demandeStations(loc);
-			this.changerPanel(Etat.Menu);
 			new PopupStationPlacesDispo(res).setVisible(true);
-			if(loc){
-				panelIdentification.remiseAZero();
-			}else{
-				panelRetourVelo.remiseAZero();				
-			}
 		} catch (RemoteException e) {
-			if(loc){
-				panelIdentification.remiseAZero();
-			}else{
-				panelRetourVelo.remiseAZero();				
-			}
-			this.changerPanel(Etat.Menu);
 			new PopupErreurRemote().setVisible(true);
+		} finally {
+			this.changerPanel(Etat.Menu);
 		}
+	}
+	
+	public void afficherTicket() {
+		new PopupTicketAbo(donneesTicket).setVisible(true);
 	}
 	
 	// PANEL ABONNEMENT
@@ -171,6 +160,8 @@ public class StationIHM extends JFrame {
 			break;
 		case Menu:
 			p = panelMenu;
+			panelIdentification.remiseAZero();
+			panelRetourVelo.remiseAZero();
 			break;
 		case DemandeAbonnement:
 			p = panelDemandeAbo;

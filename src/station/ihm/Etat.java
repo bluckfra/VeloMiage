@@ -1,4 +1,4 @@
-package station.moteur.ihm;
+package station.ihm;
 
 public enum Etat {
 	Identification,Menu,DemandeAbonnement,Restitution

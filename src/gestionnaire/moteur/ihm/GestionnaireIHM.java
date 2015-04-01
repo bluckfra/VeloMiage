@@ -1,6 +1,7 @@
 package gestionnaire.moteur.ihm;
 
 import gestionnaire.moteur.Gestionnaire;
+import gestionnaire.moteur.ihm.panels.PanelAbonnes;
 import gestionnaire.moteur.ihm.panels.PanelStations;
 import gestionnaire.moteur.ihm.panels.PanelVelos;
 import gestionnaire.moteur.ihm.popups.PopupVelos;
@@ -23,26 +24,27 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
 import bdd.objetsbdd.Velo;
-import station.moteur.ihm.Etat;
-import station.moteur.ihm.panels.PanelAccueil;
-import station.moteur.ihm.popups.PopupLocationVelo;
+import station.ihm.Etat;
+import station.ihm.panels.PanelAccueil;
+import station.ihm.popups.PopupLocationVelo;
 
 public class GestionnaireIHM extends JFrame {
 	// Déclaration des objets graphiques
 	private JMenuBar menu;
 	protected JMenu menuFichier,menuStations,menuStats;
-	protected JMenuItem quitter,stats,stations,velos; 
+	protected JMenuItem quitter,stats,stations,velos,abonnes; 
 	protected JPanel contentPane,panelCourant;
 	private PanelStations panelStations;
 	private PanelVelos panelVelos;
+	private PanelAbonnes panelAbonnes;
 	private PopupVelos popupDetailsStation;
 	private Gestionnaire gestionnaire;
 	private boolean isDetails;
 	
 	public GestionnaireIHM(Gestionnaire g) {
-		
 		gestionnaire = g ;
 		
 		try {
@@ -79,6 +81,7 @@ public class GestionnaireIHM extends JFrame {
 		stats = new JMenuItem("Statistisques usage");
 		stations = new JMenuItem("Stations courantes");
 		velos = new JMenuItem("Vélos en circulation");
+		abonnes = new JMenuItem("Abonnés du service");
 		quitter = new JMenuItem("Quitter");
 		
 		// Création de l'écoute sur le bouton quitter
@@ -100,6 +103,12 @@ public class GestionnaireIHM extends JFrame {
 			}
 		});
 
+		abonnes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				changerPanel(EtatGest.Abonnes);
+			}
+		});
+
 		stats.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
@@ -108,6 +117,7 @@ public class GestionnaireIHM extends JFrame {
 		// Ajout des composants à la JMenuBar
 		menuStations.add(stations);
 		menuStations.add(velos);
+		menuStations.add(abonnes);
 		menuStats.add(stats);
 		menuFichier.add(quitter);
 		
@@ -115,6 +125,7 @@ public class GestionnaireIHM extends JFrame {
 		this.setContentPane(contentPane);
 		panelStations = new PanelStations(gestionnaire.getInstancesStations(),this);
 		panelVelos = new PanelVelos(gestionnaire.getInstancesAllVelos(), this);
+		panelAbonnes = new PanelAbonnes(gestionnaire.getInstancesAbonnes(), this);
 		contentPane.add(panelStations);
 		panelCourant = panelStations;
 		
@@ -131,6 +142,9 @@ public class GestionnaireIHM extends JFrame {
 			case Velos:
 				p = panelVelos;
 				break;
+			case Abonnes:
+				p = panelAbonnes;
+				break;
 			default:
 				p = panelStations;
 				break;
@@ -145,8 +159,10 @@ public class GestionnaireIHM extends JFrame {
 	public void notifierLocationVelo(StationBD s) {
 		ArrayList<StationBD> stations = gestionnaire.getInstancesStations();
 		ArrayList<Velo> velos = gestionnaire.getInstancesAllVelos();
+		ArrayList<Abonne> abos = gestionnaire.getInstancesAbonnes();
 		panelStations.rechargerTableau(stations);
 		panelVelos.rechargerTableau(velos);
+		panelAbonnes.rechargerTableau(abos);
 		
 		if (isDetails) {
 			System.out.println("modif popup");

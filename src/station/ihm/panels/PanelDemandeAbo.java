@@ -1,9 +1,9 @@
-package station.moteur.ihm.panels;
+package station.ihm.panels;
 
 import javax.swing.JPanel;
 
-import station.moteur.ihm.Etat;
-import station.moteur.ihm.StationIHM;
+import station.ihm.Etat;
+import station.ihm.StationIHM;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,7 +24,7 @@ public class PanelDemandeAbo extends JPanel {
 		
 		setLayout(null);
 		
-		JLabel lblDemandeAbo = new JLabel("Demande Abonnement");
+		JLabel lblDemandeAbo = new JLabel("Demande d'abonnement :");
 		lblDemandeAbo.setBounds(10, 11, 169, 14);
 		add(lblDemandeAbo);
 		
@@ -37,12 +37,12 @@ public class PanelDemandeAbo extends JPanel {
 		add(lblCodeConf);
 		
 		JButton btnLocation = new JButton("Louer un v\u00E9lo");
-		btnLocation.setBounds(72, 138, 107, 23);
+		btnLocation.setBounds(10, 156, 107, 23);
 		add(btnLocation);
 		
-		JButton btnDconnexion = new JButton("D\u00E9connexion");
-		btnDconnexion.setBounds(214, 138, 107, 23);
-		add(btnDconnexion);
+		JButton btnRetour = new JButton("Retour");
+		btnRetour.setBounds(127, 156, 107, 23);
+		add(btnRetour);
 		
 		lbl_idClient = new JLabel("");
 		lbl_idClient.setBounds(251, 58, 46, 14);
@@ -66,7 +66,7 @@ public class PanelDemandeAbo extends JPanel {
 			}
 		});
 		
-		btnDconnexion.addActionListener(new ActionListener() {
+		btnRetour.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int reponse = JOptionPane.showConfirmDialog(myself, "Voulez réellemment vous déconnecter ?", "Déconnexion ?", JOptionPane.YES_NO_OPTION);
 				

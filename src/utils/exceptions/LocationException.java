@@ -1,7 +1,7 @@
 package utils.exceptions;
 
-public class locationException extends Exception{
-	public locationException() {
+public class LocationException extends Exception{
+	public LocationException() {
 		super("Un problème est survenu durant la location. Veuillez réessayer.");
 	}
 }

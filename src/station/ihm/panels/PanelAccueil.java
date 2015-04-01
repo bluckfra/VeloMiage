@@ -1,4 +1,4 @@
-package station.moteur.ihm.panels;
+package station.ihm.panels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,8 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import station.moteur.ihm.Etat;
-import station.moteur.ihm.StationIHM;
+import station.ihm.Etat;
+import station.ihm.StationIHM;
 
 public class PanelAccueil extends JPanel {
 

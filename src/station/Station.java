@@ -1,4 +1,4 @@
-package station.moteur;
+package station;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -7,14 +7,16 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import utils.exceptions.AbonneInexistantException;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.IdClientException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.StationPleineException;
+import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
-import utils.exceptions.locationException;
+import utils.exceptions.LocationException;
 import utils.exceptions.retourVeloException;
 import bdd.objetsbdd.Velo;
 import gestionnaire.GestionnaireProxy;
@@ -63,9 +65,10 @@ public class Station {
 	 * <Stéfan> - 27/03/2015 - Etape 2 & 3
 	 * @param int idClient
 	 * @throws RemoteException
+	 * @throws AbonneInexistantException 
 	 * @throws IdClientException 
 	 */
-	public boolean identification(int idClient, int codeCliInsere) throws RemoteException, EssaisEcoulesException{
+	public boolean identification(int idClient, int codeCliInsere) throws RemoteException, EssaisEcoulesException, AbonneInexistantException{
 		// récupération du mdp client s'il n'est pas récupéré
 		if (codeClient == 0) {
 			codeClient = proxy.validationIdClient(idClient);			
@@ -90,15 +93,15 @@ public class Station {
 	 * <Stéfan> - 21/03/2015 - Etape 2 & 3
 	 * @param int idClient
 	 * @throws RemoteException
-	 * @throws locationException 
+	 * @throws LocationException 
 	 * @throws LocationEnCoursException 
 	 * @throws demandeStationException 
 	 */
-	public int locationVelo(int idClient) throws RemoteException, locationException, LocationEnCoursException {
+	public int locationVelo(int idClient) throws RemoteException, LocationException, LocationEnCoursException {
 		int idVelo = -1;
 		// vérification qu'il y a au moins un vélo de dispo
 		if (listeVelos.isEmpty()) {
-			throw new locationException();
+			throw new LocationException();
 		}
 
 		Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -121,20 +124,20 @@ public class Station {
 	 * @param string idVelo
 	 * @throws RemoteException
 	 * @throws StationPleineException 
+	 * @throws VeloInexistantException 
 	 * @throws demandeStationException 
 	 * @throws retourVeloException 
 	 */
-	public boolean retourVelo(int idV) throws RemoteException, VeloPasLoueException, StationPleineException {
+	public Object[] retourVelo(int idV) throws RemoteException, VeloPasLoueException, StationPleineException, VeloInexistantException {
 		if (listeVelos.size() == this.taille) throw new StationPleineException();
-			Timestamp now = new Timestamp(System.currentTimeMillis());
-			// retour du vélo
-			if(proxy.retour(idStation,idV,now)){
-				// mise à jour du cache
-				Velo v = new Velo(idV);
-				listeVelos.add(v);
-				return true;
-			}				
-			return false;
+		Timestamp now = new Timestamp(System.currentTimeMillis());
+		// retour du vélo
+		Object[] retour = proxy.retour(idStation,idV,now);
+		// mise à jour du cache
+		Velo v = new Velo(idV);
+		listeVelos.add(v);	
+		
+		return retour;
 	}
 	
 	// méthode de demande d'une station proche si manque de place

@@ -1,4 +1,4 @@
-package station.moteur.ihm.popups;
+package station.ihm.popups;
 
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;

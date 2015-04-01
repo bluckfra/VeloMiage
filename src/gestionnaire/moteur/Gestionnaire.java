@@ -16,13 +16,15 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import utils.*;
+import utils.exceptions.AbonneInexistantException;
 import utils.exceptions.IdVeloException;
 import utils.exceptions.LocationEnCoursException;
+import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
 import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.listeVeloException;
-import utils.exceptions.locationException;
+import utils.exceptions.LocationException;
 import utils.exceptions.retourVeloException;
 import bdd.objetsbdd.*;
 import bdd.objetsdao.*;
@@ -32,9 +34,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	private StationDAO daoStationBD;
 	private AbonneDAO daoAbonne;
 	private VeloDAO daoVelo;
-	private static double prixHeure = 2;
 	private static GestionnaireIHM ihm;
-	
+
+	private static final double PRIXHEURE = 2;
 	private static final int NBELEMENT_STATION = 9;
 	private static final int NBSTATION_AFFICHER = 3;
 	private static final double VITESSE_MOY_PIED  = 4.3;
@@ -51,7 +53,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		daoStationBD = new StationDAO();
 		daoVelo = new VeloDAO();
 		ihm = new GestionnaireIHM(this);
-
+		System.out.println("---- Gestionnaire lancé");
 
 	}
 
@@ -87,6 +89,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 
 		abo[0] = abonne.getId();
 		abo[1] = abonne.getCode();
+		//System.out.println("Demande d'abonnement : " + abonne.getId() + "/" + abonne.getCode() + " crée");
 		return abo;
 	}
 
@@ -106,13 +109,14 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * WIP <Stéfan> - 21/03/2015 - Etape 2
 	 * 
 	 * @throws RemoteException
+	 * @throws AbonneInexistantException 
 	 */
-	public int validationIdClient(int id) throws RemoteException {
+	public int validationIdClient(int id) throws RemoteException, AbonneInexistantException {
 		Abonne abonne = daoAbonne.find(id);
+		if (abonne.getId()== 0) throw new AbonneInexistantException();
 		// récupération date du jour
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		return (now.before(abonne.getDateAboFin()) ? abonne.getCode() : 0);
-
 	}
 
 	/**
@@ -144,7 +148,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * WIP <Stéfan> - 21/03/2015 - Etape 2
 	 * 
 	 * @throws RemoteException
-	 * @throws locationException 
+	 * @throws LocationException 
 	 */
 	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException,LocationEnCoursException {
 		Abonne ab = daoAbonne.find(idClient);
@@ -166,9 +170,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws RemoteException
 	 * @throws retourVeloException 
 	 */
-	public boolean retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException,VeloPasLoueException {
+	public Object[] retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException,VeloPasLoueException,VeloInexistantException {
 		StationBD st = daoStationBD.find(idStation);
 		Velo v = daoVelo.find(idVelo);
+		if (v.getId() == 0) throw new VeloInexistantException();
 		if (!v.isInLocation()) {
 			throw new VeloPasLoueException();
 		}
@@ -177,8 +182,17 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		// retirer vélo table louer
 		v = daoVelo.depositVelo(v, dateRetour);
 		ihm.notifierLocationVelo(st);
-		return true;
+		Object[] infosTicket = new Object[3];
 		
+		Timestamp debutLoc = v.getDateDerniereLocDebut();
+		Timestamp finLoc = v.getDateDerniereLocFin();
+		// récupération du prix de la course
+		Double prix = (finLoc.getTime() - debutLoc.getTime())/3600 * PRIXHEURE;
+		infosTicket[0] = v.getDateDerniereLocDebut();
+		infosTicket[1] = v.getDateDerniereLocFin();
+		infosTicket[2] = prix;
+		
+		return infosTicket;		
 	}
 
 	/**
@@ -279,4 +293,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	public ArrayList<Velo> getInstancesAllVelos() {
 		return daoVelo.getInstances();
 	}
+	
+	public ArrayList<Abonne> getInstancesAbonnes() {
+		return daoAbonne.getInstances();
+	}
+
 }

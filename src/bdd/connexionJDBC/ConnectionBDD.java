@@ -9,11 +9,11 @@ import java.sql.Statement;
 
 public class ConnectionBDD {
 
-	private static String url = "jdbc:postgresql://localhost:5432/veloMiage";
+	private static String url = "jdbc:postgresql://localhost:5432/velomiage";
 
 	private static String user = "postgres";
 
-	private static String passwd = "thai31470";
+	private static String passwd = "a";
 
 	private static Connection connect;
 	

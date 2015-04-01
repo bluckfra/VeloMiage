@@ -8,8 +8,8 @@ import java.rmi.registry.LocateRegistry;
 
 import bdd.objetsbdd.StationBD;
 import bdd.objetsdao.StationDAO;
-import station.moteur.Station;
-import station.moteur.ihm.StationIHM;
+import station.Station;
+import station.ihm.StationIHM;
 
 public class LanceurStation {
 

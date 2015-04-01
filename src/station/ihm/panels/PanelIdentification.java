@@ -1,4 +1,4 @@
-package station.moteur.ihm.panels;
+package station.ihm.panels;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -14,9 +14,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.JTextComponent;
 import javax.swing.JTextField;
 
-import station.moteur.ihm.Etat;
-import station.moteur.ihm.StationIHM;
-import station.moteur.ihm.popups.PopupErreurRemote;
+import station.ihm.Etat;
+import station.ihm.StationIHM;
+import station.ihm.popups.PopupErreurRemote;
+
 import java.awt.Color;
 
 public class PanelIdentification extends JPanel {
@@ -79,7 +80,7 @@ public class PanelIdentification extends JPanel {
 					modele.actionLouer(Integer.parseInt(textFieldId.getText()), Integer.parseInt(textFieldMdp.getText()));
 					remiseAZero();
 				} catch (NumberFormatException e1) {
-					e1.printStackTrace();
+					afficherErreurEssai();
 				} catch (RemoteException e1) {
 					remiseAZero();
 					modele.changerPanel(Etat.Menu);
@@ -90,18 +91,20 @@ public class PanelIdentification extends JPanel {
 	}
 
 	// gestion erreur nombre essais
-	public void afficherErreur() {
+	public void afficherErreurPlusDessais() {
 		labelErreur.setText("Erreur : nombre d'essais écoulés");
 		textFieldId.setEnabled(false);
 		textFieldMdp.setEnabled(false);
 	}
 
 	public void afficherErreurEssai() {
-		labelErreur.setText("Erreur : mot de passe incorrect");
+		labelErreur.setText("Erreur : identifiant ou mot de passe incorrect");
+		remiseAZero();
 	}
-	
+
 	public void afficherErreurDejaLoc() {
 		labelErreur.setText("Erreur : vous êtes déjà en cours de location");
+		remiseAZero();
 	}
 	
 	public void remiseAZero(){
