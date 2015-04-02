@@ -26,6 +26,7 @@ import utils.exceptions.demandeStationException;
 import utils.exceptions.listeVeloException;
 import utils.exceptions.LocationException;
 import utils.exceptions.retourVeloException;
+import utils.notifications.GestionnaireNotification;
 import bdd.objetsbdd.*;
 import bdd.objetsdao.*;
 
@@ -296,6 +297,16 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	
 	public ArrayList<Abonne> getInstancesAbonnes() {
 		return daoAbonne.getInstances();
+	}
+
+	public void enregistrerNotifications(int id, GestionnaireNotification gn,
+			String act) throws RemoteException {
+		StationBD st = daoStationBD.find(id);
+	}
+
+	public void enleverNotifications(int id) throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

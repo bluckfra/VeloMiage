@@ -71,7 +71,7 @@ public class PanelTechnicien extends JPanel {
 		lblIdentifiant.setBounds(25, 97, 74, 14);
 		add(lblIdentifiant);
 		
-		JLabel lblNewLabel = new JLabel("Nombre de v\u00E9los dont vous devez vous occuper :");
+		JLabel lblNewLabel = new JLabel("Stations dont vous devez vous occuper :");
 		lblNewLabel.setBounds(25, 122, 244, 36);
 		add(lblNewLabel);
 		
