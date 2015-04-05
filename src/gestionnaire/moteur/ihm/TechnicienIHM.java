@@ -56,7 +56,7 @@ public class TechnicienIHM extends JFrame {
 		getContentPane().setLayout(new GridLayout(1, 0, 0, 0));
 		contentPane = new JPanel();
 		contentPane.setLayout(new GridLayout());
-		panelTech = new PanelTechnicien(gestionnaire.getInstancesStationsNotif(), this);
+		panelTech = new PanelTechnicien(a, gestionnaire.getInstancesStationsNotif(), this);
 		
 		this.setContentPane(contentPane); // on récupère l'abonné courant
 		panelCourant = panelTech;
