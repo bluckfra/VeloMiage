@@ -58,6 +58,11 @@ public class PopupTicketAbo extends JDialog{
 		getContentPane().add(lblValPrix);
 		
 		JButton btnOk = new JButton("Ok");
+		btnOk.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				dispose();
+			}
+		});
 		btnOk.setBounds(166, 108, 89, 23);
 		getContentPane().add(btnOk);
 

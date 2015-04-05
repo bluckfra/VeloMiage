@@ -2,6 +2,7 @@ package station;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -18,17 +19,22 @@ import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.LocationException;
 import utils.exceptions.retourVeloException;
+import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.Velo;
+import bdd.objetsdao.AbonneDAO;
 import gestionnaire.GestionnaireProxy;
+import gestionnaire.moteur.Gestionnaire;
+import gestionnaire.moteur.ihm.TechnicienIHM;
 
-public class Station {
+public class Station{
 	
 	private GestionnaireProxy proxy;
 	private ArrayList<Velo> listeVelos;
 	private int taille;
-	private int idStation;
+	private static int idStation;
 	private int codeClient;
 	private int nbEssais;
+	private String action;
 	
 	private static final int NBESSAIS_MAX = 3;
 
@@ -109,7 +115,6 @@ public class Station {
 		if (proxy.location(idStation,idClient, idVelo,now)) {	
 			listeVelos.remove(0);
 		} 
-		
 		return idVelo;
 	}
 	
@@ -136,7 +141,6 @@ public class Station {
 		// mise à jour du cache
 		Velo v = new Velo(idV);
 		listeVelos.add(v);	
-		
 		return retour;
 	}
 	

@@ -14,7 +14,6 @@ import utils.exceptions.demandeStationException;
 import utils.exceptions.listeVeloException;
 import utils.exceptions.LocationException;
 import utils.exceptions.retourVeloException;
-import utils.notifications.GestionnaireNotification;
 import bdd.objetsbdd.Velo;
 
 public interface GestionnaireProxy extends java.rmi.Remote{
@@ -42,6 +41,5 @@ public interface GestionnaireProxy extends java.rmi.Remote{
 	 * <Stéfan> - 21/03/2015 - Step optionnel cas notif 
 	 * @throws RemoteException
 	 */
-	public void enregistrerNotifications(int id, GestionnaireNotification gn, String act) throws RemoteException;
-	public void enleverNotifications(int id) throws RemoteException;
+	
 }

@@ -2,31 +2,31 @@ package gestionnaire.moteur;
 
 import gestionnaire.GestionnaireProxy;
 import gestionnaire.moteur.ihm.GestionnaireIHM;
+import gestionnaire.moteur.ihm.TechnicienIHM;
 
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
-import utils.*;
 import utils.exceptions.AbonneInexistantException;
 import utils.exceptions.IdVeloException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
-import utils.exceptions.demandeAboException;
 import utils.exceptions.demandeStationException;
 import utils.exceptions.listeVeloException;
 import utils.exceptions.LocationException;
 import utils.exceptions.retourVeloException;
-import utils.notifications.GestionnaireNotification;
 import bdd.objetsbdd.*;
 import bdd.objetsdao.*;
 
@@ -36,6 +36,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	private AbonneDAO daoAbonne;
 	private VeloDAO daoVelo;
 	private static GestionnaireIHM ihm;
+	private HashMap<Integer,String> listeSTNotif;
 
 	private static final double PRIXHEURE = 2;
 	private static final int NBELEMENT_STATION = 9;
@@ -46,13 +47,16 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	/**
 	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * @throws RemoteException
+	 * @throws NotBoundException 
+	 * @throws MalformedURLException 
 	 */
-	public Gestionnaire() throws RemoteException {
+	public Gestionnaire() throws RemoteException, MalformedURLException, NotBoundException {
 		super();
 		// récupération de la liste de station
 		daoAbonne = new AbonneDAO();
 		daoStationBD = new StationDAO();
 		daoVelo = new VeloDAO();
+		listeSTNotif = new HashMap();
 		ihm = new GestionnaireIHM(this);
 		System.out.println("---- Gestionnaire lancé");
 
@@ -103,6 +107,15 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		LocateRegistry.createRegistry(1099); // creation du proxy sur le port // 1099
 		Gestionnaire gestionnaire = new Gestionnaire();
 		Naming.rebind("GestionStat", gestionnaire ); // Choix du nom du // proxy
+		
+		// affichage des ihm techniciens
+		AbonneDAO daoAbo = new AbonneDAO();
+		for(Abonne a : daoAbo.getInstances()){
+			if(a.isTechnicien()){
+				TechnicienIHM ihmTech = new TechnicienIHM(gestionnaire,a);
+				ihmTech.setVisible(true);
+			}
+		}
 	}
 
 	
@@ -162,6 +175,11 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		// ajouter vélo table louer
 		daoAbonne.addVelo(ab, v, dateLoc);
 		ihm.notifierLocationVelo(st);
+		//voir si technicien enleve 
+		if(ab.isTechnicien()){
+			listeSTNotif.remove(st);
+		}
+		
 		return true;
 	}
 
@@ -193,6 +211,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		infosTicket[1] = v.getDateDerniereLocFin();
 		infosTicket[2] = prix;
 		
+		//si retour par technicien
+		if(listeSTNotif.containsKey(st)){
+			listeSTNotif.remove(st);
+		}
 		return infosTicket;		
 	}
 
@@ -211,10 +233,18 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * @throws demandeStationException 
 	 */
 	public Object[] demandeStationProche(int idStation, boolean demandeLocation) {
+		
 		// récupération des lattitudes et longi de la station courante
 		StationBD station = daoStationBD.find(idStation);
 		TreeMap<Double, StationBD> listDistStation = new TreeMap<Double, StationBD>();
 
+		// ajout du message pour le technicien
+		if(demandeLocation){
+			listeSTNotif.put(station.getId(), "vide");
+		}else{
+			listeSTNotif.put(station.getId(), "saturée");
+		}
+		
 		// création variable résultat
 		Object res[] = new Object[NBELEMENT_STATION * NBSTATION_AFFICHER];
 
@@ -298,15 +328,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	public ArrayList<Abonne> getInstancesAbonnes() {
 		return daoAbonne.getInstances();
 	}
-
-	public void enregistrerNotifications(int id, GestionnaireNotification gn,
-			String act) throws RemoteException {
-		StationBD st = daoStationBD.find(id);
+	
+	public  HashMap<Integer,String> getInstancesStationsNotif(){
+		return listeSTNotif;
 	}
-
-	public void enleverNotifications(int id) throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

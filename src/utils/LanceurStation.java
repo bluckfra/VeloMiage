@@ -1,12 +1,15 @@
 package utils;
 
 import gestionnaire.moteur.Gestionnaire;
+import gestionnaire.moteur.ihm.TechnicienIHM;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
+import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
+import bdd.objetsdao.AbonneDAO;
 import bdd.objetsdao.StationDAO;
 import station.Station;
 import station.ihm.StationIHM;
@@ -25,7 +28,6 @@ public class LanceurStation {
 					StationIHM ihm = new StationIHM(station);
 					ihm.setVisible(true);
 			}
-
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
