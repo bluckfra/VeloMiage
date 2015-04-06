@@ -22,7 +22,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import bdd.objetsbdd.EtatVelo;
 import bdd.objetsbdd.StationBD;
 import bdd.objetsbdd.Velo;
 
@@ -124,22 +123,7 @@ public class PanelVelos extends JPanel {
 			case 0:
 				return a.getId();
 			case 1:
-				String ret = "";
-				switch (a.getEtat()) {
-				case 1:
-					ret = "En location";
-					break;
-				case 2 :
-					ret = "En station";
-					break;
-				case 3 : 
-					ret = "Défectueux";
-					break;
-				case 4 : 
-					ret = "En réparation";
-					break;
-				}
-				return ret;
+				return a.getEnumEtat();
 			case 2:
 				if (a.getEtat() == 2) {
 					return a.getStationCourante();

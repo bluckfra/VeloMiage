@@ -79,13 +79,6 @@ public class PopupVelos extends JDialog {
 		lblStation.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		JLabel lblLat = new JLabel("Latitude : " + s.getLat());
-		JButton boutonAbsence = new JButton("Indiquer vélo défectueux");
-		boutonAbsence.setEnabled(false);
-		
-		boutonAbsence.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		
 		JLabel lblLon = new JLabel("Longitude : " + s.getLon());
 		
@@ -97,8 +90,6 @@ public class PopupVelos extends JDialog {
 		
 		
 		lblVelos.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
-		JButton btnDemanderRotationVlo = new JButton("Demander rotation v\u00E9lo");
 		GroupLayout gl_panelNord = new GroupLayout(panelNord);
 		gl_panelNord.setHorizontalGroup(
 			gl_panelNord.createParallelGroup(Alignment.LEADING)
@@ -114,12 +105,8 @@ public class PopupVelos extends JDialog {
 							.addGroup(gl_panelNord.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblPlacesPrises)
 								.addComponent(lblLon)))
-						.addComponent(lblVelos)
-						.addGroup(gl_panelNord.createSequentialGroup()
-							.addComponent(boutonAbsence)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnDemanderRotationVlo)))
-					.addContainerGap(186, Short.MAX_VALUE))
+						.addComponent(lblVelos))
+					.addContainerGap(199, Short.MAX_VALUE))
 		);
 		gl_panelNord.setVerticalGroup(
 			gl_panelNord.createParallelGroup(Alignment.TRAILING)
@@ -134,11 +121,7 @@ public class PopupVelos extends JDialog {
 					.addGroup(gl_panelNord.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblNbPlaces)
 						.addComponent(lblPlacesPrises))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panelNord.createParallelGroup(Alignment.BASELINE)
-						.addComponent(boutonAbsence)
-						.addComponent(btnDemanderRotationVlo))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGap(35)
 					.addComponent(lblVelos)
 					.addGap(4))
 		);
@@ -172,7 +155,7 @@ public class PopupVelos extends JDialog {
 				case 0 :
 					return v.getId();
 				case 1 :
-					return v.getEtat();
+					return v.getEnumEtat();
 				default:
 					return null;
 			}

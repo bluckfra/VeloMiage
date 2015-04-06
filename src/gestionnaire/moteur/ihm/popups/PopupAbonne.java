@@ -7,7 +7,9 @@ import java.awt.GridLayout;
 import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -24,10 +26,11 @@ import javax.swing.table.AbstractTableModel;
 import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.StationBD;
 import bdd.objetsbdd.Velo;
+import bdd.objetsdao.Statistiques;
 
 
 public class PopupAbonne extends JDialog {
-/*	private Abonne abonne;
+	private Abonne abonne;
 	private JPanel panelNord,panelCentre,panelSud,contentPane;
 	private BorderLayout layout ;
 	private FlowLayout layoutSud ;
@@ -68,7 +71,7 @@ public class PopupAbonne extends JDialog {
 		layoutSud = new FlowLayout();
 		panelSud.setLayout(layoutSud);
 		panelCentre.setLayout(new GridLayout(0, 1, 0, 0));
-		donneesVelos = null;//new TableVelos(abo);
+		donneesVelos = new TableVelos(Statistiques.getHistoriqueLocationsAbonne(abo.getId()));
 		planning = new JScrollPane(new JTable(donneesVelos));
 		
 		panelCentre.add(planning);	
@@ -79,15 +82,8 @@ public class PopupAbonne extends JDialog {
 		lblStation.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		JLabel lblDebutAbo = new JLabel("Date début abonnement : " + abo.getDateAboDebut().toGMTString());
-		JButton boutonAbsence = new JButton("Indiquer vélo défectueux");
-		boutonAbsence.setEnabled(false);
 		
-		boutonAbsence.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		
-		JLabel lblFinAbo = new JLabel("Date début abonnement : " + abo.getDateAboFin().toGMTString());
+		JLabel lblFinAbo = new JLabel("Date fin abonnement : " + abo.getDateAboFin().toGMTString());
 		
 		JLabel lblCode = new JLabel("Code secret : " + abo.getCode());
 		
@@ -95,8 +91,6 @@ public class PopupAbonne extends JDialog {
 		
 		
 		lblLocations.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
-		JButton btnDemanderRotationVlo = new JButton("Demander rotation v\u00E9lo");
 		GroupLayout gl_panelNord = new GroupLayout(panelNord);
 		gl_panelNord.setHorizontalGroup(
 			gl_panelNord.createParallelGroup(Alignment.LEADING)
@@ -105,17 +99,12 @@ public class PopupAbonne extends JDialog {
 					.addGroup(gl_panelNord.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblStation)
 						.addGroup(gl_panelNord.createSequentialGroup()
-							.addGroup(gl_panelNord.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblDebutAbo)
-								.addComponent(lblCode))
+							.addComponent(lblDebutAbo)
 							.addGap(57)
-							.addComponent(lblFinAbo))
+							.addComponent(lblCode))
 						.addComponent(lblLocations)
-						.addGroup(gl_panelNord.createSequentialGroup()
-							.addComponent(boutonAbsence)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnDemanderRotationVlo)))
-					.addContainerGap(13, Short.MAX_VALUE))
+						.addComponent(lblFinAbo))
+					.addContainerGap(172, Short.MAX_VALUE))
 		);
 		gl_panelNord.setVerticalGroup(
 			gl_panelNord.createParallelGroup(Alignment.TRAILING)
@@ -125,14 +114,10 @@ public class PopupAbonne extends JDialog {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panelNord.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblDebutAbo)
-						.addComponent(lblFinAbo))
+						.addComponent(lblCode))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblCode)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panelNord.createParallelGroup(Alignment.BASELINE)
-						.addComponent(boutonAbsence)
-						.addComponent(btnDemanderRotationVlo))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblFinAbo)
+					.addGap(35)
 					.addComponent(lblLocations)
 					.addGap(4))
 		);
@@ -143,12 +128,12 @@ public class PopupAbonne extends JDialog {
 	
 	// Classe qui définit le modèle pour la JTable
 	class TableVelos extends AbstractTableModel {
-		private ArrayList<Velo> velos ;
-		private String[] index = {"Numéro","Etat"};
+		private ArrayList<Object[]> velos ;
+		private String[] index = {"Id vélo","Date début location","Date fin location"};
 
-		public TableVelos(StationBD s) {
+		public TableVelos(ArrayList<Object[]> vs) {
 			super();
-			velos = s.getVelosStation();
+			velos = vs;
 		}
 		
 		public int getColumnCount() {
@@ -160,13 +145,15 @@ public class PopupAbonne extends JDialog {
 		}
 
 		public Object getValueAt(int ligne, int colonne) {
-			Velo v = velos.get(ligne);
+			Object[] v = velos.get(ligne);
 			
 			switch(colonne) {
 				case 0 :
-					return v.getId();
+					return (Integer) v[0];
 				case 1 :
-					return v.getEtat();
+					return ((Timestamp) v[1]).toGMTString();
+				case 2 :
+					return ((Timestamp) v[2]).toGMTString();
 				default:
 					return null;
 			}
@@ -176,21 +163,19 @@ public class PopupAbonne extends JDialog {
 	        return index[columnIndex];
 	    }
 	    
-		public void majTable(ArrayList<Velo> vls) {
+		public void majTable(ArrayList<Object[]> vls) {
 			velos = vls;
 			fireTableDataChanged();
 		}
 
 	}
 	
-	public void rechargerTableau(ArrayList<Velo> nvxVelos) {
+	public void rechargerTableau(ArrayList<Object[]> nvxVelos) {
 		donneesVelos.majTable(nvxVelos);
-		lblPlacesPrises.setText("Places prises : " + nvxVelos.size());
 	}
 	
 	public int getIdAbonne() {
 		return abonne.getId();
 	}
-*/
-}
 
+}

@@ -38,8 +38,24 @@ public class Velo implements Serializable {
 		return etat;
 	}
 	
-	public EtatVelo getEnumEtat() {
-		return switchEtat(etat);
+	public String getEnumEtat() {
+		String ret = null;
+		switch (etat) {
+		case 1:
+			ret = "En location";
+			break;
+		case 2 :
+			ret = "En station";
+			break;
+		case 3 : 
+			ret = "Défectueux";
+			break;
+		case 4 : 
+			ret = "En réparation";
+			break;
+		}
+		
+		return ret;
 	}
 
 	public void setEtat(int etat) {
@@ -85,21 +101,6 @@ public class Velo implements Serializable {
 		return abonneCourant;
 	}
 	
-	private EtatVelo switchEtat(int e) {
-		EtatVelo etat = EtatVelo.EnLocation;
-		switch (e) {
-		case 1:
-			etat=  EtatVelo.EnLocation;
-		case 2 :
-			etat= EtatVelo.EnStation;
-		case 3 : 
-			etat= EtatVelo.Defectueux;
-		case 4 : 
-			etat= EtatVelo.EnReparation;
-		}
-		return etat;
-	}
-
 	public void setStationCourante(int id) {
 		etat = 2;
 		stationCourante = id;

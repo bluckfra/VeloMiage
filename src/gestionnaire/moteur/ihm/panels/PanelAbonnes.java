@@ -100,7 +100,7 @@ public class PanelAbonnes extends JPanel {
 
 		btnVoirAbonne.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//ihm.actionAfficherDetailsAbonne(abonneCourant);
+				ihm.actionAfficherDetailsAbonne(abonneCourant);
 			}
 		});
 	}
@@ -167,31 +167,7 @@ public class PanelAbonnes extends JPanel {
 	        	btnVoirAbonne.setEnabled(true);
 	        }			
 		}
-	}	
-	
-	/* test
-	private class StationsRenderer extends DefaultTableCellRenderer {
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row,
-				int column) {
-			Component cell = super.getTableCellRendererComponent(table, value,
-					isSelected, hasFocus, row, column);
-
-			StationBD stCast = (StationBD) value ;
-			if ((StationBD) value.) {
-				cell.setBackground(Color.red);
-			} else {
-				if (tableauStations.getSelectedRow() == row) {
-					cell.setBackground(new Color(51,151,255));
-				} else cell.setBackground(Color.white);
-			}
-			
-			
-			return cell;
-		}
-
-	}*/
-	
+	}		
 	
 	public void rechargerTableau(ArrayList<Abonne> nouveauxAbos) {
 		donneesTable.majTable(nouveauxAbos);
