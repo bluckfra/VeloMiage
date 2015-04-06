@@ -100,7 +100,7 @@ public class PanelAbonnes extends JPanel {
 
 		btnVoirAbonne.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//ihm.actionAfficherDetailsAbonne(abonneCourant);
+				ihm.actionAfficherDetailsAbonne(abonneCourant);
 			}
 		});
 	}

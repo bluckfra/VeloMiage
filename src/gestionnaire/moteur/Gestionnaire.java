@@ -37,6 +37,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	private VeloDAO daoVelo;
 	private static GestionnaireIHM ihm;
 	private HashMap<Integer,String> listeSTNotif;
+	private static TechnicienIHM ihmTech;
 
 	private static final double PRIXHEURE = 2;
 	private static final int NBELEMENT_STATION = 9;
@@ -112,7 +113,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		AbonneDAO daoAbo = new AbonneDAO();
 		for(Abonne a : daoAbo.getInstances()){
 			if(a.isTechnicien()){
-				TechnicienIHM ihmTech = new TechnicienIHM(gestionnaire,a);
+				ihmTech = new TechnicienIHM(gestionnaire,a);
 				ihmTech.setVisible(true);
 			}
 		}
@@ -178,6 +179,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		//voir si technicien enleve 
 		if(ab.isTechnicien()){
 			listeSTNotif.remove(st);
+			ihmTech.notifierTech();
 		}
 		
 		return true;
@@ -214,6 +216,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		//si retour par technicien
 		if(listeSTNotif.containsKey(st)){
 			listeSTNotif.remove(st);
+			ihmTech.notifierTech();
 		}
 		return infosTicket;		
 	}
@@ -241,8 +244,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		// ajout du message pour le technicien
 		if(demandeLocation){
 			listeSTNotif.put(station.getId(), "vide");
+			ihmTech.notifierTech();
 		}else{
 			listeSTNotif.put(station.getId(), "saturée");
+			ihmTech.notifierTech();
 		}
 		
 		// création variable résultat

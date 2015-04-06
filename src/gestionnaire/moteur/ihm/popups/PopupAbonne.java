@@ -27,7 +27,7 @@ import bdd.objetsbdd.Velo;
 
 
 public class PopupAbonne extends JDialog {
-/*	private Abonne abonne;
+	private Abonne abonne;
 	private JPanel panelNord,panelCentre,panelSud,contentPane;
 	private BorderLayout layout ;
 	private FlowLayout layoutSud ;
@@ -79,15 +79,8 @@ public class PopupAbonne extends JDialog {
 		lblStation.setFont(new Font("Tahoma", Font.BOLD, 11));
 		
 		JLabel lblDebutAbo = new JLabel("Date début abonnement : " + abo.getDateAboDebut().toGMTString());
-		JButton boutonAbsence = new JButton("Indiquer vélo défectueux");
-		boutonAbsence.setEnabled(false);
 		
-		boutonAbsence.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		
-		JLabel lblFinAbo = new JLabel("Date début abonnement : " + abo.getDateAboFin().toGMTString());
+		JLabel lblFinAbo = new JLabel("Date fin abonnement : " + abo.getDateAboFin().toGMTString());
 		
 		JLabel lblCode = new JLabel("Code secret : " + abo.getCode());
 		
@@ -95,8 +88,6 @@ public class PopupAbonne extends JDialog {
 		
 		
 		lblLocations.setFont(new Font("Tahoma", Font.BOLD, 11));
-		
-		JButton btnDemanderRotationVlo = new JButton("Demander rotation v\u00E9lo");
 		GroupLayout gl_panelNord = new GroupLayout(panelNord);
 		gl_panelNord.setHorizontalGroup(
 			gl_panelNord.createParallelGroup(Alignment.LEADING)
@@ -104,18 +95,11 @@ public class PopupAbonne extends JDialog {
 					.addContainerGap()
 					.addGroup(gl_panelNord.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblStation)
-						.addGroup(gl_panelNord.createSequentialGroup()
-							.addGroup(gl_panelNord.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblDebutAbo)
-								.addComponent(lblCode))
-							.addGap(57)
-							.addComponent(lblFinAbo))
+						.addComponent(lblDebutAbo)
 						.addComponent(lblLocations)
-						.addGroup(gl_panelNord.createSequentialGroup()
-							.addComponent(boutonAbsence)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnDemanderRotationVlo)))
-					.addContainerGap(13, Short.MAX_VALUE))
+						.addComponent(lblCode)
+						.addComponent(lblFinAbo))
+					.addContainerGap(252, Short.MAX_VALUE))
 		);
 		gl_panelNord.setVerticalGroup(
 			gl_panelNord.createParallelGroup(Alignment.TRAILING)
@@ -123,16 +107,12 @@ public class PopupAbonne extends JDialog {
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addComponent(lblStation)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panelNord.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblDebutAbo)
-						.addComponent(lblFinAbo))
+					.addComponent(lblDebutAbo)
 					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblFinAbo)
+					.addGap(3)
 					.addComponent(lblCode)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panelNord.createParallelGroup(Alignment.BASELINE)
-						.addComponent(boutonAbsence)
-						.addComponent(btnDemanderRotationVlo))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGap(18)
 					.addComponent(lblLocations)
 					.addGap(4))
 		);
@@ -185,12 +165,11 @@ public class PopupAbonne extends JDialog {
 	
 	public void rechargerTableau(ArrayList<Velo> nvxVelos) {
 		donneesVelos.majTable(nvxVelos);
-		lblPlacesPrises.setText("Places prises : " + nvxVelos.size());
 	}
 	
 	public int getIdAbonne() {
 		return abonne.getId();
 	}
-*/
+
 }
 

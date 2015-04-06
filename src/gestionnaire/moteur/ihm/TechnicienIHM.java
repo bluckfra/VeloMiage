@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 import bdd.objetsbdd.Abonne;
+import bdd.objetsbdd.StationBD;
 import station.ihm.Etat;
 import station.ihm.panels.PanelAccueil;
 import station.ihm.panels.PanelDemandeAbo;
@@ -26,9 +27,12 @@ import utils.exceptions.demandeStationException;
 
 
 
+
+
 import java.awt.GridLayout;
 import java.net.IDN;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 
 public class TechnicienIHM extends JFrame {
 	private Abonne a ;
@@ -67,6 +71,11 @@ public class TechnicienIHM extends JFrame {
 		contentPane.add(panelCourant);
 		panelCourant.setVisible(true);
 
+	}
+	
+	public void notifierTech() {
+		HashMap<Integer, String> tab = gestionnaire.getInstancesStationsNotif();
+		panelTech.rechargerTableau(tab);
 	}
 
 }

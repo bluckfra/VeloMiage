@@ -4,6 +4,7 @@ import gestionnaire.moteur.Gestionnaire;
 import gestionnaire.moteur.ihm.panels.PanelAbonnes;
 import gestionnaire.moteur.ihm.panels.PanelStations;
 import gestionnaire.moteur.ihm.panels.PanelVelos;
+import gestionnaire.moteur.ihm.popups.PopupAbonne;
 import gestionnaire.moteur.ihm.popups.PopupVelos;
 
 import java.awt.GridLayout;
@@ -41,6 +42,7 @@ public class GestionnaireIHM extends JFrame {
 	private PanelVelos panelVelos;
 	private PanelAbonnes panelAbonnes;
 	private PopupVelos popupDetailsStation;
+	private PopupAbonne popupAbo;
 	private Gestionnaire gestionnaire;
 	private boolean isDetails;
 	
@@ -177,6 +179,12 @@ public class GestionnaireIHM extends JFrame {
 		isDetails = true;
 		popupDetailsStation = new PopupVelos(s);
 		popupDetailsStation.setVisible(true);
+	}
+	
+	public void actionAfficherDetailsAbonne(Abonne a) {
+		isDetails = true;
+		popupAbo = new PopupAbonne(a);
+		popupAbo.setVisible(true);
 	}
 
 }
