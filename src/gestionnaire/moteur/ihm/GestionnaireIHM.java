@@ -180,8 +180,9 @@ public class GestionnaireIHM extends JFrame {
 		popupDetailsStation = new PopupVelos(s);
 		popupDetailsStation.setVisible(true);
 	}
-
+	
 	public void actionAfficherDetailsAbonne(Abonne abonneCourant) {
+		isDetails = true;
 		popupAbonne = new PopupAbonne(abonneCourant);
 		popupAbonne.setVisible(true);
 	}

@@ -20,7 +20,7 @@ public class PopupStationPlacesDispo extends JDialog{
 		
 		getContentPane().setLayout(null);
 		
-		JLabel lbl_titre = new JLabel("Station la plus proche pour null un v\u00E9lo !");
+		JLabel lbl_titre = new JLabel("Station la plus proche pour " + sta[8] + " un v\u00E9lo !");
 		lbl_titre.setBounds(10, 11, 236, 33);
 		getContentPane().add(lbl_titre);
 		
@@ -85,7 +85,7 @@ public class PopupStationPlacesDispo extends JDialog{
 		lbl_tps_velo.setBounds(91, 180, 60, 14);
 		getContentPane().add(lbl_tps_velo);
 		
-		JLabel lbl_titre_st2 = new JLabel("2i\u00E8me station la plus proche pour null un v\u00E9lo !");
+		JLabel lbl_titre_st2 = new JLabel("2i\u00E8me station la plus proche pour " + sta[8] + " un v\u00E9lo !");
 		lbl_titre_st2.setBounds(243, 10, 270, 33);
 		getContentPane().add(lbl_titre_st2);
 		
@@ -141,7 +141,7 @@ public class PopupStationPlacesDispo extends JDialog{
 		lblLonST2.setBounds(263, 121, 64, 14);
 		getContentPane().add(lblLonST2);
 		
-		JLabel lblVoiciLaime = new JLabel("3i\u00E8me station la plus proche pour null un v\u00E9lo !");
+		JLabel lblVoiciLaime = new JLabel("3i\u00E8me station la plus proche pour " + sta[8] + " un v\u00E9lo !");
 		lblVoiciLaime.setBounds(523, 11, 270, 33);
 		getContentPane().add(lblVoiciLaime);
 		

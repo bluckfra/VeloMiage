@@ -52,7 +52,7 @@ public class PanelRetourVelo extends JPanel{
 		lbl_error = new JLabel("");
 		lbl_error.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lbl_error.setForeground(Color.RED);
-		lbl_error.setBounds(28, 36, 263, 22);
+		lbl_error.setBounds(28, 36, 412, 22);
 		add(lbl_error);
 		
 		btn_valider.addActionListener(new ActionListener() {
