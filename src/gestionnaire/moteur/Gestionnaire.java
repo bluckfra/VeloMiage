@@ -19,6 +19,7 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import utils.exceptions.AbonneInexistantException;
+import utils.exceptions.AbonnementExpireException;
 import utils.exceptions.IdVeloException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.VeloInexistantException;
@@ -119,14 +120,18 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	 * <Stéfan> - 21/03/2015 - Etape 2
 	 * @throws RemoteException
 	 * @throws AbonneInexistantException 
+	 * @throws AbonnementExpireException 
 	 */
-	public synchronized int validationIdClient(int id) throws RemoteException, AbonneInexistantException {
+	public synchronized int validationIdClient(int id) throws RemoteException, AbonneInexistantException, AbonnementExpireException {
 		Abonne abonne = daoAbonne.find(id);
 		if (abonne.getId()== 0) throw new AbonneInexistantException();
 		// récupération date du jour
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		// cas du technicien : toujours abonné 
-		return ((now.before(abonne.getDateAboFin()) || (abonne.isTechnicien())) ? abonne.getCode() : 0);
+		if (!abonne.isTechnicien()) {
+			if (now.before(abonne.getDateAboFin())) throw new AbonnementExpireException();			
+		}
+		return abonne.getCode();
 	}
 
 	/**

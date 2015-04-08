@@ -107,6 +107,11 @@ public class PanelIdentification extends JPanel {
 		remiseAZero();
 	}
 	
+	public void afficherErreurAbonnementExpire() {
+		labelErreur.setText("Erreur : abonnement expiré");
+		remiseAZero();
+	}
+	
 	public void remiseAZero(){
 		for (Component C : this.getComponents()){
 			if(C instanceof JTextField){

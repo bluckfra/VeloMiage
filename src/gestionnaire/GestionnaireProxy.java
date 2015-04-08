@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import utils.exceptions.AbonneInexistantException;
+import utils.exceptions.AbonnementExpireException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
@@ -17,7 +18,7 @@ public interface GestionnaireProxy extends java.rmi.Remote{
 	 * @throws AbonneInexistantException 
 	 */
 	public int[] creerAbonnement(boolean isTech)throws java.rmi.RemoteException;
-	public int validationIdClient(int id)throws java.rmi.RemoteException, AbonneInexistantException;
+	public int validationIdClient(int id)throws java.rmi.RemoteException, AbonneInexistantException, AbonnementExpireException;
 	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException;
 	public Object[] caracteristiquesStation(int idStation) throws RemoteException;
 	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws java.rmi.RemoteException, LocationEnCoursException;

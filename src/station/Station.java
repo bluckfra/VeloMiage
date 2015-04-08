@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import utils.exceptions.AbonneInexistantException;
+import utils.exceptions.AbonnementExpireException;
 import utils.exceptions.DemandeStationException;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.IdClientException;
@@ -69,8 +70,9 @@ public class Station{
 	 * @throws RemoteException
 	 * @throws AbonneInexistantException 
 	 * @throws EssaisEcoulesException 
+	 * @throws AbonnementExpireException 
 	 */
-	public boolean identification(int idClient, int codeCliInsere) throws RemoteException, EssaisEcoulesException, AbonneInexistantException{
+	public boolean identification(int idClient, int codeCliInsere) throws RemoteException, EssaisEcoulesException, AbonneInexistantException, AbonnementExpireException{
 		// récupération du mdp client s'il n'est pas récupéré
 		if (codeClient == 0) {
 			codeClient = proxy.validationIdClient(idClient);			

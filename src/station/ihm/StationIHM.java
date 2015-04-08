@@ -16,6 +16,7 @@ import station.ihm.popups.PopupRestitutionVelo;
 import station.ihm.popups.PopupStationPlacesDispo;
 import station.ihm.popups.PopupTicketAbo;
 import utils.exceptions.AbonneInexistantException;
+import utils.exceptions.AbonnementExpireException;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.StationPleineException;
@@ -82,6 +83,9 @@ public class StationIHM extends JFrame {
 		} catch (AbonneInexistantException e) {
 			// TODO Auto-generated catch block
 			panelIdentification.afficherErreurEssai();
+		} catch (AbonnementExpireException e) {
+			panelIdentification.afficherErreurAbonnementExpire();
+			e.printStackTrace();
 		}
 	}
 	
