@@ -35,8 +35,8 @@ import station.ihm.popups.PopupLocationVelo;
 public class GestionnaireIHM extends JFrame {
 	// Déclaration des objets graphiques
 	private JMenuBar menu;
-	protected JMenu menuFichier,menuStations,menuStats;
-	protected JMenuItem quitter,stats,stations,velos,abonnes; 
+	protected JMenu menuFichier,menuStations;
+	protected JMenuItem quitter,stations,velos,abonnes; 
 	protected JPanel contentPane,panelCourant;
 	private PanelStations panelStations;
 	private PanelVelos panelVelos;
@@ -72,15 +72,10 @@ public class GestionnaireIHM extends JFrame {
 		// Déclaration des JMenu
 		menuFichier = new JMenu("Fichier");
 		menuStations = new JMenu("Information équipements");
-		menuStats = new JMenu("Statistiques");
 		
 		// Ajout au menu principal
 		menu.add(menuFichier);
 		menu.add(menuStations);
-		menu.add(menuStats);
-
-		// Création des items
-		stats = new JMenuItem("Statistisques usage");
 		stations = new JMenuItem("Stations courantes");
 		velos = new JMenuItem("Vélos en circulation");
 		abonnes = new JMenuItem("Abonnés du service");
@@ -110,17 +105,11 @@ public class GestionnaireIHM extends JFrame {
 				changerPanel(EtatGest.Abonnes);
 			}
 		});
-
-		stats.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		
 		// Ajout des composants à la JMenuBar
 		menuStations.add(stations);
 		menuStations.add(velos);
 		menuStations.add(abonnes);
-		menuStats.add(stats);
 		menuFichier.add(quitter);
 		
 		// Modification du panel courant
