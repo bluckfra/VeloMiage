@@ -129,7 +129,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		// cas du technicien : toujours abonné 
 		if (!abonne.isTechnicien()) {
-			if (now.before(abonne.getDateAboFin())) throw new AbonnementExpireException();			
+			if (!now.before(abonne.getDateAboFin())) throw new AbonnementExpireException();			
 		}
 		return abonne.getCode();
 	}
@@ -172,7 +172,6 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		if (ab.hasVelo()) throw new LocationEnCoursException();
 		StationBD st = daoStationBD.find(idStation);
 		Velo v = daoVelo.find(idVelo);
-
 		// enlever vélo de table posseder
 		daoStationBD.removeVelo(st, v, dateLoc);
 		// ajouter vélo table louer
@@ -329,6 +328,14 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	*/
 	public ArrayList<Velo> getInstancesAllVelos() {
 		return daoVelo.getInstances();
+	}
+	
+	public StationBD getStation(int id) {
+		return daoStationBD.find(id);
+	}
+	
+	public Abonne getAbonne(int id) {
+		return daoAbonne.find(id);
 	}
 	
 	/**

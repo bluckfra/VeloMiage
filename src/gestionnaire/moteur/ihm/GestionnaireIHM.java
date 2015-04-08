@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -44,7 +45,7 @@ public class GestionnaireIHM extends JFrame {
 	private PopupVelos popupDetailsStation;
 	private PopupAbonne popupAbonne;
 	private Gestionnaire gestionnaire;
-	private boolean isDetails;
+	private boolean isDetailsStation,isDetailsAbonne;
 	
 	public GestionnaireIHM(Gestionnaire g) {
 		gestionnaire = g ;
@@ -117,6 +118,9 @@ public class GestionnaireIHM extends JFrame {
 		panelStations = new PanelStations(gestionnaire.getInstancesStations(),this);
 		panelVelos = new PanelVelos(gestionnaire.getInstancesAllVelos(), this);
 		panelAbonnes = new PanelAbonnes(gestionnaire.getInstancesAbonnes(), this);
+		popupDetailsStation = new PopupVelos();
+		isDetailsStation = false;
+		isDetailsAbonne = false;
 		contentPane.add(panelStations);
 		panelCourant = panelStations;
 		
@@ -155,24 +159,25 @@ public class GestionnaireIHM extends JFrame {
 		panelVelos.rechargerTableau(velos);
 		panelAbonnes.rechargerTableau(abos);
 		
-		if (isDetails) {
-			System.out.println("modif popup");
-			if (popupDetailsStation.getIdStation() == s.getId()) {
-				popupDetailsStation.rechargerTableau(gestionnaire.getInstancesVelos(s.getId()));
-			}
+		if (isDetailsStation) {
+			popupDetailsStation.rechargerTableau(gestionnaire.getInstancesVelos(s.getId()));
+		}
+		
+		if (isDetailsAbonne) {
+			popupAbonne.rechargerTableau();			
 		}
 		
 	}
 	
-	public void actionAfficherDetailsStation(StationBD s) {
-		isDetails = true;
-		popupDetailsStation = new PopupVelos(s);
+	public void actionAfficherDetailsStation(int s) {
+		isDetailsStation = true;
+		popupDetailsStation = new PopupVelos(gestionnaire.getStation(s));
 		popupDetailsStation.setVisible(true);
 	}
 	
-	public void actionAfficherDetailsAbonne(Abonne abonneCourant) {
-		isDetails = true;
-		popupAbonne = new PopupAbonne(abonneCourant);
+	public void actionAfficherDetailsAbonne(int abonneCourant) {
+		isDetailsAbonne = true;
+		popupAbonne = new PopupAbonne(gestionnaire.getAbonne(abonneCourant));
 		popupAbonne.setVisible(true);
 	}
 

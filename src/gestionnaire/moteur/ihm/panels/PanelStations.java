@@ -98,7 +98,7 @@ public class PanelStations extends JPanel {
 
 		btnVoirStation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ihm.actionAfficherDetailsStation(stationCourante);
+				ihm.actionAfficherDetailsStation(stationCourante.getId());
 			}
 		});
 	}

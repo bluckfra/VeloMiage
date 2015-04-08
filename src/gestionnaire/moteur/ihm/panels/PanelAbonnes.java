@@ -100,7 +100,7 @@ public class PanelAbonnes extends JPanel {
 
 		btnVoirAbonne.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ihm.actionAfficherDetailsAbonne(abonneCourant);
+				ihm.actionAfficherDetailsAbonne(abonneCourant.getId());
 			}
 		});
 	}
@@ -109,7 +109,7 @@ public class PanelAbonnes extends JPanel {
 	// Modèle pour la JTable
 	private class TableAbonnes extends AbstractTableModel {
 		private ArrayList<Abonne> abos ;
-		private String index[] =  {"Id Abonne","Code secret","Velo en location","Début abonnement","Fin abonnement"};
+		private String index[] =  {"Id Abonne","Code secret","Velo en location","Début abonnement","Fin abonnement","Technicien"};
 		
 		public TableAbonnes(ArrayList<Abonne> lStations) {
 			super();
@@ -141,6 +141,8 @@ public class PanelAbonnes extends JPanel {
 				return a.getDateAboDebut();
 			case 4:
 				return a.getDateAboFin();
+			case 5:
+				return (a.isTechnicien() ? "Oui" : "Non");
 			default:
 				return null;
 			}

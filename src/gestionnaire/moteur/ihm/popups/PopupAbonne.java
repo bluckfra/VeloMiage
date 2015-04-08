@@ -170,8 +170,8 @@ public class PopupAbonne extends JDialog {
 
 	}
 	
-	public void rechargerTableau(ArrayList<Object[]> nvxVelos) {
-		donneesVelos.majTable(nvxVelos);
+	public void rechargerTableau() {
+		donneesVelos.majTable(Statistiques.getHistoriqueLocationsAbonne(abonne.getId()));
 	}
 	
 	public int getIdAbonne() {

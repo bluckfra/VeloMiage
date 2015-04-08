@@ -41,7 +41,7 @@ public class PopupTicketAbo extends JDialog{
 		lblDateFinLoc.setBounds(20, 51, 125, 14);
 		getContentPane().add(lblDateFinLoc);
 		
-		JLabel lblPrixDeLa = new JLabel("Prix de la course :");
+		JLabel lblPrixDeLa = new JLabel("Prix de la course (€) :");
 		lblPrixDeLa.setBounds(20, 71, 125, 14);
 		getContentPane().add(lblPrixDeLa);
 		

@@ -138,7 +138,6 @@ public class StationDAO extends DAO<StationBD> {
 						"INSERT INTO posseder (idStation, idVelo, dateDepot) VALUES(?, ?, ?)",
 						Statement.RETURN_GENERATED_KEYS
 						);
-			System.out.println("id :" + obj.getId());
 			prepare.setInt(1, obj.getId());
 			prepare.setInt(2, v.getId());
 			prepare.setTimestamp(3, dateDepotVelo);

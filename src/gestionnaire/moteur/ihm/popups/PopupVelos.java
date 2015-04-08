@@ -34,6 +34,10 @@ public class PopupVelos extends JDialog {
 	private TableVelos donneesVelos;
 	private JLabel lblPlacesPrises;
 	
+	public PopupVelos() {
+		// blank constructor
+	};
+	
 	public PopupVelos(StationBD s) {
 		station = s ;
 		
@@ -175,10 +179,6 @@ public class PopupVelos extends JDialog {
 	public void rechargerTableau(ArrayList<Velo> nvxVelos) {
 		donneesVelos.majTable(nvxVelos);
 		lblPlacesPrises.setText("Places prises : " + nvxVelos.size());
-	}
-	
-	public int getIdStation() {
-		return station.getId();
 	}
 
 }

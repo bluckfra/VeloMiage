@@ -30,7 +30,7 @@ public class Station{
 	private GestionnaireProxy proxy;
 	private ArrayList<Velo> listeVelos;
 	private int taille;
-	private static int idStation;
+	private int idStation;
 	private int codeClient;
 	private int nbEssais;
 	private String action;
@@ -109,6 +109,7 @@ public class Station{
 
 		Timestamp now = new Timestamp(System.currentTimeMillis());
 		idVelo = listeVelos.get(0).getId();
+		System.out.println("loc:" + idStation);
 		if (proxy.location(idStation,idClient, idVelo,now)) {	
 			listeVelos.remove(0);
 		} 
