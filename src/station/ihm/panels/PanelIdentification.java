@@ -24,6 +24,7 @@ public class PanelIdentification extends JPanel {
 	private JTextField textFieldId;
 	private JTextField textFieldMdp;
 	private JLabel lblIdent,lblMotDePasse,lblIdentifiant,labelErreur;
+	private JButton btnValider;
 	protected StationIHM modele;
 
 	/**
@@ -58,7 +59,7 @@ public class PanelIdentification extends JPanel {
 		add(textFieldMdp);
 		textFieldMdp.setColumns(10);
 		
-		JButton btnValider = new JButton("Valider");
+		btnValider = new JButton("Valider");
 		btnValider.setBounds(10, 156, 85, 23);
 		add(btnValider);
 		
@@ -97,6 +98,7 @@ public class PanelIdentification extends JPanel {
 
 	public void afficherErreurEssai() {
 		labelErreur.setText("Erreur : identifiant ou mot de passe incorrect");
+		btnValider.setEnabled(false);
 		razChampsSaisie();
 	}
 
@@ -112,6 +114,7 @@ public class PanelIdentification extends JPanel {
 	
 	public void remiseAZero(){
 		labelErreur.setText("");
+		btnValider.setEnabled(true);
 		razChampsSaisie();
 	}
 	

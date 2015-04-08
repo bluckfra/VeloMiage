@@ -164,6 +164,7 @@ public class StationIHM extends JFrame {
 			p = panelMenu;
 			panelIdentification.remiseAZero();
 			panelRetourVelo.remiseAZero();
+			s.reinitVarsClient();
 			break;
 		case DemandeAbonnement:
 			p = panelDemandeAbo;

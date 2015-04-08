@@ -232,10 +232,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 
 		// ajout du message pour le technicien
 		if(demandeLocation){
-			listeSTNotif.put(station.getId(), "vide");
+			listeSTNotif.put(station.getId(), "Vide");
 			notifierTechs();
 		}else{
-			listeSTNotif.put(station.getId(), "saturée");
+			listeSTNotif.put(station.getId(), "Saturée");
 			notifierTechs();
 		}
 		

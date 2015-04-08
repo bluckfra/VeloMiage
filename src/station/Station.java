@@ -152,6 +152,11 @@ public class Station{
 		}
 		return reponse;
 	}
+	
+	public void reinitVarsClient() {
+		codeClient = 0;
+		nbEssais = 0;
+	}
 
 	/**
 	 * <Stéfan> - 21/03/2015 
