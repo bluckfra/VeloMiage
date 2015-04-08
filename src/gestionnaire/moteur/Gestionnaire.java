@@ -23,10 +23,7 @@ import utils.exceptions.IdVeloException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
-import utils.exceptions.demandeStationException;
-import utils.exceptions.listeVeloException;
 import utils.exceptions.LocationException;
-import utils.exceptions.retourVeloException;
 import bdd.objetsbdd.*;
 import bdd.objetsdao.*;
 

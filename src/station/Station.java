@@ -9,16 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import utils.exceptions.AbonneInexistantException;
+import utils.exceptions.DemandeStationException;
 import utils.exceptions.EssaisEcoulesException;
 import utils.exceptions.IdClientException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.StationPleineException;
 import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
-import utils.exceptions.demandeAboException;
-import utils.exceptions.demandeStationException;
 import utils.exceptions.LocationException;
-import utils.exceptions.retourVeloException;
 import bdd.objetsbdd.Abonne;
 import bdd.objetsbdd.Velo;
 import bdd.objetsdao.AbonneDAO;
@@ -142,12 +140,12 @@ public class Station{
 	}
 	
 	// méthode de demande d'une station proche si manque de place
-	public Object[] stationsProches() throws demandeStationException {
+	public Object[] stationsProches() throws DemandeStationException {
 		Object reponse[];
 		try {
 			reponse = proxy.demandeStationProche(idStation,false);
 		} catch (RemoteException e) {
-			throw new demandeStationException();
+			throw new DemandeStationException();
 		}
 		return reponse;
 	}

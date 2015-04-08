@@ -21,8 +21,6 @@ import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.StationPleineException;
 import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
-import utils.exceptions.demandeAboException;
-import utils.exceptions.demandeStationException;
 import utils.exceptions.LocationException;
 
 import java.awt.GridLayout;

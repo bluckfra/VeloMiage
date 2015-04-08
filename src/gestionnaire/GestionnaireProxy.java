@@ -3,17 +3,11 @@ package gestionnaire;
 import java.rmi.RemoteException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.jar.JarException;
 
 import utils.exceptions.AbonneInexistantException;
 import utils.exceptions.LocationEnCoursException;
 import utils.exceptions.VeloInexistantException;
 import utils.exceptions.VeloPasLoueException;
-import utils.exceptions.demandeAboException;
-import utils.exceptions.demandeStationException;
-import utils.exceptions.listeVeloException;
-import utils.exceptions.LocationException;
-import utils.exceptions.retourVeloException;
 import bdd.objetsbdd.Velo;
 
 public interface GestionnaireProxy extends java.rmi.Remote{
