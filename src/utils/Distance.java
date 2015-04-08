@@ -35,23 +35,6 @@ public class Distance {
 
 		// Radius of Earth: 6378.1 kilometers
 		double distance = centralAngle * 6378.1;
-
 		return distance;
 	}
-	
-
-	// Test
-	public static void main(String args[]) {
-
-		// Place du capitole, Toulouse: 43.604437, 1.443482
-		// Hôtel de ville, Paris: 48.856487, 2.352660
-		System.out.println("Distance entre Toulouse et Paris : "
-				+ distanceInKilometers(43.604437, 1.443482, 48.856487, 2.352660)
-				+ " kilometres");
-		
-		System.out.println("Distance entre métro UPS et métro Ramonville : "
-				+ distanceInKilometers(43.560865, 1.463392, 43.555850, 1.476438)
-				+ " kilometres");
-	}
-
 }

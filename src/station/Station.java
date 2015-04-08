@@ -46,7 +46,6 @@ public class Station{
 	public Station(int id) throws Exception {
 		proxy = (GestionnaireProxy) Naming
 				.lookup("rmi://localhost:1099/GestionStat");
-		// 
 		this.idStation = id;
 		Object[] caracteristiques = proxy.caracteristiquesStation(id);
 		listeVelos = (ArrayList)caracteristiques[0];
@@ -59,8 +58,6 @@ public class Station{
 	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
 	 * @params bool technicien
 	 * @throws RemoteException
-	 * @throws demandeAboException 
-	 * @throws abonnementException 
 	 */
 	public int[] demanderAbo(boolean isTech) throws RemoteException{
 		int reponse[] = proxy.creerAbonnement(isTech);
@@ -70,9 +67,10 @@ public class Station{
 	/**
 	 * <Stéfan> - 27/03/2015 - Etape 2 & 3
 	 * @param int idClient
+	 * @param int codeCliInsere
 	 * @throws RemoteException
 	 * @throws AbonneInexistantException 
-	 * @throws IdClientException 
+	 * @throws EssaisEcoulesException 
 	 */
 	public boolean identification(int idClient, int codeCliInsere) throws RemoteException, EssaisEcoulesException, AbonneInexistantException{
 		// récupération du mdp client s'il n'est pas récupéré
@@ -101,7 +99,6 @@ public class Station{
 	 * @throws RemoteException
 	 * @throws LocationException 
 	 * @throws LocationEnCoursException 
-	 * @throws demandeStationException 
 	 */
 	public int locationVelo(int idClient) throws RemoteException, LocationException, LocationEnCoursException {
 		int idVelo = -1;
@@ -131,7 +128,7 @@ public class Station{
 	 * @throws StationPleineException 
 	 * @throws VeloInexistantException 
 	 * @throws demandeStationException 
-	 * @throws retourVeloException 
+	 * @throws VeloPasLoueException
 	 */
 	public Object[] retourVelo(int idV) throws RemoteException, VeloPasLoueException, StationPleineException, VeloInexistantException {
 		if (listeVelos.size() == this.taille) throw new StationPleineException();
@@ -147,7 +144,6 @@ public class Station{
 	// méthode de demande d'une station proche si manque de place
 	public Object[] stationsProches() throws demandeStationException {
 		Object reponse[];
-		
 		try {
 			reponse = proxy.demandeStationProche(idStation,false);
 		} catch (RemoteException e) {
@@ -156,6 +152,9 @@ public class Station{
 		return reponse;
 	}
 
+	/**
+	 * <Stéfan> - 21/03/2015 
+	*/
 	public int getIdStation() {
 		return idStation;
 	}

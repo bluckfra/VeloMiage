@@ -60,12 +60,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		listeSTNotif = new HashMap();
 		ihm = new GestionnaireIHM(this);
 		System.out.println("---- Gestionnaire lancé");
-
 	}
 
 	/**
 	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
-	 * 
 	 * @param isTech
 	 *  	technicien ou non
 	 * @return abonne créé
@@ -95,13 +93,11 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 
 		abo[0] = abonne.getId();
 		abo[1] = abonne.getCode();
-		//System.out.println("Demande d'abonnement : " + abonne.getId() + "/" + abonne.getCode() + " crée");
 		return abo;
 	}
 
 	/**
 	 * <Mélanie&Stéfan> - 19/03/2015 - Etape 1
-	 * 
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
@@ -121,12 +117,11 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 
 	
 	/**
-	 * WIP <Stéfan> - 21/03/2015 - Etape 2
-	 * 
+	 * <Stéfan> - 21/03/2015 - Etape 2
 	 * @throws RemoteException
 	 * @throws AbonneInexistantException 
 	 */
-	public int validationIdClient(int id) throws RemoteException, AbonneInexistantException {
+	public synchronized int validationIdClient(int id) throws RemoteException, AbonneInexistantException {
 		Abonne abonne = daoAbonne.find(id);
 		if (abonne.getId()== 0) throw new AbonneInexistantException();
 		// récupération date du jour
@@ -135,24 +130,27 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	}
 
 	/**
-	 * WIP <Stéfan> - 21/03/2015 - Etape 2
-	 * 
+	 * <Stéfan> - 21/03/2015 - Etape 2
 	 * @throws RemoteException
 	 * @throws listeVeloException 
 	 */
-	public ArrayList<Velo> listeVelo(int idStation) throws RemoteException {
+	public synchronized ArrayList<Velo> listeVelo(int idStation) throws RemoteException {
 			StationBD st = daoStationBD.find(idStation);
 			ArrayList<Velo> velos = st.getVelosStation();
 			return velos;	
 	}
 	
+	/**
+	 * <Yoan> - 26/03/2015 - Etape optionnelle
+	 * @throws RemoteException
+	 * @throws listeVeloException 
+	 */
 	public Object[] caracteristiquesStation(int idStation) throws RemoteException{
 		Object[] resultat = new Object[2];
 		// ajout de la liste de vélo
 		StationBD st = daoStationBD.find(idStation);
 		ArrayList<Velo> velos = st.getVelosStation();
 		resultat[0] = velos;
-		
 		// ajout de la taille de la station
 		resultat[1] = st.getNbPlace();
 		// retour du resultat
@@ -160,12 +158,11 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	}
 	
 	/**
-	 * WIP <Stéfan> - 21/03/2015 - Etape 2
-	 * 
+	 * <Stéfan> - 21/03/2015 - Etape 2
 	 * @throws RemoteException
 	 * @throws LocationException 
 	 */
-	public boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException,LocationEnCoursException {
+	public synchronized boolean location(int idStation,int idClient, int idVelo, Timestamp dateLoc) throws RemoteException,LocationEnCoursException {
 		Abonne ab = daoAbonne.find(idClient);
 		if (ab.hasVelo()) throw new LocationEnCoursException();
 		StationBD st = daoStationBD.find(idStation);
@@ -181,17 +178,15 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 			listeSTNotif.remove(st);
 			ihmTech.notifierTech();
 		}
-		
 		return true;
 	}
 
 	/**
-	 * WIP <Stéfan> - 21/03/2015 - Etape 2
-	 * 
+	 * <Stéfan> - 21/03/2015 - Etape 2
 	 * @throws RemoteException
 	 * @throws retourVeloException 
 	 */
-	public Object[] retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException,VeloPasLoueException,VeloInexistantException {
+	public synchronized Object[] retour(int idStation,int idVelo, Timestamp dateRetour) throws RemoteException,VeloPasLoueException,VeloInexistantException {
 		StationBD st = daoStationBD.find(idStation);
 		Velo v = daoVelo.find(idVelo);
 		if (v.getId() == 0) throw new VeloInexistantException();
@@ -222,20 +217,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	}
 
 	/**
-	 * WIP <Stéfan> - 21/03/2015 - Etape 4
-	 * @throws IdVeloException 
-	 * 
-	 * @throws RemoteException
-	 */
-	public void getInfoEtatVelo(int idVelo) {
-		Velo v = daoVelo.find(idVelo);
-	}
-
-	/**
-	 * WIP <Stéfan> - 21/03/2015 - Etape 5
+	 * <Stéfan> - 21/03/2015 - Etape 5
 	 * @throws demandeStationException 
-	 */
-	public Object[] demandeStationProche(int idStation, boolean demandeLocation) {
+	*/
+	public synchronized Object[] demandeStationProche(int idStation, boolean demandeLocation) {
 		
 		// récupération des lattitudes et longi de la station courante
 		StationBD station = daoStationBD.find(idStation);
@@ -318,22 +303,39 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 			return res;	
 	}
 	
+	/**
+	 * <Yoan> - 26/03/2015 - Etapes optionnelles
+	*/
 	public ArrayList<StationBD> getInstancesStations() {
 		return daoStationBD.getInstances();
 	}
-		
+	
+	/**
+	 * <Yoan> - 26/03/2015 - Etapes optionnelles
+	 * @param int s
+	 * 	
+	*/
 	public ArrayList<Velo> getInstancesVelos(int s) {
 		return daoStationBD.find(s).getVelosStation();
 	}
 
+	/**
+	 * <Yoan> - 26/03/2015 - Etapes optionnelles
+	*/
 	public ArrayList<Velo> getInstancesAllVelos() {
 		return daoVelo.getInstances();
 	}
 	
+	/**
+	 * <Yoan> - 26/03/2015 - Etapes optionnelles
+	*/
 	public ArrayList<Abonne> getInstancesAbonnes() {
 		return daoAbonne.getInstances();
 	}
 	
+	/**
+	 * <Yoan> - 26/03/2015 - Etapes optionnelles
+	*/
 	public  HashMap<Integer,String> getInstancesStationsNotif(){
 		return listeSTNotif;
 	}
