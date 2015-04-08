@@ -69,7 +69,6 @@ public class PanelIdentification extends JPanel {
 		
 		btnRetour.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				remiseAZero();
 				modele.changerPanel(Etat.Menu);
 			}
 		});
@@ -78,7 +77,6 @@ public class PanelIdentification extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					modele.actionLouer(Integer.parseInt(textFieldId.getText()), Integer.parseInt(textFieldMdp.getText()));
-					remiseAZero();
 				} catch (NumberFormatException e1) {
 					afficherErreurEssai();
 				} catch (RemoteException e1) {
@@ -99,26 +97,30 @@ public class PanelIdentification extends JPanel {
 
 	public void afficherErreurEssai() {
 		labelErreur.setText("Erreur : identifiant ou mot de passe incorrect");
-		remiseAZero();
+		razChampsSaisie();
 	}
 
 	public void afficherErreurDejaLoc() {
 		labelErreur.setText("Erreur : vous êtes déjà en cours de location");
-		remiseAZero();
+		razChampsSaisie();
 	}
 	
 	public void afficherErreurAbonnementExpire() {
 		labelErreur.setText("Erreur : abonnement expiré");
-		remiseAZero();
+		razChampsSaisie();
 	}
 	
 	public void remiseAZero(){
+		labelErreur.setText("");
+		razChampsSaisie();
+	}
+	
+	public void razChampsSaisie() {
 		for (Component C : this.getComponents()){
 			if(C instanceof JTextField){
 				((JTextComponent) C ).setText("");
 			}
 		}
 	}
-
 
 }

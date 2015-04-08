@@ -71,7 +71,7 @@ public class StationIHM extends JFrame {
 		try {
 			identificationReussie = s.identification(identifiant, mdp);
 			if (identificationReussie) {
-				actionLocation(identifiant);			
+				actionLocation(identifiant);
 			} else {
 				panelIdentification.afficherErreurEssai();
 			}
