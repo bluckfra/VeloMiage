@@ -125,7 +125,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		if (abonne.getId()== 0) throw new AbonneInexistantException();
 		// récupération date du jour
 		Timestamp now = new Timestamp(System.currentTimeMillis());
-		return (now.before(abonne.getDateAboFin()) ? abonne.getCode() : 0);
+		// cas du technicien : toujours abonné 
+		return ((now.before(abonne.getDateAboFin()) || (abonne.isTechnicien())) ? abonne.getCode() : 0);
 	}
 
 	/**
