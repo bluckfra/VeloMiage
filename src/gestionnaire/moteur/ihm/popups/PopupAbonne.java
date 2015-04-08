@@ -151,9 +151,9 @@ public class PopupAbonne extends JDialog {
 				case 0 :
 					return (Integer) v[0];
 				case 1 :
-					return ((Timestamp) v[1]).toGMTString();
+					return (v[1] == null ? null : ((Timestamp) v[1]).toGMTString());
 				case 2 :
-					return ((Timestamp) v[2]).toGMTString();
+					return (v[2] == null ? null : ((Timestamp) v[2]).toGMTString());
 				default:
 					return null;
 			}
