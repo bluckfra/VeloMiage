@@ -178,8 +178,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		daoAbonne.addVelo(ab, v, dateLoc);
 		ihm.notifierLocationVelo(st);
 		//voir si technicien enleve 
-		if(ab.isTechnicien()){
-			listeSTNotif.remove(st);
+		if(listeSTNotif.containsKey(st.getId())){
+			listeSTNotif.remove(st.getId());
 			notifierTechs();
 		}
 		return true;
@@ -213,8 +213,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		infosTicket[2] = prix;
 		
 		//si retour par technicien
-		if(listeSTNotif.containsKey(st)){
-			listeSTNotif.remove(st);
+		if(listeSTNotif.containsKey(st.getId())){
+			listeSTNotif.remove(st.getId());
 			notifierTechs();
 		}
 		return infosTicket;		
