@@ -33,8 +33,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	private AbonneDAO daoAbonne;
 	private VeloDAO daoVelo;
 	private static GestionnaireIHM ihm;
-	private HashMap<Integer,String> listeSTNotif;
-	private static TechnicienIHM ihmTech;
+	private static HashMap<Integer,String> listeSTNotif;
+	private static ArrayList<TechnicienIHM> ihmTech;
 
 	private static final double PRIXHEURE = 2;
 	private static final int NBELEMENT_STATION = 9;
@@ -54,7 +54,8 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		daoAbonne = new AbonneDAO();
 		daoStationBD = new StationDAO();
 		daoVelo = new VeloDAO();
-		listeSTNotif = new HashMap();
+		listeSTNotif = new HashMap<Integer,String>();
+		ihmTech = new ArrayList<TechnicienIHM>();
 		ihm = new GestionnaireIHM(this);
 		System.out.println("---- Gestionnaire lancé");
 	}
@@ -106,8 +107,9 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		AbonneDAO daoAbo = new AbonneDAO();
 		for(Abonne a : daoAbo.getInstances()){
 			if(a.isTechnicien()){
-				ihmTech = new TechnicienIHM(gestionnaire,a);
-				ihmTech.setVisible(true);
+				TechnicienIHM ihm = new TechnicienIHM(listeSTNotif,a);
+				ihm.setVisible(true);
+				ihmTech.add(ihm);
 			}
 		}
 	}
@@ -173,7 +175,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		//voir si technicien enleve 
 		if(ab.isTechnicien()){
 			listeSTNotif.remove(st);
-			ihmTech.notifierTech();
+			notifierTechs();
 		}
 		return true;
 	}
@@ -187,7 +189,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		StationBD st = daoStationBD.find(idStation);
 		Velo v = daoVelo.find(idVelo);
 		if (v.getId() == 0) throw new VeloInexistantException();
-		if (!v.isInLocation()) {
+		if (v.getEtat() != 1) {
 			throw new VeloPasLoueException();
 		}
 		// ajouter vélo de table posseder
@@ -208,7 +210,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		//si retour par technicien
 		if(listeSTNotif.containsKey(st)){
 			listeSTNotif.remove(st);
-			ihmTech.notifierTech();
+			notifierTechs();
 		}
 		return infosTicket;		
 	}
@@ -226,10 +228,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		// ajout du message pour le technicien
 		if(demandeLocation){
 			listeSTNotif.put(station.getId(), "vide");
-			ihmTech.notifierTech();
+			notifierTechs();
 		}else{
 			listeSTNotif.put(station.getId(), "saturée");
-			ihmTech.notifierTech();
+			notifierTechs();
 		}
 		
 		// création variable résultat
@@ -329,11 +331,10 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 	public ArrayList<Abonne> getInstancesAbonnes() {
 		return daoAbonne.getInstances();
 	}
-	
-	/**
-	 * <Yoan> - 26/03/2015 - Etapes optionnelles
-	*/
-	public  HashMap<Integer,String> getInstancesStationsNotif(){
-		return listeSTNotif;
+		
+	public void notifierTechs() {
+		for (TechnicienIHM technicienIHM : ihmTech) {
+			technicienIHM.notifierTech(listeSTNotif);
+		}
 	}
 }

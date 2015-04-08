@@ -10,8 +10,6 @@ public class Velo implements Serializable {
 	private int stationCourante;
 	private Timestamp dateDerniereLocDebut;
 	private Timestamp dateDerniereLocFin;
-	private boolean isInLocation;
-	
 	public Velo() {
 		// TODO Auto-generated constructor stub
 	}
@@ -19,7 +17,6 @@ public class Velo implements Serializable {
 	public Velo(int id, int etat) {
 		this.id = id;
 		this.etat = etat;
-		isInLocation = false;
 	}
 	
 	public Velo(int id) {
@@ -64,7 +61,6 @@ public class Velo implements Serializable {
 	
 	public void setAbonneCourant(int abonneCourant) {
 		etat = 1;
-		isInLocation = true ;
 		this.abonneCourant = abonneCourant;
 	}
 	
@@ -82,10 +78,6 @@ public class Velo implements Serializable {
 
 	public void setDateDerniereLocFin(Timestamp dateDerniereLocFin) {
 		this.dateDerniereLocFin = dateDerniereLocFin;
-	}
-	
-	public boolean isInLocation() {
-		return isInLocation;
 	}
 	
 	@Override

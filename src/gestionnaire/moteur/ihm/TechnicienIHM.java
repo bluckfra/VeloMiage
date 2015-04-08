@@ -37,10 +37,8 @@ public class TechnicienIHM extends JFrame {
 	private JPanel panelCourant;
 	private JPanel contentPane;
 	private PanelTechnicien panelTech;
-	private Gestionnaire gestionnaire;
 	
-	public TechnicienIHM(Gestionnaire g,Abonne ab) {
-		gestionnaire = g ;
+	public TechnicienIHM(HashMap<Integer, String> tab,Abonne ab) {
 		a = ab;
 		try {
 			// Permet de prendre l'apparence du système hôte
@@ -58,7 +56,7 @@ public class TechnicienIHM extends JFrame {
 		getContentPane().setLayout(new GridLayout(1, 0, 0, 0));
 		contentPane = new JPanel();
 		contentPane.setLayout(new GridLayout());
-		panelTech = new PanelTechnicien(a, gestionnaire.getInstancesStationsNotif(), this);
+		panelTech = new PanelTechnicien(a, tab, this);
 		
 		this.setContentPane(contentPane); // on récupère l'abonné courant
 		panelCourant = panelTech;
@@ -71,8 +69,7 @@ public class TechnicienIHM extends JFrame {
 
 	}
 	
-	public void notifierTech() {
-		HashMap<Integer, String> tab = gestionnaire.getInstancesStationsNotif();
+	public void notifierTech(HashMap<Integer, String> tab) {
 		panelTech.rechargerTableau(tab);
 	}
 
