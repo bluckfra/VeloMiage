@@ -115,6 +115,8 @@ public class PanelIdentification extends JPanel {
 	public void remiseAZero(){
 		labelErreur.setText("");
 		btnValider.setEnabled(true);
+		textFieldId.setEnabled(true);
+		textFieldMdp.setEnabled(true);
 		razChampsSaisie();
 	}
 	

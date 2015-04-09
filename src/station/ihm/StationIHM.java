@@ -114,7 +114,6 @@ public class StationIHM extends JFrame {
 			donneesTicket = s.retourVelo(idVelo);
 			this.changerPanel(Etat.Menu);
 			new PopupRestitutionVelo(idVelo,this).setVisible(true);
-			panelRetourVelo.afficherIdVeloErreur();			
 		} catch (RemoteException e) {
 			this.changerPanel(Etat.Menu);
 			new PopupErreurRemote().setVisible(true);
