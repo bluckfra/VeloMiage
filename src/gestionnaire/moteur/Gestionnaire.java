@@ -207,7 +207,7 @@ public class Gestionnaire extends UnicastRemoteObject implements GestionnairePro
 		Timestamp debutLoc = v.getDateDerniereLocDebut();
 		Timestamp finLoc = v.getDateDerniereLocFin();
 		// récupération du prix de la course
-		Double prix = (finLoc.getTime() - debutLoc.getTime())/3600 * PRIXHEURE;
+		Double prix = ((finLoc.getTime() - debutLoc.getTime())/3600000 * PRIXHEURE) + 1;
 		infosTicket[0] = v.getDateDerniereLocDebut();
 		infosTicket[1] = v.getDateDerniereLocFin();
 		infosTicket[2] = prix;
