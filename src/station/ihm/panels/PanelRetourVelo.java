@@ -59,11 +59,10 @@ public class PanelRetourVelo extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					modele.actionRestitution(Integer.parseInt(txt_idVelo.getText()));
-					remiseAZero();
+					razChampsSaisie();
 				} catch (NumberFormatException e1) {
 					afficherIdVeloErreur();
 				} catch (RemoteException e1) {
-					remiseAZero();
 					modele.changerPanel(Etat.Menu);
 					new PopupErreurRemote().setVisible(true);
 				}
@@ -72,7 +71,6 @@ public class PanelRetourVelo extends JPanel{
 
 		btnRetour.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				remiseAZero();
 				modele.changerPanel(Etat.Menu);
 			}
 		});
@@ -81,16 +79,21 @@ public class PanelRetourVelo extends JPanel{
 	public void afficherIdVeloErreur(){
 		lbl_error.setText("Erreur : ID du vélo à restituer incorrect");
 		lbl_error.setVisible(true);
-		remiseAZero();
+		razChampsSaisie();
 	}
 	
 	public void afficherVeloInvalideError(){
 		lbl_error.setText("Erreur : Le vélo que vous voulez rendre n'est pas en location");
 		lbl_error.setVisible(true);
-		remiseAZero();
+		razChampsSaisie();
 	}
 	
 	public void remiseAZero(){
+		lbl_error.setText("");
+		razChampsSaisie();
+	}
+	
+	public void razChampsSaisie(){
 		for (Component C : this.getComponents()){
 			if(C instanceof JTextField){
 				((JTextComponent) C ).setText("");

@@ -94,11 +94,11 @@ public class PanelIdentification extends JPanel {
 		labelErreur.setText("Erreur : nombre d'essais écoulés");
 		textFieldId.setEnabled(false);
 		textFieldMdp.setEnabled(false);
+		btnValider.setEnabled(false);
 	}
 
 	public void afficherErreurEssai() {
 		labelErreur.setText("Erreur : identifiant ou mot de passe incorrect");
-		btnValider.setEnabled(false);
 		razChampsSaisie();
 	}
 
